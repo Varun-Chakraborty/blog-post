@@ -98,4 +98,4 @@ The maintainers will review your pull request.
 Once approved, your changes will be merged into the main repository.
 
 ## License
-- The Blog Post App is released under the MIT License. You can find the full license text in the [LICENSE](https://github.com/Varun-Chakraborty/blog-post/blob/main/LICENSE) file.
+- The Blog Post App is released under the MIT License. You can find the full license text in the [LICENSE](/LICENSE) file.
