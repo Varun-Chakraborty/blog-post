@@ -11,10 +11,11 @@ import { useSelector } from "react-redux";
 
 
 export default function ShowPost() {
+    const user = useSelector(state => state.users.userInfo);
     const [searchParams] = useSearchParams();
     const id = searchParams.get('id');
     const post = useSelector(state => state.posts.posts.filter(post => post.$id === id)[0]);
-    const { edit, imgURL, title, content, comments } = post;
+    const { imgURL, userId, username, title, content, comments } = post;
 
     const [showComments, setShowComments] = useState(true);
     const [commentsState, setCommentsState] = useState(null);
@@ -33,7 +34,7 @@ export default function ShowPost() {
                                 onClick={() => navigate('..')}
                                 className="hover:bg-slate-300 dark:hover:bg-slate-700"><MdArrowBackIosNew /></Button>
                             {
-                                edit && (
+                                user.$id===userId && (
                                     <div className="flex gap-2 text-white">
                                         <EditButton
                                             className='hidden sm:block'
@@ -74,6 +75,9 @@ export default function ShowPost() {
                             <div>
                                 {parse(content)}
                             </div>
+                        </div>
+                        <div className="flex justify-end px-2 italic">
+                            Posted by @{username}
                         </div>
                         <div className="flex justify-center gap-10 p-2">
                             <LikeButton count={0} />

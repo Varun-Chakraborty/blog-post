@@ -4,9 +4,11 @@ import { useForm } from "react-hook-form";
 import { post_service } from "../appwriteServices";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 export default function CommentContainer({ className, postId, commentsState, setCommentsState }) {
     const [uploading, setIfUploading] = useState(false);
+    const user = useSelector(state => state.users.userInfo);
     const { register, handleSubmit, setValue } = useForm();
     const getComments = async () => {
         setCommentsState(await post_service.getComments(postId));
@@ -14,7 +16,7 @@ export default function CommentContainer({ className, postId, commentsState, set
     const createComment = async data => {
         setIfUploading(true);
         try {
-            await post_service.createComment(data.comment, postId);
+            await post_service.createComment(data.comment, postId, user.$id, user.name);
             await getComments();
             setValue('comment', '');
         } catch (error) {

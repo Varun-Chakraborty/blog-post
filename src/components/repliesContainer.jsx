@@ -4,9 +4,11 @@ import { useForm } from "react-hook-form";
 import { post_service } from "../appwriteServices";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
 export default function RepliesContainer({ className, commentId, repliesState, setRepliesState }) {
     const [uploading, setIfUploading] = useState(false);
+    const user = useSelector(state => state.users.userInfo);
     const { register, handleSubmit, setValue } = useForm();
     const getReplies = async () => {
         setRepliesState(await post_service.getReplies(commentId));   
@@ -14,7 +16,7 @@ export default function RepliesContainer({ className, commentId, repliesState, s
     const createReply = async data => {
         setIfUploading(true);
         try {
-            await post_service.createReply(data.reply, commentId);
+            await post_service.createReply(data.reply, commentId, user.$id, user.name);
             await getReplies();
             setValue('reply', '');
         } catch (error) {

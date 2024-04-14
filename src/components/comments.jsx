@@ -1,28 +1,29 @@
 import { useEffect, useState } from "react";
 import { CommentButton, LikeButton, ReplyContainer, ShrinkedDeleteButton, ShrinkedEditButton } from ".";
-import parse from 'html-react-parser';
 import { post_service } from "../appwriteServices";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
 
-export default function Comments({ $id, name, msg, pfp, replies=[], edit=true, getComments, likes = [] }) {
+export default function Comments({ $id, username, userId, msg, replies = [], getComments, likes = [] }) {
+    const user = useSelector(state => state.users.userInfo);
     const [showReplies, setShowReplies] = useState(false);
     const [repliesState, setRepliesState] = useState(null);
     const [processing, setIfProcessing] = useState(false);
-    useEffect(() => { setRepliesState(replies) }, []);
+    useEffect(() => { setRepliesState(replies); }, []);
     return (
         <div className="p-2 bg-slate-200 dark:bg-slate-800 rounded-lg">
             <div className="flex justify-between items-center border-b border-black dark:border-white py-2">
                 <div className="flex items-center gap-2">
-                    {parse(pfp)}
+                    <div className="h-6 aspect-square rounded-full bg-blue-300 text-black flex justify-center items-center">{ username.charAt(0).toUpperCase() }</div>
                     <div>
-                        <div className="text-xs">{'@' + name}</div>
+                        <div className="text-xs">{'@' + username}</div>
                         <div>{msg}</div>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
                     <LikeButton likes={likes} />
                     <CommentButton onClick={() => setShowReplies(prev => !prev)} count={repliesState?.length} />
-                    {edit && (
+                    {user.$id === userId && (
                         <>
                             <ShrinkedEditButton />
                             <ShrinkedDeleteButton {...(processing && { processing: true })} onClick={async () => {

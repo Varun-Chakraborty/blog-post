@@ -35,7 +35,10 @@ export default function Home() {
                             posts.map(post => <Card key={post.$id} {...post} />) :
                             <div className="h-full flex justify-center items-center font-bold font-serif uppercase">No posts yet</div> :
                         <Loader /> :
-                    <div className="h-full flex justify-center items-center font-bold font-serif uppercase">Login to view posts</div>
+                    <div className="space-y-5">
+                        <div>DON'T PUT YOUR PERSONAL INFO IN ANY FORMS YOU SEE IN THIS SITE, AS THERE NO GUARANTEE OF PROTECTION OF YOUR DATA</div>
+                        <div className="h-full flex justify-center items-center font-bold font-serif uppercase">Login to view posts</div>
+                    </div>
             }
             <Button
                 className="sm:hidden bg-gray-400 dark:bg-gray-600 fixed bottom-7 right-5"

@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { usePosts } from '../hooks';
 import { Button, CommentButton, LikeButton, ShrinkedDeleteButton, ShrinkedEditButton } from '.';
+import { useSelector } from 'react-redux';
 
-export default function Card({ $id, title, imgURL, edit, comments }) {
+export default function Card({ $id, title, userId, username, imgURL, comments }) {
+    const user = useSelector(state => state.users.userInfo);
     const navigate = useNavigate();
     const [processing, setIfProcessing] = useState(false);
     const { deletePost } = usePosts();
@@ -26,10 +28,10 @@ export default function Card({ $id, title, imgURL, edit, comments }) {
                         <CommentButton onClick={evnt => {
                             evnt.stopPropagation();
                             navigate(`/posts?id=${$id}#comments`);
-                        }} count={comments.length} />
+                        }} count={comments?.length} />
                         <Button onClick={evnt => evnt.stopPropagation()}
                             className='group relative hover:bg-slate-400 dark:hover:bg-slate-600'>
-                            {edit && (
+                            {user.$id === userId && (
                                 <div
                                     className="bg-slate-200 group-focus-within:flex hidden dark:bg-slate-600 absolute bottom-12 right-0 rounded-lg shadow p-2 z-50 text-white flex-col gap-2">
                                     <ShrinkedEditButton

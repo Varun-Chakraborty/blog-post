@@ -19,16 +19,20 @@ export default function PostForm({ data }) {
         <>
             <form
                 className="p-3 flex justify-between flex-col md:flex-row"
-                onSubmit={handleSubmit((data ? (
-                    async data => await updatePost(data)) : (
-                    async data => {
+                onSubmit={handleSubmit((data ?
+                    (async formData => {
+                        setIfCreating(true);
+                        await updatePost(formData, data.$id, data.reference_to_picture)
+                        setIfCreating(false);
+                    }) :
+                    (async data => {
                         setIfCreating(true);
                         await createPost(data);
                         setIfCreating(false);
                     })), () => {
                         if (errors?.title?.type === 'required') toast.error('No title is given');
                         else if (errors?.content?.type === 'required') toast.error('No content is given');
-                    }) }>
+                    })}>
                 <div className="space-y-4 w-full md:w-3/5 p-2">
                     <InputField
                         {...register('title', { required: true })}
