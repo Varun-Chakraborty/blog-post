@@ -4,6 +4,17 @@ import { post_service } from "../appwriteServices";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 
+/**
+ * Comment component
+ * @param {string} $id The comment's ID
+ * @param {string} username The comment's username
+ * @param {string} userId The comment's user ID
+ * @param {string} msg The comment's message
+ * @param {Array} replies The comment's replies
+ * @param {Function} getComments Function to get the comments
+ * @param {Array} likes The comment's likes
+ * @returns The comment component
+ */
 export default function Comments({ $id, username, userId, msg, replies = [], getComments, likes = [] }) {
     const user = useSelector(state => state.users.userInfo);
     const [showReplies, setShowReplies] = useState(false);
