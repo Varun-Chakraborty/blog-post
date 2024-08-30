@@ -1,66 +1,62 @@
 # Blog Post App
-The Blog Post App is a dynamic and user-friendly blogging platform built using React for the front-end and Appwrite for the backend. It empowers users to create, manage, and interact with blog posts in an intuitive and efficient manner.
+The Blog Post App is a dynamic and user-friendly blogging platform built using React for the [front-end](./frontend/) and [custom API](./backend/) for the backend. It empowers users to create, manage, and interact with blog posts in an intuitive and efficient manner.
 
 Let’s dive into the details of this app:
 
 ## Installation
-To run the Blog Post App locally, follow these steps:
-1. Clone the Repository:
-     ```bash
-      git clone https://github.com/Varun-Chakraborty/blog-post
-      cd blog-post-app
-     ```
+To install the Blog Post App locally, follow these steps:
+   1. Clone the Repository:
+        ```bash
+         git clone https://github.com/Varun-Chakraborty/blog-post
+         cd blog-post-app
+        ```
 
-2. Install Dependencies:
-     ```bash
-     npm install
-     ```
+   2. Further installation is spread in two parts:
+      ### For frontend
+         To run the Blog Post frontend locally, follow these steps:
 
-3. Set Up Environment Variables:
-   - Create a .env file in the root directory.
-   Add the necessary environment variables as specified in [.env.sample](/.env.sample).
+         1. Install Dependencies:
+            ```bash
+               cd frontend
+               npm install
+            ```
 
-4. Start the Development Server:
-    ```
-    npm start
-    ```
+         2. Set Up Environment Variables:
+            - Create a .env file in the root directory.
+            Add the necessary environment variables as specified in [.env.sample](/frontend/.env.sample).
 
-5. Access the App: Open your browser and navigate to http://localhost:5173.
+         3. Start the Development Server:
+            ```bash
+               npm run dev
+            ```
+
+         3. Access the App: Open your browser and navigate to http://localhost:5173.
+
+      ### For backend
+         To run the Blog Post backend locally, follow these steps:
+
+         1. Install Dependencies:
+            ```bash
+               cd backend
+               npm install
+            ```
+
+         2. Set Up Environment Variables:
+            - Create a .env file in the root directory.
+            Add the necessary environment variables as specified in [.env.sample](/backend/.env.sample).
+            - You would need a postgres database to run the backend.
+
+         3. Start the Development Server:
+            ```bash
+               npm run dev
+            ```
+
+         3. Access the App: Open your browser and navigate to http://localhost:3000 (3000 is the default port for the backend, you can change it in the .env file).
+
 
 ## Features
-### 1. User Authentication:
-   - Users can register, log in, and securely authenticate themselves.
-   - Only authorized users can create, edit, and delete blog posts.
-### 2. Blog Creation and Editing:
-   - Each blog post includes the following components:
-      - Title: A descriptive title for the blog.
-      - Slug: A programmatically generated unique identifier for the blog (which will be used in URLs currently IDs are used).
-      - Content: The main body of the blog edited using [TinyMCE](#technologies-used).
-      - Optional Image: Users can upload an image to use as a cover for their blog post.
-### 3. Card-Based Display:
-   - The home page showcases all existing blog posts in a visually appealing card format.
-   - Only the user who created a specific blog post can edit or delete it.
-### 4. Individual Post Page:
-   - Clicking on a card opens a dedicated page for the selected blog post.
-   - On this page:
-      - The creator of the post can edit or delete it.
-      - Other users can like, comment, reply to comments, and share the post (share feature to be implemented).
-## Planned Features
-### 1. Follow Functionality:
-   - Users can follow other bloggers to receive updates on their posts.
-### 2. Followings Page:
-   - A page where users can view the blogs of the creators they follow.
-### 3. Code Modularity:
-   - Enhance code organization and maintainability by making it more modular.
-## Technologies Used
-### 1. Front-end:
-   - [**React**](https://github.com/facebook/react): A powerful JavaScript library for building user interfaces.
-   - [**Tailwind CSS**](https://github.com/tailwindlabs/tailwindcss): A utility-first CSS framework for responsive and efficient styling.
-   - [**TinyMCE**](https://github.com/tinymce/tinymce-react) : A feature-rich text editor for creating and formatting blog content.
-### 2. Back-end:
-   - [**Appwrite**](https://github.com/appwrite/appwrite): A backend-as-a-service platform that provides authentication, database, and storage services.
-
-By combining these technologies, the Blog Post App delivers a seamless experience for bloggers and readers alike. Feel free to explore, create, and share your thoughts! 📝🚀
+- ### Authentication
+   The Blog Post App provides an authentication system that allows users to create, edit, and delete their own blog posts. This feature is implemented using JWT tokens.
 
 ## Contribution Guidelines
 We welcome contributions from the community! If you’d like to contribute to the Blog Post App, follow these steps:

@@ -1,0 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: 44, 62, 80;
+  --secondary-color: 33, 33, 33;
+  --accent-color: 0, 188, 212;
+  --primary-text-color: 0, 0, 0;
+  --secondary-text-color: 85, 85, 85; /* Adjusted for better contrast */
+  --background-color: 245, 245, 245;
+  --card-background-color: 255, 255, 255;
+  --border-color: 200, 200, 200;
+  --hover-color: 35, 49, 63;
+  --selected-color: 56, 78, 95;
+  --disabled-color: 150, 150, 150;
+  --error-color: 255, 69, 58;
+  --success-color: 76, 175, 80;
+  --warning-color: 255, 152, 0;
+  --info-color: 33, 150, 243;
+}
+
+.dark {
+  --primary-color: 93, 109, 126;
+  --secondary-color: 54, 54, 54;
+  --accent-color: 0, 153, 172;
+  --primary-text-color: 235, 235, 235;
+  --secondary-text-color: 150, 150, 150;
+  --background-color: 33, 33, 33;
+  --card-background-color: 44, 44, 44;
+  --border-color: 88, 88, 88;
+  --hover-color: 72, 88, 104;
+  --selected-color: 113, 129, 146;
+  --disabled-color: 100, 100, 100;
+  --error-color: 255, 69, 58;
+  --success-color: 76, 175, 80;
+  --warning-color: 255, 152, 0;
+  --info-color: 33, 150, 243;
+}
