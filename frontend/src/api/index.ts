@@ -3,7 +3,7 @@ import axios, { AxiosError } from "axios";
 
 class Api {
   private api = axios.create({
-    baseURL: "http://localhost:4002/api/v1/",
+    baseURL: import.meta.env.VITE_BASE_API_URL,
     withCredentials: true,
     headers: {
       "Content-Type": "application/json",
