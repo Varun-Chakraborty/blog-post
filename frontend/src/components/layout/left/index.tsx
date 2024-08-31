@@ -24,11 +24,15 @@ export function LeftPanel({
         className
       )}
     >
-      <TitleAndUser isMenuOpen={isMenuOpen} setMenuOpen={setMenuOpen} />
+      <TitleAndUser
+        isMenuOpen={isMenuOpen}
+        setMenuOpen={setMenuOpen}
+        className="h-[25%] px-2"
+      />
       <hr className="border border-borderColor" />
-      <Menu setMenuOpen={setMenuOpen} />
+      <Menu setMenuOpen={setMenuOpen} className="h-[70%]" />
       <hr className="border border-borderColor" />
-      <Settings setMenuOpen={setMenuOpen} />
+      <Settings setMenuOpen={setMenuOpen} className="h-[25%]" />
     </div>
   );
 }

@@ -14,14 +14,23 @@ function onReload(input: HTMLInputElement) {
   }
 }
 
-export function SearchBar({ className }: { className?: string }) {
-  const input = useRef<HTMLInputElement>(null);
+export function SearchBar({
+  className,
+  full = false,
+}: {
+  className?: string;
+  full?: boolean;
+}) {
+  const input = useRef<HTMLInputElement | undefined>(undefined);
   const navigate = useNavigate();
   useEffect(() => {
     onReload(input.current!);
     window.addEventListener("popstate", () => onReload(input.current!));
     return () =>
+    {
       window.removeEventListener("popstate", () => onReload(input.current!));
+      if (input.current) input.current.value = "";
+    }
   }, []);
   return (
     <form
@@ -32,7 +41,7 @@ export function SearchBar({ className }: { className?: string }) {
       className={cn("p-2 flex", className)}
     >
       <input
-        ref={input}
+        ref={input as React.RefObject<HTMLInputElement>}
         onChange={(e) => {
           e.preventDefault();
           triggerSearch(e.target.value, navigate);
@@ -42,12 +51,15 @@ export function SearchBar({ className }: { className?: string }) {
         id=""
         placeholder="Search..."
         className={cn(
-          "py-1 px-6 border border-borderColor outline-none rounded-l-lg bg-inherit md:block hidden"
+          "py-1 px-6 border border-borderColor outline-none rounded-l-lg bg-inherit md:block hidden",
+          { block: full }
         )}
       />
       <button
+        onClick={() => triggerSearch(input.current!.value, navigate)}
         className={cn(
-          "bg-accent hover:bg-accent/80 text-primaryText font-semibold py-2 px-4 md:rounded-l-none rounded-lg shadow-lg transition duration-300"
+          "bg-accent hover:bg-accent/80 text-primaryText font-semibold py-2 px-4 md:rounded-l-none rounded-lg shadow-lg transition duration-300",
+          { "rounded-l-none": full }
         )}
       >
         <CiSearch className="aspect-square sm:w-6 w-5" />

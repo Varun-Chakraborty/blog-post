@@ -99,7 +99,7 @@ export function Register({ className }: { className?: string }) {
     <Form {...form}>
       <form
         className={cn(
-          "w-2/3 xl:w-1/3 h-full space-y-6 font-montserrat border border-borderColor px-4 py-6 overflow-y-auto rounded-xl shadow-[0px_4px_4px_rgba(0,0,0,0.25)]",
+          "sm:w-2/3 xl:w-1/3 h-full space-y-6 font-montserrat border border-borderColor px-4 py-6 overflow-y-auto rounded-xl shadow-[0px_4px_4px_rgba(0,0,0,0.25)]",
           className
         )}
         onSubmit={form.handleSubmit(onSubmit)}

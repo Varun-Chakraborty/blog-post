@@ -1,5 +1,6 @@
 import api from "@/api";
 import { InfiniteLoader } from "@/components/loaders";
+import { SearchBar } from "@/components/searchBar";
 import { cn } from "@/lib/utils";
 import { APIResponseTypes } from "@/types";
 import { useEffect, useState } from "react";
@@ -35,6 +36,7 @@ export function Search({ className }: { className?: string }) {
   }, [new URLSearchParams(window.location.search).get("q")]);
   return (
     <div className={cn("h-full w-full box-border", className)}>
+      <SearchBar full className="sm:hidden mb-4 w-full" />
       {loading ? (
         <InfiniteLoader />
       ) : results?.length ? (
@@ -42,13 +44,13 @@ export function Search({ className }: { className?: string }) {
           {results.map((result) => (
             <div
               onClick={() => navigate(`/profile/${result.username}`)}
-              className="p-2 hover:bg-primary/10 border-b border-borderColor cursor-pointer flex gap-3 rounded-lg"
+              className="p-3 hover:bg-primary/10 border-b border-borderColor cursor-pointer flex gap-3 rounded-lg"
               key={result.id}
             >
               <img
-                src={result.pfp}
+                src={result.pfp || "/placeholder-user.jpg"}
                 alt=""
-                className="w-12 h-12 rounded-full border border-borderColor"
+                className="w-10 h-10 rounded-full border border-borderColor"
               />
               <div>
                 <span className="font-bold text-sky-500 group-hover:underline">

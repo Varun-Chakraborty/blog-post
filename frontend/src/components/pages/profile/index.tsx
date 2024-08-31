@@ -28,6 +28,7 @@ export function Profile({ className }: { className?: string }) {
       })
       .catch((err) => {
         if (err instanceof AxiosError) {
+          console.log(err.response);
           if (err.response?.status === 401) {
             toast({
               title: "Session expired",
@@ -35,12 +36,14 @@ export function Profile({ className }: { className?: string }) {
             });
             dispatch(profileActions.removeProfile());
             navigate("/login");
+          } else {
+            toast({
+              title: "Could not get profile",
+              description:
+                err.response?.data.message || "Unknown error occured",
+              variant: "destructive",
+            });
           }
-          toast({
-            title: "Could not get profile",
-            description: err.response?.data.message || "Unknown error occured",
-            variant: "destructive",
-          });
         } else {
           toast({
             title: "Could not get profile",

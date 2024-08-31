@@ -3,32 +3,32 @@ import { cn } from "@/lib/utils";
 export function PasswordStrength({ password }: { password: string }) {
   const strength = calculateStrength(password);
   return (
-    <div className="flex items-center justify-between text-sm text-gray-600 dark:text-slate-400">
-        <div className="flex gap-1">
-      {Array(5)
-        .fill(0)
-        .map((_, i) => {
-          return (
-            <div
-              key={i}
-              className={cn(
-                "w-6 h-2 rounded-full mr-1",
-                strength > i
-                  ? strength === 1
-                    ? "bg-red-600"
-                    : strength === 2
-                    ? "bg-orange-600"
-                    : strength === 3
-                    ? "bg-yellow-600"
-                    : strength === 4
-                    ? "bg-green-600"
-                    : "bg-blue-600"
-                  : "bg-gray-300"
-              )}
-            />
-          );
-        })}
-        </div>
+    <div className="flex items-center justify-between gap-2 text-sm text-gray-600 dark:text-slate-400">
+      <div className="flex gap-1">
+        {Array(5)
+          .fill(0)
+          .map((_, i) => {
+            return (
+              <div
+                key={i}
+                className={cn(
+                  "w-6 h-2 rounded-full mr-1",
+                  strength > i
+                    ? strength === 1
+                      ? "bg-red-600"
+                      : strength === 2
+                      ? "bg-orange-600"
+                      : strength === 3
+                      ? "bg-yellow-600"
+                      : strength === 4
+                      ? "bg-green-600"
+                      : "bg-blue-600"
+                    : "bg-gray-300"
+                )}
+              />
+            );
+          })}
+      </div>
       <div>
         {strength}/5 (
         {strength === 0

@@ -1,9 +1,10 @@
+import { toast } from "@/components/ui/use-toast";
 import { APIResponseTypes } from "@/types";
 import axios, { AxiosError } from "axios";
 
 class Api {
   private api = axios.create({
-    baseURL: import.meta.env.VITE_BASE_API_URL,
+    baseURL: import.meta.env.VITE_API_BASE_URL,
     withCredentials: true,
     headers: {
       "Content-Type": "application/json",
@@ -14,7 +15,15 @@ class Api {
     this.api.interceptors.response.use(
       (response) => response,
       async (error: AxiosError) => {
-        if (error.response?.status === 401) {
+        if (error.message === "Network Error") {
+          toast({
+            variant: "destructive",
+            title: "Network error",
+            description: "Please check your internet connection.",
+          });
+          return Promise.reject(error);
+        }
+        else if (error.response?.status === 401) {
           if (error.request?.responseURL?.includes("/auth")) {
             return Promise.reject(error);
           } else {

@@ -6,7 +6,6 @@ import {
 import { FloatingMessage } from "./components/message";
 import { Layout } from "./components/layout";
 import { useProfile } from "./hooks/useProfile";
-import { useTheme } from "./hooks/useTheme";
 
 import {
   Home,
@@ -21,85 +20,88 @@ import {
   Profile,
   Login,
   Register,
-  ForgotPassword
+  ForgotPassword,
 } from "./components/pages";
-
-const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Layout />,
-    children: [
-      {
-        path: "",
-        element: <Home />,
-      },
-      {
-        path: "messages",
-        element: <Messages />,
-      },
-      {
-        path: "notifications",
-        element: <Notifications />,
-      },
-      {
-        path: "dashboard",
-        element: <Dashboard />,
-      },
-      {
-        path: "search",
-        element: <Search />,
-      },
-      {
-        path: "post/",
-        children: [
-          {
-            path: "",
-            element: <ShowPost />,
-          },
-          {
-            path: "create",
-            element: <CreatePost />,
-          },
-        ],
-      },
-      {
-        path: "*",
-        element: <NotFound />,
-      },
-      {
-        path: "/signin",
-        element: <Login />,
-      },
-      {
-        path: "/signup",
-        element: <Register />,
-      },
-      {
-        path: "/login",
-        element: <Navigate to="/signin" />,
-      },
-      {
-        path: "/register",
-        element: <Navigate to="/signup" />,
-      },
-      {
-        path: "/settings",
-        element: <Settings />,
-      },
-      {
-        path: "/profile",
-        element: <Profile />,
-      },
-      {
-        path: "/forgot-password",
-        element: <ForgotPassword />,
-      },
-    ],
-  },
-]);
+import { ProtectedRoute } from "./components/protectedRoute";
 
 export default function App() {
-  useTheme();
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Layout />,
+      children: [
+        {
+          path: "",
+          element: <Home />,
+        },
+        {
+          path: "messages",
+          element: <Messages />,
+        },
+        {
+          path: "notifications",
+          element: <Notifications />,
+        },
+        {
+          path: "dashboard",
+          element: <Dashboard />,
+        },
+        {
+          path: "search",
+          element: <Search />,
+        },
+        {
+          path: "post/",
+          children: [
+            {
+              path: "",
+              element: <ShowPost />,
+            },
+            {
+              path: "create",
+              element: (
+                <ProtectedRoute>
+                  <CreatePost />
+                </ProtectedRoute>
+              ),
+            },
+          ],
+        },
+        {
+          path: "*",
+          element: <NotFound />,
+        },
+        {
+          path: "/signin",
+          element: <Login />,
+        },
+        {
+          path: "/signup",
+          element: <Register />,
+        },
+        {
+          path: "/login",
+          element: <Navigate to="/signin" />,
+        },
+        {
+          path: "/register",
+          element: <Navigate to="/signup" />,
+        },
+        {
+          path: "/settings",
+          element: <Settings />,
+        },
+        {
+          path: "/profile",
+          element: <Profile />,
+        },
+        {
+          path: "/forgot-password",
+          element: <ForgotPassword />,
+        },
+      ],
+    },
+  ]);
   useProfile();
   return (
     <main className="h-screen w-screen flex justify-between font-robotoCondensed bg-backgroundColor text-primaryText">

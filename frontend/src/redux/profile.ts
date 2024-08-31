@@ -41,10 +41,10 @@ const profile = createSlice({
     },
     removeProfile(state) {
       const index = state.profiles.findIndex((profile) => profile.id === state.currentProfile);
-      state.profiles.splice(index, 1);
-      if (state.profiles.length === 0) {
-        state = initialState;
+      if (state.profiles.length === 1) {
+        return {...initialState};
       } else {
+        state.profiles.splice(index, 1);
         state.currentProfile = state.profiles[0].id;
       }
     },
