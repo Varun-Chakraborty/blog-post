@@ -6,7 +6,7 @@
     "dev": "npx nodemon src/index.ts",
     "format": "npx prettier --write src/**/*",
     "build": "npm install && npx prisma migrate deploy && npx tsc",
-    "start": "node dist/src/index.js"
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "",
