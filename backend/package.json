@@ -6,7 +6,7 @@
     "dev": "npx nodemon src/index.ts",
     "format": "npx prettier --write src/**/*",
     "build": "npm install && npx prisma migrate deploy && npx tsc",
-    "start": "node dist/index.js"
+    "start": "node -r ./module-alias dist/index.js"
   },
   "keywords": [],
   "author": "",
@@ -20,6 +20,7 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
+    "module-alias": "^2.2.3",
     "morgan": "^1.10.0",
     "zod": "^3.23.8"
   },
