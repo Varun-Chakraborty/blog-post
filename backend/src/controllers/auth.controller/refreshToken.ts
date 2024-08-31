@@ -12,15 +12,15 @@ export const refreshToken = wrapperFx(async function (
   const { refreshToken } = req.cookies;
 
   if (!refreshToken)
-    return new ApiResponse('No refresh token found', {}, 401).error(res);
+    return new ApiResponse('No refresh token found', undefined, 401).error(res);
 
   const { id } = verifyTokens(refreshToken, 'refresh')!;
 
   const user = await prisma.user.findUnique({ where: { id } });
   if (!user || user.refreshToken !== refreshToken)
-    return new ApiResponse('Invalid refresh token', {}, 401).error(res);
+    return new ApiResponse('Invalid refresh token', undefined, 401).error(res);
 
-  const { access } = generateTokens({...user, password: undefined}, 'access');
+  const { access } = generateTokens({...user, password: undefined, refreshToken: undefined}, 'access');
 
   res = setCookie('accessToken', access!, res, {
     maxAge: Number(
@@ -28,5 +28,5 @@ export const refreshToken = wrapperFx(async function (
     )
   });
 
-  return new ApiResponse('Refresh successful').success(res);
+  return new ApiResponse('Refresh successful', { accessToken: access }).success(res);
 });

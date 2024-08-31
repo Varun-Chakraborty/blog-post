@@ -7,5 +7,6 @@ declare namespace NodeJS {
     JWT_REFRESH_EXPIRATION?: string;
     ACCESS_COOKIE_MAX_AGE?: string;
     REFRESH_COOKIE_MAX_AGE?: string;
+    ALLOWED_ORIGINS?: string;
   }
 }

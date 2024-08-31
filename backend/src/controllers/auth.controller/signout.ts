@@ -20,5 +20,5 @@ export const signout = wrapperFx(async function (req: Req, res: ExpressTypes.Res
       },
     });
 
-    return new ApiResponse('Signout successful', { user }).success(res);
+    return new ApiResponse('Signout successful').success(res);
 });

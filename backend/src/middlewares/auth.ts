@@ -27,7 +27,7 @@ export function isAuthenticated(
   res: ExpressTypes.Res,
   next: ExpressTypes.Next
 ) {
-  if (!req.user) return new ApiResponse('Unauthorized', {}, 401).error(res);
+  if (!req.user) return new ApiResponse('Unauthorized', undefined, 401).error(res);
   return next();
 }
 
@@ -36,9 +36,9 @@ export function isAdmin(
   res: ExpressTypes.Res,
   next: ExpressTypes.Next
 ) {
-  if (!req.user) return new ApiResponse('Unauthorized', {}, 401).error(res);
+  if (!req.user) return new ApiResponse('Unauthorized', undefined, 401).error(res);
   if (req.user.role !== 'ADMIN')
-    return new ApiResponse('Unauthorized', {}, 401).error(res);
+    return new ApiResponse('Unauthorized', undefined, 401).error(res);
   return next();
 }
 
@@ -47,6 +47,6 @@ export function isNoAuth(
   res: ExpressTypes.Res,
   next: ExpressTypes.Next
 ) {
-  if (req.user) return new ApiResponse('Forbidden', {}, 403).error(res);
+  if (req.user) return new ApiResponse('Forbidden', undefined, 403).error(res);
   return next();
 }

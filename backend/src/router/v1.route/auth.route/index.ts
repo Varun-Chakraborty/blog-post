@@ -2,25 +2,20 @@ import { Router } from 'express';
 
 const router = Router();
 
-import {
-  signin,
-  signup,
-  signout,
-  refreshToken
-} from '@/controllers/auth.controller';
+import { authController } from '@/controllers';
 import { isAuthenticated, isNoAuth } from '@/middlewares/auth';
 
-router.post('/signout', isAuthenticated, signout);
+router.post('/signout', isAuthenticated, authController.signout);
 
 router.use(isNoAuth);
 
-router.post('/signin', signin);
-router.post('/signup', signup);
-router.get('/refresh', refreshToken);
+router.post('/signin', authController.signin);
+router.post('/signup', authController.signup);
+router.get('/refresh', authController.refreshToken);
 
-router.get('*', (req, res) =>
+router.get('*', (_, res) =>
   res.send(
-    'API v1.0\nAvailable Sub-Routes:\n- ./login\n- ./signup\n- ./signout'
+    'API v1.0\nAvailable Sub-Routes:\n- ./login\n- ./signup\n- ./signout\n- ./refresh'
   )
 );
 

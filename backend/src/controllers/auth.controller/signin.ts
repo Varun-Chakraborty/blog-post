@@ -13,10 +13,10 @@ export const signin = wrapperFx(async function (
     const user = await prisma.user.findUnique({ where: { username } });
   
     if (!user || !(await prisma.user.verifyPassword(password, user.password))) {
-      return new ApiResponse('Invalid credentials', {}, 401).error(res);
+      return new ApiResponse('Invalid credentials', undefined, 401).error(res);
     }
   
-    const { access, refresh } = generateTokens({...user, password: undefined}, 'both');
+    const { access, refresh } = generateTokens({...user, password: undefined, refreshToken: undefined}, 'both');
   
     res = setCookie('accessToken', access!, res, {
       maxAge: Number(
@@ -36,7 +36,7 @@ export const signin = wrapperFx(async function (
     });
   
     return new ApiResponse('Signin successful', {
-      user: { ...user, password: undefined },
+      user: { ...user, password: undefined, refreshToken: undefined },
       accessToken: access
     }).success(res);
   });

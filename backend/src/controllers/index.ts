@@ -1,3 +1,3 @@
-export { signup, signin, signout } from './auth.controller';
+export * as authController from './auth.controller';
 export { search } from './search.controller';
-export { isUsernameAvailable } from './user.controller'
+export * as userController from './user.controller';
