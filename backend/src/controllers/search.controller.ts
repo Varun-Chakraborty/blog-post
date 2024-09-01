@@ -9,7 +9,7 @@ export const search = wrapperFx(async function (
 ) {
   const { q } = req.query;
   const query = q ? q.toString().toLowerCase().trim() : '';
-  const result = await prisma.user.findMany({
+  const users = await prisma.user.findMany({
     where: {
       OR: [
         {
@@ -30,8 +30,9 @@ export const search = wrapperFx(async function (
       username: true
     }
   });
+  // TODO: Add pagination and post search
   return new ApiResponse('Search successful', {
     query: query,
-    searchResult: result
+    searchResult: { users }
   }).success(res);
 });

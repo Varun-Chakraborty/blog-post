@@ -38,9 +38,3 @@ model Post {
   author    User    @relation(fields: [authorId], references: [id])
   authorId  String
 }
-
-model DumpedToken {
-  id        String   @id @default(cuid())
-  token     String   @unique
-  expiresAt DateTime
-}

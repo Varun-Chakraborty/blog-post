@@ -11,7 +11,7 @@ export type SearchResult = Profile;
 export interface SearchResponse extends APIResponse {
   data?: {
     query: string;
-    searchResult: SearchResult[];
+    searchResult: { users: SearchResult[]; /* posts: SearchResult[] */ };
   };
 }
 

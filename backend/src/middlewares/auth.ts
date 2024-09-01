@@ -11,9 +11,10 @@ export async function authenticate(
   const token = req.headers.authorization || req.cookies.accessToken;
   if (!token) return next();
 
-  if (await prisma.dumpedToken.findUnique({ where: { token } })) {
-    return next();
-  }
+  // TODO: need to implement redis for this
+  // if (await prisma.dumpedToken.findUnique({ where: { token } })) {
+  //   return next();
+  // }
 
   const user = verifyTokens(token, 'access');
   if (!user) return next();
@@ -27,7 +28,8 @@ export function isAuthenticated(
   res: ExpressTypes.Res,
   next: ExpressTypes.Next
 ) {
-  if (!req.user) return new ApiResponse('Unauthorized', undefined, 401).error(res);
+  if (!req.user)
+    return new ApiResponse('Unauthorized', undefined, 401).error(res);
   return next();
 }
 
@@ -36,7 +38,8 @@ export function isAdmin(
   res: ExpressTypes.Res,
   next: ExpressTypes.Next
 ) {
-  if (!req.user) return new ApiResponse('Unauthorized', undefined, 401).error(res);
+  if (!req.user)
+    return new ApiResponse('Unauthorized', undefined, 401).error(res);
   if (req.user.role !== 'ADMIN')
     return new ApiResponse('Unauthorized', undefined, 401).error(res);
   return next();

@@ -38,7 +38,9 @@ export const signup = wrapperFx(async function (
   }
 
   if (await prisma.user.findUnique({ where: { username } })) {
-    return new ApiResponse('Username already exists', undefined, 409).error(res);
+    return new ApiResponse('Username already exists', undefined, 409).error(
+      res
+    );
   }
 
   if (email && (await prisma.user.findUnique({ where: { email } }))) {

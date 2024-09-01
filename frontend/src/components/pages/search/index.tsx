@@ -24,7 +24,7 @@ export function Search({ className }: { className?: string }) {
         (async function () {
           try {
             await api.search(searchQuery!).then((searchResults) => {
-              setResults(searchResults);
+              setResults(searchResults?.users || []);
             });
           } finally {
             setLoading(false);

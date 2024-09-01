@@ -100,7 +100,7 @@ class Api {
     const response = await this.api.get<APIResponseTypes.SearchResponse>(
       `/search?q=${query}`
     );
-    return response.data.data?.searchResult || [];
+    return response.data.data?.searchResult;
   }
 }
 

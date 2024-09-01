@@ -5,7 +5,11 @@ const refreshExpiration = process.env.JWT_REFRESH_EXPIRATION || '7d';
 
 type TokenType = 'access' | 'refresh';
 
-import { AccessJWTPayload, AccessJWTResponse, RefreshJWTResponse } from '@/types';
+import {
+  AccessJWTPayload,
+  AccessJWTResponse,
+  RefreshJWTResponse
+} from '@/types';
 import { sign, verify } from 'jsonwebtoken';
 
 function generateToken(data: any, secret: string, expiresIn: string) {
@@ -20,7 +24,10 @@ function verifyToken(token: string, secret: string) {
   }
 }
 
-export function generateTokens(data: AccessJWTPayload, type: TokenType | 'both') {
+export function generateTokens(
+  data: AccessJWTPayload,
+  type: TokenType | 'both'
+) {
   if (type === 'both')
     return {
       access: generateToken(data, accessSecret!, accessExpiration),
@@ -38,7 +45,10 @@ export function generateTokens(data: AccessJWTPayload, type: TokenType | 'both')
     };
 }
 
-export function verifyTokens(token: string, type: TokenType): AccessJWTResponse | RefreshJWTResponse | null {
+export function verifyTokens(
+  token: string,
+  type: TokenType
+): AccessJWTResponse | RefreshJWTResponse | null {
   if (type === 'access') {
     return verifyToken(token, accessSecret!) as AccessJWTResponse | null;
   } else {
