@@ -22,17 +22,17 @@ export function FloatingMessage() {
   return (
     <div
       ref={currentComponent}
-      className="fixed bottom-0 right-3 lg:w-[18%] sm:w-[30%] bg-black z-50 rounded-t-lg text-white sm:block hidden select-none"
+      className="fixed bottom-0 right-3 lg:w-[18%] sm:w-[30%] bg-background z-50 rounded-t-lg sm:block hidden select-none"
     >
       <div
         className="flex justify-between items-center cursor-pointer p-3 rounded-t-lg"
         onClick={() => setExpanded(!expanded)}
       >
         <div className="flex items-center gap-2">
-          <div className="h-2 aspect-square bg-sky-600 rounded-full"></div>
+          <div className="h-2 aspect-square bg-accent rounded-full"></div>
           <span className="text-lg">Messages</span>
         </div>
-        <div className="p-2 hover:bg-gray-700 rounded-full">
+        <div className="p-2 hover:bg-primary/10 rounded-full">
           <IoChevronDown
             className={cn("w-4 h-4 transition", expanded && "rotate-180")}
           />
@@ -43,16 +43,12 @@ export function FloatingMessage() {
           {messages.map((message, i) => (
             <div
               key={i}
-              className="flex items-start gap-4 hover:bg-gray-700 p-2 rounded-lg cursor-pointer"
+              className="flex items-start gap-4 hover:bg-primary/10 p-2 rounded-lg cursor-pointer"
             >
-              <img
-                src={message.profile}
-                alt=""
-                className="w-8 h-8 rounded-full"
-              />
+              <img src={message.profile} className="w-8 h-8 rounded-full" />
               <div className="">
                 <div className="font-semibold">{message.name}</div>
-                <div className="text-sm text-white/80">{message.message}</div>
+                <div className="text-sm">{message.message}</div>
               </div>
             </div>
           ))}

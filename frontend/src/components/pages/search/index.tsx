@@ -53,7 +53,7 @@ export function Search({ className }: { className?: string }) {
                 className="w-10 h-10 rounded-full border border-borderColor"
               />
               <div>
-                <span className="font-bold text-sky-500 group-hover:underline">
+                <span className="font-bold text-accent group-hover:underline">
                   {result.name}
                 </span>
                 <p className="text-sm text-gray-400">@{result.username}</p>

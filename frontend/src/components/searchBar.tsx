@@ -51,14 +51,14 @@ export function SearchBar({
         id=""
         placeholder="Search..."
         className={cn(
-          "py-1 px-6 border border-borderColor outline-none rounded-l-lg bg-inherit md:block hidden",
+          "py-1 px-6 border border-border outline-none rounded-l-lg md:block hidden dark:bg-inherit",
           { block: full }
         )}
       />
       <button
         onClick={() => triggerSearch(input.current!.value, navigate)}
         className={cn(
-          "bg-accent hover:bg-accent/80 text-primaryText font-semibold py-2 px-4 md:rounded-l-none rounded-lg shadow-lg transition duration-300",
+          "bg-accent hover:bg-accent/80 text-accent-foreground font-semibold py-2 px-4 md:rounded-l-none rounded-lg shadow-lg transition duration-300",
           { "rounded-l-none": full }
         )}
       >

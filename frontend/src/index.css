@@ -3,39 +3,80 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@layer base {
+  :root {
+    --background: 0 0% 96.1%; /* Corresponds to --background-color (245, 245, 245) */
+    --foreground: 220 7% 31%; /* Corresponds to --primary-color (44, 62, 80) */
+    --card: 0 0% 100%; /* Corresponds to --card-background-color (255, 255, 255) */
+    --card-foreground: 220 7% 31%; /* Same as --foreground */
+    --popover: 0 0% 100%; /* Same as --card */
+    --popover-foreground: 220 7% 31%; /* Same as --foreground */
+    --primary: 220 7% 31%; /* Corresponds to --primary-color (44, 62, 80) */
+    --primary-foreground: 0 0% 100%; /* White for contrast */
+    --secondary: 0 0% 87.8%; /* Corresponds to --secondary-color (33, 33, 33) */
+    --secondary-foreground: 0 0% 100%; /* White for contrast */
+    --muted: 0 0% 87.8%; /* Matches --secondary */
+    --muted-foreground: 0 0% 33.3%; /* Corresponds to --secondary-text-color (85, 85, 85) */
+    --accent: 182 100% 38%; /* Corresponds to --accent-color (0, 188, 212) */
+    --accent-foreground: 0 0% 100%; /* White for contrast */
+    --destructive: 0 84.2% 60.2%; /* Corresponds to --error-color (255, 69, 58) */
+    --destructive-foreground: 0 0% 100%; /* White for contrast */
+    --border: 0 0% 78.4%; /* Corresponds to --border-color (200, 200, 200) */
+    --input: 0 0% 78.4%; /* Matches --border */
+    --ring: 220 7% 31%; /* Matches --primary */
+    --chart-1: 12 76% 61%; /* Custom color for charts */
+    --chart-2: 173 58% 39%; /* Custom color for charts */
+    --chart-3: 197 37% 24%; /* Custom color for charts */
+    --chart-4: 43 74% 66%; /* Custom color for charts */
+    --chart-5: 27 87% 67%; /* Custom color for charts */
+    --radius: 0.5rem;
 
-:root {
-  --primary-color: 44, 62, 80;
-  --secondary-color: 33, 33, 33;
-  --accent-color: 0, 188, 212;
-  --primary-text-color: 0, 0, 0;
-  --secondary-text-color: 85, 85, 85; /* Adjusted for better contrast */
-  --background-color: 245, 245, 245;
-  --card-background-color: 255, 255, 255;
-  --border-color: 200, 200, 200;
-  --hover-color: 35, 49, 63;
-  --selected-color: 56, 78, 95;
-  --disabled-color: 150, 150, 150;
-  --error-color: 255, 69, 58;
-  --success-color: 76, 175, 80;
-  --warning-color: 255, 152, 0;
-  --info-color: 33, 150, 243;
+    /* Added success and warning */
+    --success: 120 39% 49%; /* Corresponds to --success-color (76, 175, 80) */
+    --success-foreground: 0 0% 100%; /* White for contrast */
+    --warning: 36 100% 50%; /* Corresponds to --warning-color (255, 152, 0) */
+    --warning-foreground: 0 0% 100%; /* White for contrast */
+  }
+
+  .dark {
+    --background: 0 0% 13%; /* Corresponds to --background-color (33, 33, 33) in dark mode */
+    --foreground: 0 0% 92.2%; /* Corresponds to --primary-text-color (235, 235, 235) */
+    --card: 0 0% 17.3%; /* Corresponds to --card-background-color (44, 44, 44) */
+    --card-foreground: 0 0% 92.2%; /* Same as --foreground */
+    --popover: 0 0% 17.3%; /* Same as --card */
+    --popover-foreground: 0 0% 92.2%; /* Same as --foreground */
+    --primary: 0 0% 92.2%; /* Corresponds to --primary-text-color */
+    --primary-foreground: 220 7% 31%; /* Corresponds to --primary-color */
+    --secondary: 0 0% 87.8%; /* Corresponds to --secondary-color */
+    --secondary-foreground: 0 0% 92.2%; /* White for contrast */
+    --muted: 0 0% 87.8%; /* Same as --secondary */
+    --muted-foreground: 0 0% 39.2%; /* Corresponds to --secondary-text-color (150, 150, 150) */
+    --accent: 182 100% 33.7%; /* Corresponds to --accent-color (0, 153, 172) */
+    --accent-foreground: 0 0% 100%; /* White for contrast */
+    --destructive: 0 84.2% 60.2%; /* Same as light mode */
+    --destructive-foreground: 0 0% 92.2%; /* Same as --foreground */
+    --border: 0 0% 34.5%; /* Corresponds to --border-color (88, 88, 88) */
+    --input: 0 0% 34.5%; /* Matches --border */
+    --ring: 220 7% 31%; /* Matches --primary */
+    --chart-1: 220 70% 50%; /* Custom color for charts */
+    --chart-2: 160 60% 45%; /* Custom color for charts */
+    --chart-3: 30 80% 55%; /* Custom color for charts */
+    --chart-4: 280 65% 60%; /* Custom color for charts */
+    --chart-5: 340 75% 55%; /* Custom color for charts */
+
+    /* Dark mode success and warning */
+    --success: 120 39% 49%; /* Same as light mode */
+    --success-foreground: 0 0% 92.2%; /* White for contrast */
+    --warning: 36 100% 50%; /* Same as light mode */
+    --warning-foreground: 0 0% 92.2%; /* Same as --foreground */
+  }
 }
 
-.dark {
-  --primary-color: 93, 109, 126;
-  --secondary-color: 54, 54, 54;
-  --accent-color: 0, 153, 172;
-  --primary-text-color: 235, 235, 235;
-  --secondary-text-color: 150, 150, 150;
-  --background-color: 33, 33, 33;
-  --card-background-color: 44, 44, 44;
-  --border-color: 88, 88, 88;
-  --hover-color: 72, 88, 104;
-  --selected-color: 113, 129, 146;
-  --disabled-color: 100, 100, 100;
-  --error-color: 255, 69, 58;
-  --success-color: 76, 175, 80;
-  --warning-color: 255, 152, 0;
-  --info-color: 33, 150, 243;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

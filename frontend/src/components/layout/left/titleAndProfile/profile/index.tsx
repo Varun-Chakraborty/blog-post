@@ -41,7 +41,7 @@ export function Profile() {
     <div className="box-border relative" ref={profileRef}>
       <div
         className={cn(
-          "border border-borderColor rounded-md absolute z-50 overflow-hidden w-full shadow-gray-300 bg-white dark:shadow-gray-800",
+          "border border-border rounded-md absolute z-50 overflow-hidden w-full bg-card",
           { "shadow-lg": openProfileList }
         )}
       >
@@ -70,7 +70,7 @@ function ProfileCard({
   return (
     <div
       onClick={onClick}
-      className="flex items-center justify-between bg-cardBackgroundColor cursor-pointer hover:bg-gray-100 dark:hover:bg-backgroundColor p-3"
+      className="flex items-center justify-between bg-cardBackgroundColor cursor-pointer hover:bg-background p-3"
     >
       <div className="flex items-center gap-2">
         <img

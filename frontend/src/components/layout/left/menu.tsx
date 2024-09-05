@@ -76,7 +76,9 @@ export function Menu({
                 {isActive
                   ? option.activeIcon({ className: "w-6 h-6" })
                   : option.inActiveIcon({ className: "w-6 h-6" })}
-                <span>{option.title}</span>
+                <span className={cn({ "font-semibold": isActive })}>
+                  {option.title}
+                </span>
               </>
             )}
           </NavLink>

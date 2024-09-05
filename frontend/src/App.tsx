@@ -104,7 +104,7 @@ export default function App() {
   ]);
   useProfile();
   return (
-    <main className="h-screen w-screen flex justify-between font-robotoCondensed bg-backgroundColor text-primaryText">
+    <main className="h-screen w-screen flex justify-between">
       <RouterProvider router={router} />
       <FloatingMessage />
     </main>

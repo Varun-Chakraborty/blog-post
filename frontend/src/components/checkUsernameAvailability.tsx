@@ -67,12 +67,12 @@ export function CheckUsernameAvailability({
         ) : isUsernameAvailable !== undefined ? (
           <>
             <MdCheck
-              className={cn("text-green-500", {
+              className={cn("text-success", {
                 hidden: !isUsernameAvailable,
               })}
             />
             <RxCross1
-              className={cn("text-red-500", {
+              className={cn("text-warning", {
                 hidden: isUsernameAvailable,
               })}
             />

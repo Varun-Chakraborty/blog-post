@@ -54,7 +54,7 @@ export function RightPanel({
         </div>
       </div>
 
-      <div className="bg-cardBackgroundColor h-full w-full xl:rounded-[40px] lg:rounded-[30px] md:rounded-[20px] sm:rounded-[10px] rounded-[5px] p-6 shadow-lg overflow-y-auto">
+      <div className="bg-card h-full w-full xl:rounded-[40px] lg:rounded-[30px] md:rounded-[20px] sm:rounded-[10px] rounded-[5px] p-6 shadow-lg overflow-y-auto">
         <Outlet />
       </div>
     </div>

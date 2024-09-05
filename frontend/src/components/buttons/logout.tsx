@@ -26,7 +26,7 @@ export function Logout({
           });
         } catch (error) {
           if (error instanceof AxiosError && error.response?.status === 401) {
-            console.log('user is already logged out, removing profile');
+            console.log("user is already logged out, removing profile");
             dispatch(profileActions.removeProfile());
             toast({
               title: "Success",
@@ -46,7 +46,7 @@ export function Logout({
         }
       }}
       className={cn(
-        "bg-red-500 dark:bg-red-900 hover:bg-red-500/80 dark:hover:bg-red-900/80 text-primaryText font-semibold py-2 px-4 rounded-lg shadow-lg transition duration-300 w-full",
+        "bg-destructive hover:bg-destructive/80 text-destructive-foreground font-semibold py-2 px-4 rounded-lg shadow-lg transition duration-300 w-full",
         className
       )}
     >

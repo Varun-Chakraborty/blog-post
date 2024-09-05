@@ -16,7 +16,7 @@ export function Login({
         setMenuOpen(false);
       }}
       className={cn(
-        "bg-accent hover:bg-accent/80 text-primaryText font-semibold py-2 px-4 rounded-lg shadow-lg transition duration-300 w-full",
+        "bg-accent hover:bg-accent/80 text-accent-foreground font-semibold py-2 px-4 rounded-lg shadow-lg transition duration-300 w-full",
         className
       )}
     >
