@@ -80,7 +80,9 @@ export function Search({ className }: { className?: string }) {
           </div>
         ))}
         {loading ? (
-          <InfiniteLoader />
+          <div className={cn({ "py-2" : results.length })}>
+            <InfiniteLoader />
+          </div>
         ) : (
           !results.length && <p>No {type} found</p>
         )}
