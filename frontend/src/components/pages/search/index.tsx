@@ -8,19 +8,16 @@ import { useNavigate } from "react-router-dom";
 
 export function Search({ className }: { className?: string }) {
   const [searchQuery, setSearchQuery] = useState<string | undefined>(undefined);
+  const newSearchQuery = new URLSearchParams(window.location.search).get("q");
   const [results, setResults] = useState<APIResponseTypes.SearchResult[]>([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [type, setType] = useState<"users" | "posts">("users");
   useEffect(() => {
-    setLoading(true);
     const timeout = setTimeout(() => {
-      if (
-        new URLSearchParams(window.location.search).get("q") !== searchQuery
-      ) {
-        const searchQuery = new URLSearchParams(window.location.search).get(
-          "q"
-        );
-        setSearchQuery(searchQuery!);
+      if (newSearchQuery !== searchQuery) {
+        setLoading(true);
+        setSearchQuery(newSearchQuery!);
         (async function () {
           try {
             await api.search(searchQuery!).then((searchResults) => {
@@ -32,38 +29,62 @@ export function Search({ className }: { className?: string }) {
         })();
       }
     }, 1000);
-    return () => clearTimeout(timeout);
-  }, [new URLSearchParams(window.location.search).get("q")]);
+    return () => {
+      clearTimeout(timeout);
+      setLoading(false);
+    };
+  }, [newSearchQuery]);
   return (
     <div className={cn("h-full w-full box-border", className)}>
-      <SearchBar full className="sm:hidden mb-4 w-full" />
-      {loading ? (
-        <InfiniteLoader />
-      ) : results?.length ? (
-        <div>
-          {results.map((result) => (
-            <div
-              onClick={() => navigate(`/profile/${result.username}`)}
-              className="p-3 hover:bg-primary/10 border-b border-borderColor cursor-pointer flex gap-3 rounded-lg"
-              key={result.id}
-            >
-              <img
-                src={result.pfp || "/placeholder-user.jpg"}
-                alt=""
-                className="w-10 h-10 rounded-full border border-borderColor"
-              />
-              <div>
-                <span className="font-bold text-accent group-hover:underline">
-                  {result.name}
-                </span>
-                <p className="text-sm text-gray-400">@{result.username}</p>
-              </div>
-            </div>
-          ))}
+      <div className="flex justify-center w-full">
+        <SearchBar full className="sm:hidden mb-4" />
+      </div>
+      <div className="w-full flex border-b">
+        <div
+          onClick={() => setType("users")}
+          className={cn(
+            "w-full text-center p-2 cursor-pointer hover:bg-primary/10 rounded-t",
+            { "border-b-2": type === "users" }
+          )}
+        >
+          User
         </div>
-      ) : (
-        <div>No results for '{searchQuery ?? "()"}'</div>
-      )}
+        <div
+          onClick={() => setType("posts")}
+          className={cn(
+            "w-full text-center p-2 cursor-pointer hover:bg-primary/10 rounded-t",
+            { "border-b-2": type === "posts" }
+          )}
+        >
+          Post
+        </div>
+      </div>
+      <div className="p-4">
+        {results.map((result) => (
+          <div
+            onClick={() => navigate(`/profile/${result.username}`)}
+            className="p-3 hover:bg-primary/10 border-b border-borderColor cursor-pointer flex gap-3 rounded-lg"
+            key={result.id}
+          >
+            <img
+              src={result.pfp || "/placeholder-user.jpg"}
+              alt=""
+              className="w-10 h-10 rounded-full border border-borderColor"
+            />
+            <div>
+              <span className="font-bold text-accent group-hover:underline">
+                {result.name}
+              </span>
+              <p className="text-sm text-gray-400">@{result.username}</p>
+            </div>
+          </div>
+        ))}
+        {loading ? (
+          <InfiniteLoader />
+        ) : (
+          !results.length && <p>No {type} found</p>
+        )}
+      </div>
     </div>
   );
 }
