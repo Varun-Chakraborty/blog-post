@@ -1,15 +1,16 @@
 import express from 'express';
-import { AccessJWTResponse } from '..';
+import { User } from '..';
 
 export interface Req extends express.Request {
   body: {
-    email: string;
-    name: string;
-    password: string;
-    username: string;
+    email?: string;
+    name?: string;
+    password?: string;
+    username?: string;
   };
   query: {
     q?: string;
+    searchFor?: string;
     username?: string;
   };
   params: {
@@ -19,7 +20,7 @@ export interface Req extends express.Request {
     accessToken?: string;
     refreshToken?: string;
   };
-  user?: AccessJWTResponse;
+  user?: User;
 }
 
 export interface Res extends express.Response {}

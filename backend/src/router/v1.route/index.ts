@@ -5,14 +5,14 @@ const router = Router();
 import authRouter from './auth.route';
 import userRouter from './user.route';
 import { search, userController } from '@/controllers';
-import { authenticate, isAuthenticated, isNoAuth } from '@/middlewares/auth';
+import { authenticate, isAuthenticated, isNotAuthenticated } from '@/middlewares/auth';
 
 router.use(authenticate);
 
 router.use('/auth', authRouter);
 router.get(
   '/isUsernameAvailable',
-  isNoAuth,
+  isNotAuthenticated,
   userController.isUsernameAvailable
 );
 router.use('/user', isAuthenticated, userRouter);

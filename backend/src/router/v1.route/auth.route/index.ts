@@ -3,11 +3,11 @@ import { Router } from 'express';
 const router = Router();
 
 import { authController } from '@/controllers';
-import { isAuthenticated, isNoAuth } from '@/middlewares/auth';
+import { isAuthenticated, isNotAuthenticated } from '@/middlewares/auth';
 
 router.post('/signout', isAuthenticated, authController.signout);
 
-router.use(isNoAuth);
+router.use(isNotAuthenticated);
 
 router.post('/signin', authController.signin);
 router.post('/signup', authController.signup);

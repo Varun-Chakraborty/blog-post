@@ -1,32 +1,50 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 
-async function hashPassword(password: string) {
+export async function hashPassword(password: string) {
   return await bcrypt.hash(password, 10);
+}
+
+export async function verifyPassword(password: string, hashedPassword: string) {
+  return await bcrypt.compare(password, hashedPassword);
+}
+
+export async function hashDuringCreate({
+  args,
+  query
+}: {
+  args: { data: { password: string } };
+  query: any;
+}) {
+  const { data } = args;
+  data.password = await hashPassword(data.password);
+  return query(args);
+}
+
+export async function hashDuringUpdate({
+  args,
+  query
+}: {
+  args: Prisma.UserUpdateArgs;
+  query: (args: Prisma.UserUpdateArgs) => Prisma.PrismaPromise<any>;
+}) {
+  const { data } = args;
+  if (typeof data.password === 'string' && data.password) {
+    data.password = await hashPassword(data.password);
+  }
+  return query(args);
 }
 
 const prismaExt = Prisma.defineExtension({
   model: {
     user: {
-      async verifyPassword(password: string, hashedPassword: string) {
-        return await bcrypt.compare(password, hashedPassword);
-      }
+      verifyPassword
     }
   },
   query: {
     user: {
-      async create({ args, query }) {
-        const { data } = args;
-        data.password = await hashPassword(data.password);
-        return query(args);
-      },
-      async update({ args, query }) {
-        const { data } = args;
-        if (data.password) {
-          data.password = await hashPassword(data.password as string);
-        }
-        return query(args);
-      }
+      create: hashDuringCreate,
+      update: hashDuringUpdate
     }
   }
 });

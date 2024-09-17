@@ -1,15 +1,13 @@
 import { prisma } from '@/db';
 import { ExpressTypes } from '@/types';
-import { Req } from '@/types/express';
 import { ApiResponse } from '@/utils/ApiResponse';
 import { wrapperFx } from '@/utils/wrapperFx';
 
 export const signout = wrapperFx(async function (
-  req: Req,
+  req: ExpressTypes.Req,
   res: ExpressTypes.Res
 ) {
   const user = req.user!;
-
   const accessToken = req.cookies.accessToken!;
 
   res.clearCookie('accessToken');
@@ -19,6 +17,7 @@ export const signout = wrapperFx(async function (
     where: { id: user.id },
     data: { refreshToken: null }
   });
+
   // TODO: need to implement redis for this
   // await prisma.dumpedToken.create({
   //   data: {

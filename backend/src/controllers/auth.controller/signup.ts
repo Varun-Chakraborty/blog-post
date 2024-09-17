@@ -11,14 +11,15 @@ export const signup = wrapperFx(async function (
   res: ExpressTypes.Res
 ) {
   let { username, name, email, password } = req.body;
-  username = username.trim().toLowerCase();
-  name = name.trim();
-  email = email.trim();
-  password = password.trim();
+  
+  username = username?.trim().toLowerCase();
+  name = name?.trim();
+  email = email?.trim();
+  password = password?.trim();
 
   if (!username || !name || !email || !password) {
     return new ApiResponse(
-      'Missing required fields, please provide username, email and password',
+      'Missing required fields, please provide username, name, email and password',
       undefined,
       400
     ).error(res);
@@ -27,7 +28,7 @@ export const signup = wrapperFx(async function (
   if (
     !z
       .string()
-      .regex(/[a-zA-Z0-9]+$/)
+      .regex(/^[a-zA-Z0-9]+$/)
       .safeParse(username).success
   ) {
     return new ApiResponse(
@@ -48,11 +49,12 @@ export const signup = wrapperFx(async function (
   }
 
   const user = await prisma.user.create({
-    data: { username, name, email, password }
+    data: { username, name, email, password },
+    omit: { password: true, refreshToken: true }
   });
 
   const { access, refresh } = generateTokens(
-    { ...user, password: undefined, refreshToken: undefined },
+    { ...user, password: undefined },
     'both'
   );
 

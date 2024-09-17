@@ -45,13 +45,10 @@ export function generateTokens(
     };
 }
 
-export function verifyTokens(
-  token: string,
-  type: TokenType
-): AccessJWTResponse | RefreshJWTResponse | null {
-  if (type === 'access') {
-    return verifyToken(token, accessSecret!) as AccessJWTResponse | null;
-  } else {
-    return verifyToken(token, refreshSecret!) as RefreshJWTResponse | null;
-  }
+export function verifyAccessTokens(token: string): AccessJWTResponse | null {
+  return verifyToken(token, accessSecret!) as AccessJWTResponse | null;
+}
+
+export function verifyRefreshTokens(token: string): RefreshJWTResponse | null {
+  return verifyToken(token, refreshSecret!) as RefreshJWTResponse | null;
 }

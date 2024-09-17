@@ -10,14 +10,26 @@ export const signin = wrapperFx(async function (
   res: ExpressTypes.Res
 ) {
   const { username, password } = req.body;
-  const user = await prisma.user.findUnique({ where: { username } });
+
+  if (!username || !password) {
+    return new ApiResponse(
+      'Missing required fields, please provide username and password',
+      undefined,
+      400
+    ).error(res);
+  };
+  
+  const user = await prisma.user.findUnique({
+    where: { username },
+    omit: { refreshToken: true }
+  });
 
   if (!user || !(await prisma.user.verifyPassword(password, user.password))) {
     return new ApiResponse('Invalid credentials', undefined, 401).error(res);
   }
 
   const { access, refresh } = generateTokens(
-    { ...user, password: undefined, refreshToken: undefined },
+    { ...user, password: undefined },
     'both'
   );
 

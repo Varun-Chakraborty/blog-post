@@ -7,6 +7,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const app = express();
+app.disable('x-powered-by');
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [];
 
