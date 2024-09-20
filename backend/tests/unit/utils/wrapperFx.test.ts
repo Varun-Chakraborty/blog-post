@@ -38,6 +38,6 @@ describe('wrapperFx', () => {
     expect(mockFx).toHaveBeenCalledWith(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(500); // Check if status 500 is set
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ message: 'Test error' })); // Check if json contains error message
+    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ message: 'Internal server error' })); // Check if json contains error message
   });
 });

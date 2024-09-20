@@ -30,11 +30,7 @@ export const refreshToken = wrapperFx(async function (
   if (!user || user.refreshToken !== refreshToken)
     return new ApiResponse('Invalid refresh token', undefined, 401).error(res);
 
-  const { access } = generateTokens(
-    { ...user, refreshToken: undefined },
-    'access'
-  );
-
+  const { access } = generateTokens(user, 'access');
 
   res = setCookie('accessToken', access!, res, {
     maxAge: Number(

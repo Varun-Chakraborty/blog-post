@@ -14,7 +14,7 @@ module.exports = {
   // Define which files to collect coverage from
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}', // Adjust according to the files you want to include in coverage
-    '!src/**/*.d.ts',    // Exclude type definition files
+    '!src/**/types/*.ts',    // Exclude type definition files
   ],
   // Define the output directory for coverage reports
   coverageDirectory: 'coverage',

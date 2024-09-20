@@ -1,20 +1,21 @@
 export * as ExpressTypes from './express';
 
-export interface User {
+export interface UserWithCredentials {
   id: string;
   name: string;
   username: string;
   isAdmin?: boolean;
   role: 'ADMIN' | 'USER';
   pfp?: string;
-}
-
-export interface UserWithMeta extends User {
   email: string;
   password: string;
-  iat: number;
-  exp: number;
+  refreshToken?: string;
 }
+
+export type User = Omit<
+  UserWithCredentials,
+  'email' | 'password' | 'refreshToken'
+>;
 
 export interface Post {
   id: string;
@@ -28,13 +29,13 @@ export interface PostWithMeta extends Post {
   updatedAt: string;
 }
 
-export type AccessJWTResponse = User & {
+export interface AccessJWTResponse extends AccessJWTPayload {
   iat: number;
   exp: number;
-};
-export type RefreshJWTResponse = { id: string; iat: number; exp: number };
-export type AccessJWTPayload = User & {
-  password?: undefined;
-  refreshToken?: undefined;
-};
-export type RefreshJWTPayload = { id: string };
+}
+export interface RefreshJWTResponse extends RefreshJWTPayload {
+  iat: number;
+  exp: number;
+}
+export type AccessJWTPayload = User;
+export type RefreshJWTPayload = Pick<User, 'id'>;

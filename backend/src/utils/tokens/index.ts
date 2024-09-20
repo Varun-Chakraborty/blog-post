@@ -6,42 +6,32 @@ const refreshExpiration = process.env.JWT_REFRESH_EXPIRATION || '7d';
 type TokenType = 'access' | 'refresh';
 
 import {
-  AccessJWTPayload,
   AccessJWTResponse,
-  RefreshJWTResponse
+  RefreshJWTResponse,
+  User,
+  UserWithCredentials,
 } from '@/types';
-import { sign, verify } from 'jsonwebtoken';
-
-function generateToken(data: any, secret: string, expiresIn: string) {
-  return sign(data, secret, { expiresIn }) as string;
-}
-
-function verifyToken(token: string, secret: string) {
-  try {
-    return verify(token, secret) as AccessJWTResponse | RefreshJWTResponse;
-  } catch (error) {
-    return null;
-  }
-}
+import { generateToken, sanitizePayload, verifyToken } from './tokenUtils';
 
 export function generateTokens(
-  data: AccessJWTPayload,
+  data: UserWithCredentials | User,
   type: TokenType | 'both'
 ) {
+  const sanitizedData = sanitizePayload(data);
   if (type === 'both')
     return {
-      access: generateToken(data, accessSecret!, accessExpiration),
+      access: generateToken(sanitizedData, accessSecret!, accessExpiration),
       refresh: generateToken(
-        { id: data.id },
+        { id: sanitizedData.id },
         refreshSecret!,
         refreshExpiration!
       )
     };
   else if (type === 'access')
-    return { access: generateToken(data, accessSecret!, accessExpiration) };
+    return { access: generateToken(sanitizedData, accessSecret!, accessExpiration) };
   else
     return {
-      refresh: generateToken({ id: data.id }, refreshSecret!, refreshExpiration)
+      refresh: generateToken({ id: sanitizedData.id }, refreshSecret!, refreshExpiration)
     };
 }
 

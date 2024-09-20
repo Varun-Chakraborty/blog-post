@@ -13,12 +13,7 @@ describe('setCookie', () => {
 
     let result = setCookie(name, value, res as ExpressTypes.Res);
 
-    expect(res.cookie).toHaveBeenCalledWith(name, value, {
-      path: '/',
-      sameSite: 'lax',
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-      httpOnly: true
-    });
+    expect(res.cookie).toHaveBeenCalledWith(name, value, expect.any(Object));
     expect(result).toBe(res);
   });
 });

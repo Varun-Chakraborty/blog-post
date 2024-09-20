@@ -283,4 +283,5 @@ To run the Blog Post backend locally, follow these steps:
 - **401 Unauthorized**: Authentication failed or user does not have permissions for the desired action.
 - **403 Forbidden**: The user does not have permission to access the requested resource.
 - **404 Not Found**: The requested resource could not be found.
+- **409 Conflict**: There already exists a resource with the same identifier.
 - **500 Internal Server Error**: An error occurred on the server.

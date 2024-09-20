@@ -18,9 +18,14 @@ export class ApiResponse {
   }
 
   error(res: Res) {
-    const error = new Error(this.message);
     return res
       .status(this.status || 500)
-      .json({ success: false, message: this.message, stack: error.stack });
+      .json({
+        success: false,
+        message:
+          !this.status || this.status === 500
+            ? 'Internal server error'
+            : this.message
+      });
   }
 }

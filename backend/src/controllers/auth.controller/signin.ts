@@ -17,8 +17,8 @@ export const signin = wrapperFx(async function (
       undefined,
       400
     ).error(res);
-  };
-  
+  }
+
   const user = await prisma.user.findUnique({
     where: { username },
     omit: { refreshToken: true }
@@ -28,10 +28,7 @@ export const signin = wrapperFx(async function (
     return new ApiResponse('Invalid credentials', undefined, 401).error(res);
   }
 
-  const { access, refresh } = generateTokens(
-    { ...user, password: undefined },
-    'both'
-  );
+  const { access, refresh } = generateTokens(user, 'both');
 
   res = setCookie('accessToken', access!, res, {
     maxAge: Number(

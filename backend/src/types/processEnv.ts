@@ -8,5 +8,6 @@ declare namespace NodeJS {
     ACCESS_COOKIE_MAX_AGE?: string;
     REFRESH_COOKIE_MAX_AGE?: string;
     ALLOWED_ORIGINS?: string;
+    NODE_ENV: 'production' | 'development';
   }
 }

@@ -11,7 +11,7 @@ export const signup = wrapperFx(async function (
   res: ExpressTypes.Res
 ) {
   let { username, name, email, password } = req.body;
-  
+
   username = username?.trim().toLowerCase();
   name = name?.trim();
   email = email?.trim();
@@ -53,10 +53,7 @@ export const signup = wrapperFx(async function (
     omit: { password: true, refreshToken: true }
   });
 
-  const { access, refresh } = generateTokens(
-    { ...user, password: undefined },
-    'both'
-  );
+  const { access, refresh } = generateTokens(user, 'both');
 
   res = setCookie('accessToken', access!, res, {
     maxAge: Number(
