@@ -21,18 +21,17 @@ class Api {
             title: "Network error",
             description: "Please check your internet connection.",
           });
-          return Promise.reject(error);
-        }
-        else if (error.response?.status === 401) {
+          return Promise.reject(new Error("Network Error"));
+        } else if (error.response?.status === 401) {
           if (error.request?.responseURL?.includes("/auth")) {
-            return Promise.reject(error);
+            return Promise.reject(new Error("Session Expired"));
           } else {
             const currentRequest = error.config!;
             await this.refreshToken();
             return await this.api.request(currentRequest);
           }
         }
-        return Promise.reject(error);
+        return Promise.reject(error as Error);
       }
     );
   }
@@ -100,7 +99,7 @@ class Api {
     const response = await this.api.get<APIResponseTypes.SearchResponse>(
       `/search?q=${query}`
     );
-    return response.data.data?.searchResult;
+    return response.data.data!.searchResult;
   }
 }
 

@@ -9,7 +9,7 @@ import {
   AccessJWTResponse,
   RefreshJWTResponse,
   User,
-  UserWithCredentials,
+  UserWithCredentials
 } from '@/types';
 import { generateToken, sanitizePayload, verifyToken } from './tokenUtils';
 
@@ -28,10 +28,16 @@ export function generateTokens(
       )
     };
   else if (type === 'access')
-    return { access: generateToken(sanitizedData, accessSecret!, accessExpiration) };
+    return {
+      access: generateToken(sanitizedData, accessSecret!, accessExpiration)
+    };
   else
     return {
-      refresh: generateToken({ id: sanitizedData.id }, refreshSecret!, refreshExpiration)
+      refresh: generateToken(
+        { id: sanitizedData.id },
+        refreshSecret!,
+        refreshExpiration
+      )
     };
 }
 

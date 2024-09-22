@@ -1,15 +1,7 @@
 import { useAppSelector } from "@/hooks/redux";
 import { cn } from "@/lib/utils";
-import { Profile as ProfileType } from "@/types";
 import { useEffect, useRef, useState } from "react";
-import { IoChevronDown, IoChevronUp } from "react-icons/io5";
-
-interface ProfileProps {
-  profile: ProfileType;
-  current?: boolean;
-  onClick: () => void;
-  listOpen?: boolean;
-}
+import { ProfileCard } from "./ProfileCard";
 
 export function Profile() {
   const {profiles, currentProfile} = useAppSelector((state) => state.profile);
@@ -57,40 +49,6 @@ export function Profile() {
             />
           ))}
       </div>
-    </div>
-  );
-}
-
-function ProfileCard({
-  profile,
-  current = false,
-  onClick,
-  listOpen,
-}: ProfileProps) {
-  return (
-    <div
-      onClick={onClick}
-      className="flex items-center justify-between bg-cardBackgroundColor cursor-pointer hover:bg-background p-3"
-    >
-      <div className="flex items-center gap-2">
-        <img
-          src={profile.pfp ?? "/placeholder-user.jpg"}
-          alt=""
-          className="w-10 h-10 rounded-full border border-borderColor"
-        />
-        <div className="flex flex-col justify-center">
-          <span className="font-semibold uppercase text-sm">{profile.name}</span>
-          <span className="text-secondaryText text-xs">
-            @{profile.username}
-          </span>
-        </div>
-      </div>
-      {current &&
-        (listOpen ? (
-          <IoChevronUp className="w-4 h-4" />
-        ) : (
-          <IoChevronDown className="w-4 h-4" />
-        ))}
     </div>
   );
 }

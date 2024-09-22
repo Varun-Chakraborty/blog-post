@@ -8,7 +8,7 @@ const themes = {
   system: { icon: CiDesktop, name: "System" },
 };
 
-export function Theme({ className }: { className?: string }) {
+export function Theme({ className }: Readonly<{ className?: string }>) {
   const [theme, setTheme] = useState<"dark" | "light" | "system">("light");
   const [loadingTheme, setLoadingTheme] = useState(true);
 
@@ -45,9 +45,11 @@ export function Theme({ className }: { className?: string }) {
   return (
     <button
       onClick={() =>
-        setTheme(
-          theme === "dark" ? "system" : theme === "system" ? "light" : "dark"
-        )
+        setTheme((theme)=>{
+          if (theme === "light") return "dark"
+          else if (theme === "dark") return "system"
+          else return "light"
+        })
       }
       className={cn(
         "cursor-pointer p-3 rounded-lg flex items-center gap-3 hover:bg-primary/15 dark:hover:bg-primary/30 w-full",

@@ -5,13 +5,12 @@ import { useAppDispatch } from "@/hooks/redux";
 import { AxiosError } from "axios";
 import { cn } from "@/lib/utils";
 
-export function Logout({
-  setMenuOpen,
-  className,
-}: {
+interface Props {
   setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
   className?: string;
-}) {
+}
+
+export function Logout({ setMenuOpen, className }: Readonly<Props>) {
   const { toast } = useToast();
   const dispatch = useAppDispatch();
   return (

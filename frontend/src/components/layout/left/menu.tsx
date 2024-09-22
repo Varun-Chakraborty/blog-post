@@ -12,18 +12,21 @@ import { checkIfCurrentIsGuestProfile } from "@/hooks/checkIfCurrentIsGuestProfi
 
 const options = [
   {
+    id: 1,
     inActiveIcon: HiOutlineHome,
     activeIcon: HiHome,
     title: "Home",
     route: "/",
   },
   {
+    id: 2,
     inActiveIcon: MdOutlineSpaceDashboard,
     activeIcon: MdSpaceDashboard,
     title: "Dashboard",
     route: "/dashboard",
   },
   {
+    id: 3,
     inActiveIcon: IoCreateOutline,
     activeIcon: IoCreate,
     title: "Create Post",
@@ -31,6 +34,7 @@ const options = [
     isProtected: true,
   },
   {
+    id: 4,
     inActiveIcon: HiOutlineUser,
     activeIcon: HiUser,
     title: "Profile",
@@ -38,6 +42,7 @@ const options = [
     isProtected: true,
   },
   {
+    id: 5,
     inActiveIcon: IoSettingsOutline,
     activeIcon: IoSettings,
     title: "Settings",
@@ -45,13 +50,12 @@ const options = [
   },
 ];
 
-export function Menu({
-  setMenuOpen,
-  className,
-}: {
+interface Props {
   setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
   className?: string;
-}) {
+}
+
+export function Menu({ setMenuOpen, className }: Readonly<Props>) {
   const isGuestProfile = checkIfCurrentIsGuestProfile();
   return (
     <div
@@ -62,9 +66,9 @@ export function Menu({
     >
       {options
         .filter((option) => !option.isProtected || !isGuestProfile)
-        .map((option, i) => (
+        .map((option) => (
           <NavLink
-            key={i}
+            key={option.id}
             to={option.route}
             onClick={() => setMenuOpen(false)}
             className={cn(

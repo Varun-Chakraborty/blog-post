@@ -8,8 +8,9 @@ import { AxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Profile as ProfileType } from "@/types";
+import { UserProfile } from "./userProfile";
 
-export function Profile({ className }: { className?: string }) {
+export function Profile({ className }: Readonly<{ className?: string }>) {
   const [profile, setProfile] = useState<ProfileType | undefined>(undefined);
   const { toast } = useToast();
   const userNameRequested = new URLSearchParams(window.location.search).get(
@@ -56,15 +57,16 @@ export function Profile({ className }: { className?: string }) {
       })
       .finally(() => setLoading(false));
   }, []);
+
+  const renderLoader = loading ? <InfiniteLoader /> : null;
+  const renderProfile = profile ? (
+    <UserProfile profile={profile} />
+  ) : (
+    <span>No profile found</span>
+  );
   return (
     <div className={cn("h-full w-full box-border", className)}>
-      {loading ? (
-        <InfiniteLoader className="h-full w-full" />
-      ) : profile ? (
-        JSON.stringify(profile)
-      ) : (
-        <>No profile found</>
-      )}
+      {renderLoader ?? renderProfile}
     </div>
   );
 }

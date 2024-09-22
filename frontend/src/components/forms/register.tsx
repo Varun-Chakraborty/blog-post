@@ -17,7 +17,7 @@ import { toast } from "@/components/ui/use-toast";
 import { CiUser } from "react-icons/ci";
 import { MdEmail, MdPassword } from "react-icons/md";
 import { cn } from "@/lib/utils";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PasswordStrength } from "@/components/passwordStrength";
 import api from "@/api";
 import { CheckUsernameAvailability } from "@/components/checkUsernameAvailability";
@@ -26,8 +26,10 @@ import { useAppDispatch } from "@/hooks/redux";
 import { profileActions } from "@/redux/profile";
 import { useState } from "react";
 
-export function Register({ className }: { className?: string }) {
+export function Register({ className }: Readonly<{ className?: string }>) {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const [submitting, setSubmitting] = useState(false);
 
   const FormSchema = z.object({
@@ -76,6 +78,7 @@ export function Register({ className }: { className?: string }) {
         title: "Account created.",
         description: "We've created your account for you.",
       });
+      navigate("/");
     } catch (error) {
       if (error instanceof AxiosError && error.response?.status === 409) {
         toast({

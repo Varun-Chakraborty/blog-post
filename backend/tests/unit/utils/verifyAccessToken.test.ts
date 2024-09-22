@@ -1,15 +1,15 @@
-import { verifyAccessTokens } from '@/utils/tokens';
-import { verifyToken } from '@/utils/tokens/tokenUtils';
-
 jest.mock('@/utils/tokens/tokenUtils', () => ({
   verifyToken: jest.fn()
 }));
+
+import { verifyAccessTokens } from '@/utils/tokens';
+import { verifyToken } from '@/utils/tokens/tokenUtils';
 
 describe('verifyAccessTokens', () => {
   beforeEach(() => {
     (verifyToken as jest.Mock).mockImplementation((token: string) => {
       if (token === 'valid') return { id: '1' };
-      else return null
+      else return null;
     });
   });
 

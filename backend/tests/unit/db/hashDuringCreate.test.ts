@@ -5,7 +5,7 @@ describe('hashDuringCreate', () => {
     const query = jest.fn();
     const password = 'password';
     const isBcryptHash = (hash: string) =>
-      /^(\$2[aby]?\$[0-9]{2}\$[a-zA-Z0-9./]{53})$/.test(hash);
+      /^(\$2[aby]?\$\d{2}\$[a-zA-Z0-9./]{53})$/.test(hash);
 
     const args = {
       data: {

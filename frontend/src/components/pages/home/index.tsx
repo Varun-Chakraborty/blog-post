@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Cards } from "./cards";
 
-export function Home({ className }: { className?: string }) {
+export function Home({ className }: Readonly<{ className?: string }>) {
   return (
     <div
       className={cn(

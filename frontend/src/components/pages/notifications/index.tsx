@@ -21,7 +21,7 @@ const notifications = [
   },
 ];
 
-export function Notifications({ className }: { className?: string }) {
+export function Notifications({ className }: Readonly<{ className?: string }>) {
   return (
     <div className={cn("h-full w-full space-y-2", className)}>
       {notifications.map((notification) => (

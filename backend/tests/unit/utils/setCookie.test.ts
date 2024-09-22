@@ -3,7 +3,7 @@ import { setCookie } from '@/utils/setCookie';
 
 describe('setCookie', () => {
   let res: Partial<ExpressTypes.Res>;
-  
+
   it('should set a cookie and return the response', () => {
     res = {
       cookie: jest.fn()

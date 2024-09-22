@@ -14,7 +14,7 @@ describe('isAuthenticated', () => {
     };
     next = jest.fn();
   });
-  
+
   it('should return 403 if req.user is present', () => {
     req.user = {
       id: '1',
@@ -33,7 +33,7 @@ describe('isAuthenticated', () => {
       expect.objectContaining({
         message: 'Forbidden'
       })
-    )
+    );
   });
 
   it('should call next if req.user is not present', () => {

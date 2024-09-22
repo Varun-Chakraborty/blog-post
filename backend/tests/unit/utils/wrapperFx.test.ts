@@ -10,7 +10,7 @@ describe('wrapperFx', () => {
     req = {};
     res = {
       status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
+      json: jest.fn()
     };
     next = jest.fn();
   });
@@ -23,7 +23,7 @@ describe('wrapperFx', () => {
     await wrapped(req as ExpressTypes.Req, res as ExpressTypes.Res, next);
 
     expect(mockFx).toHaveBeenCalledWith(req, res, next);
-    
+
     expect(res.status).not.toHaveBeenCalledWith(500);
   });
 
@@ -38,6 +38,8 @@ describe('wrapperFx', () => {
     expect(mockFx).toHaveBeenCalledWith(req, res, next);
 
     expect(res.status).toHaveBeenCalledWith(500); // Check if status 500 is set
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({ message: 'Internal server error' })); // Check if json contains error message
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({ message: 'Internal server error' })
+    ); // Check if json contains error message
   });
 });

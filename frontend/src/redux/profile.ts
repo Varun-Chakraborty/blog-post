@@ -27,13 +27,13 @@ const profile = createSlice({
       state.currentProfile = action.payload;
     },
     addProfile(state, action) {
-      if (state.profiles.length === 1 && state.profiles[0].guest) {
-        state.profiles = [action.payload];
-        state.currentProfile = action.payload.id;
-      } else {
+      if (state.profiles.length > 1 || !state.profiles[0].guest) {
         if (!state.profiles.some((profile) => profile.id === action.payload.id)) {
           state.profiles = [...state.profiles, action.payload];
         }
+      } else {
+        state.profiles = [action.payload];
+        state.currentProfile = action.payload.id;
       }
     },
     updateProfile(state, action) {

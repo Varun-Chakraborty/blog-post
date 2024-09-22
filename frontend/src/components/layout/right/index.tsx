@@ -1,6 +1,5 @@
 import { CiBellOn, CiChat1 } from "react-icons/ci";
-import { useNavigate } from "react-router-dom";
-import { Outlet } from "react-router-dom";
+import { useNavigate, Outlet } from "react-router-dom";
 import { SearchBar } from "@/components/searchBar";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/logo";
@@ -15,13 +14,12 @@ const pages: Record<string, string> = {
   "/settings": "Settings",
 };
 
-export function RightPanel({
-  isMenuOpen,
-  setMenuOpen,
-}: {
+interface Props {
   isMenuOpen: boolean;
   setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}) {
+}
+
+export function RightPanel({ isMenuOpen, setMenuOpen }: Readonly<Props>) {
   const navigate = useNavigate();
   const currentPage = pages[window.location.pathname];
   return (
@@ -37,20 +35,22 @@ export function RightPanel({
         />
         <div className="flex sm:gap-4 gap-2 items-center">
           <SearchBar />
-          <div
+          <button
             className="p-2 border border-borderColor rounded cursor-pointer hover:bg-primary/10 relative"
             onClick={() => navigate("/notifications")}
+            type="button"
           >
             <CiBellOn className="aspect-square sm:h-6 w-5" />
             <div className="w-2 h-2 bg-accent rounded-full absolute -top-1 -right-1"></div>
-          </div>
-          <div
+          </button>
+          <button
             className="p-2 border border-borderColor rounded cursor-pointer hover:bg-primary/10 relative"
             onClick={() => navigate("/messages")}
+            type="button"
           >
             <CiChat1 className="aspect-square sm:h-6 w-5" />
             <div className="w-2 h-2 bg-accent rounded-full absolute -top-1 -right-1"></div>
-          </div>
+          </button>
         </div>
       </div>
 

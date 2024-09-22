@@ -5,70 +5,63 @@
 @tailwind utilities;
 @layer base {
   :root {
-    --background: 0 0% 96.1%; /* Corresponds to --background-color (245, 245, 245) */
-    --foreground: 220 7% 31%; /* Corresponds to --primary-color (44, 62, 80) */
-    --card: 0 0% 100%; /* Corresponds to --card-background-color (255, 255, 255) */
-    --card-foreground: 220 7% 31%; /* Same as --foreground */
-    --popover: 0 0% 100%; /* Same as --card */
-    --popover-foreground: 220 7% 31%; /* Same as --foreground */
-    --primary: 220 7% 31%; /* Corresponds to --primary-color (44, 62, 80) */
-    --primary-foreground: 0 0% 100%; /* White for contrast */
-    --secondary: 0 0% 87.8%; /* Corresponds to --secondary-color (33, 33, 33) */
-    --secondary-foreground: 0 0% 100%; /* White for contrast */
-    --muted: 0 0% 87.8%; /* Matches --secondary */
-    --muted-foreground: 0 0% 33.3%; /* Corresponds to --secondary-text-color (85, 85, 85) */
-    --accent: 182 100% 38%; /* Corresponds to --accent-color (0, 188, 212) */
-    --accent-foreground: 0 0% 100%; /* White for contrast */
-    --destructive: 0 84.2% 60.2%; /* Corresponds to --error-color (255, 69, 58) */
-    --destructive-foreground: 0 0% 100%; /* White for contrast */
-    --border: 0 0% 78.4%; /* Corresponds to --border-color (200, 200, 200) */
-    --input: 0 0% 78.4%; /* Matches --border */
-    --ring: 220 7% 31%; /* Matches --primary */
-    --chart-1: 12 76% 61%; /* Custom color for charts */
-    --chart-2: 173 58% 39%; /* Custom color for charts */
-    --chart-3: 197 37% 24%; /* Custom color for charts */
-    --chart-4: 43 74% 66%; /* Custom color for charts */
-    --chart-5: 27 87% 67%; /* Custom color for charts */
+    --background: 0 0% 96.1%;
+    --foreground: 220 7% 31%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 7% 31%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 7% 31%;
+    --primary: 220 7% 31%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 87.8%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 87.8%;
+    --muted-foreground: 0 0% 33.3%;
+    --accent: 182 100% 38%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 78.4%;
+    --input: 0 0% 78.4%;
+    --ring: 220 7% 31%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
     --radius: 0.5rem;
 
-    /* Added success and warning */
-    --success: 120 39% 49%; /* Corresponds to --success-color (76, 175, 80) */
-    --success-foreground: 0 0% 100%; /* White for contrast */
-    --warning: 36 100% 50%; /* Corresponds to --warning-color (255, 152, 0) */
-    --warning-foreground: 0 0% 100%; /* White for contrast */
+    --success: 120 39% 49%;
+    --success-foreground: 0 0% 100%;
+    --warning: 36 100% 50%;
+    --warning-foreground: 0 0% 100%;
   }
 
   .dark {
-    --background: 0 0% 13%; /* Corresponds to --background-color (33, 33, 33) in dark mode */
-    --foreground: 0 0% 92.2%; /* Corresponds to --primary-text-color (235, 235, 235) */
-    --card: 0 0% 17.3%; /* Corresponds to --card-background-color (44, 44, 44) */
-    --card-foreground: 0 0% 92.2%; /* Same as --foreground */
-    --popover: 0 0% 17.3%; /* Same as --card */
-    --popover-foreground: 0 0% 92.2%; /* Same as --foreground */
-    --primary: 0 0% 92.2%; /* Corresponds to --primary-text-color */
-    --primary-foreground: 220 7% 31%; /* Corresponds to --primary-color */
-    --secondary: 0 0% 87.8%; /* Corresponds to --secondary-color */
-    --secondary-foreground: 0 0% 92.2%; /* White for contrast */
-    --muted: 0 0% 87.8%; /* Same as --secondary */
-    --muted-foreground: 0 0% 39.2%; /* Corresponds to --secondary-text-color (150, 150, 150) */
-    --accent: 182 100% 33.7%; /* Corresponds to --accent-color (0, 153, 172) */
-    --accent-foreground: 0 0% 100%; /* White for contrast */
-    --destructive: 0 84.2% 60.2%; /* Same as light mode */
-    --destructive-foreground: 0 0% 92.2%; /* Same as --foreground */
-    --border: 0 0% 34.5%; /* Corresponds to --border-color (88, 88, 88) */
-    --input: 0 0% 34.5%; /* Matches --border */
-    --ring: 220 7% 31%; /* Matches --primary */
-    --chart-1: 220 70% 50%; /* Custom color for charts */
-    --chart-2: 160 60% 45%; /* Custom color for charts */
-    --chart-3: 30 80% 55%; /* Custom color for charts */
-    --chart-4: 280 65% 60%; /* Custom color for charts */
-    --chart-5: 340 75% 55%; /* Custom color for charts */
-
-    /* Dark mode success and warning */
-    --success: 120 39% 49%; /* Same as light mode */
-    --success-foreground: 0 0% 92.2%; /* White for contrast */
-    --warning: 36 100% 50%; /* Same as light mode */
-    --warning-foreground: 0 0% 92.2%; /* Same as --foreground */
+    --background: 0 0% 13%;
+    --foreground: 0 0% 92.2%;
+    --card: 0 0% 17.3%;
+    --card-foreground: 0 0% 92.2%;
+    --popover: 0 0% 17.3%;
+    --popover-foreground: 0 0% 92.2%;
+    --primary: 224 7% 31%;
+    --primary-foreground: 220 7% 31%;
+    --secondary: 0 0% 87.8%;
+    --secondary-foreground: 0 0% 92.2%;
+    --muted: 0 0% 87.8%;
+    --muted-foreground: 0 0% 39.2%;
+    --accent: 182 100% 33.7%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 92.2%;
+    --border: 0 0% 34.5%;
+    --input: 0 0% 34.5%;
+    --ring: 220 7% 31%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
   }
 }
 

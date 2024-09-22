@@ -24,9 +24,10 @@ export function FloatingMessage() {
       ref={currentComponent}
       className="fixed bottom-0 right-3 lg:w-[18%] sm:w-[30%] bg-background z-50 rounded-t-lg sm:block hidden select-none"
     >
-      <div
-        className="flex justify-between items-center cursor-pointer p-3 rounded-t-lg"
+      <button
+        className="flex justify-between items-center cursor-pointer p-3 rounded-t-lg w-full"
         onClick={() => setExpanded(!expanded)}
+        type="button"
       >
         <div className="flex items-center gap-2">
           <div className="h-2 aspect-square bg-accent rounded-full"></div>
@@ -37,15 +38,15 @@ export function FloatingMessage() {
             className={cn("w-4 h-4 transition", expanded && "rotate-180")}
           />
         </div>
-      </div>
+      </button>
       <div className={cn("transition-all", !expanded ? "h-0" : "h-fit")}>
         <div className="py-2 px-3 space-y-2">
-          {messages.map((message, i) => (
+          {messages.map((message) => (
             <div
-              key={i}
+              key={message.id}
               className="flex items-start gap-4 hover:bg-primary/10 p-2 rounded-lg cursor-pointer"
             >
-              <img src={message.profile} className="w-8 h-8 rounded-full" />
+              <img src={message.pfp} alt="" className="w-8 h-8 rounded-full" />
               <div className="">
                 <div className="font-semibold">{message.name}</div>
                 <div className="text-sm">{message.message}</div>
@@ -60,12 +61,14 @@ export function FloatingMessage() {
 
 const messages = [
   {
-    profile: "/placeholder-user.jpg",
+    id: 1,
+    pfp: "/placeholder-user.jpg",
     name: "John Doe",
     message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   },
   {
-    profile: "/placeholder-user.jpg",
+    id: 2,
+    pfp: "/placeholder-user.jpg",
     name: "John Doe",
     message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
   },

@@ -1,9 +1,3 @@
-import { signup } from '@/controllers/auth.controller';
-import { ExpressTypes } from '@/types';
-import { prisma } from '@/db';
-import { generateTokens } from '@/utils/tokens';
-import { setCookie } from '@/utils/setCookie';
-
 jest.mock('@/db', () => ({
   prisma: {
     user: {
@@ -22,6 +16,12 @@ jest.mock('@/utils/tokens', () => ({
 jest.mock('@/utils/setCookie', () => ({
   setCookie: jest.fn()
 }));
+
+import { signup } from '@/controllers/auth.controller';
+import { ExpressTypes } from '@/types';
+import { prisma } from '@/db';
+import { generateTokens } from '@/utils/tokens';
+import { setCookie } from '@/utils/setCookie';
 
 describe('signup', () => {
   let req: Partial<ExpressTypes.Req>;
@@ -170,7 +170,7 @@ describe('signup', () => {
     (setCookie as jest.Mock).mockImplementation((name, value, res) => {
       res.cookie(name, value);
       return res;
-    })
+    });
 
     await signup(
       req as ExpressTypes.Req,
@@ -181,7 +181,7 @@ describe('signup', () => {
     expect(res.status).toHaveBeenCalledWith(201);
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
-        message: 'Signup successful',
+        message: 'Signup successful'
       })
     );
   });

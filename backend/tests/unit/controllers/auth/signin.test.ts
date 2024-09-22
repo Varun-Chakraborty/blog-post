@@ -1,9 +1,3 @@
-import { signin } from '@/controllers/auth.controller';
-import { ExpressTypes } from '@/types';
-import { prisma } from '@/db';
-import { generateTokens } from '@/utils/tokens';
-import { setCookie } from '@/utils/setCookie';
-
 jest.mock('@/db', () => ({
   prisma: {
     user: {
@@ -21,6 +15,12 @@ jest.mock('@/utils/tokens', () => ({
 jest.mock('@/utils/setCookie', () => ({
   setCookie: jest.fn()
 }));
+
+import { signin } from '@/controllers/auth.controller';
+import { ExpressTypes } from '@/types';
+import { prisma } from '@/db';
+import { generateTokens } from '@/utils/tokens';
+import { setCookie } from '@/utils/setCookie';
 
 describe('signin', () => {
   let req: Partial<ExpressTypes.Req>;
@@ -121,10 +121,10 @@ describe('signin', () => {
     });
 
     (prisma.user.verifyPassword as jest.Mock).mockResolvedValueOnce(true);
-    
+
     (generateTokens as jest.Mock).mockResolvedValueOnce({
-        access: 'access',
-        refresh: 'refresh'
+      access: 'access',
+      refresh: 'refresh'
     });
 
     (prisma.user.update as jest.Mock).mockResolvedValueOnce({
@@ -138,7 +138,7 @@ describe('signin', () => {
     (setCookie as jest.Mock).mockImplementation((key, value, res) => {
       res.cookie(key, value, { maxAge: 1000 * 60 * 60 * 24 });
       return res;
-    })
+    });
 
     await signin(
       req as ExpressTypes.Req,

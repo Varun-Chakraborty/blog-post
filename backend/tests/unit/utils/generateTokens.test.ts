@@ -1,11 +1,12 @@
+jest.mock('@/utils/tokens/tokenUtils', () => ({
+  generateToken: jest.fn(),
+  sanitizePayload: jest.requireActual('@/utils/tokens/tokenUtils')
+    .sanitizePayload
+}));
+
 import { generateTokens } from '@/utils/tokens/index';
 import { generateToken } from '@/utils/tokens/tokenUtils';
 import { UserWithCredentials } from '@/types';
-
-jest.mock('@/utils/tokens/tokenUtils', () => ({
-  generateToken: jest.fn(),
-  sanitizePayload: jest.requireActual('@/utils/tokens/tokenUtils').sanitizePayload
-}));
 
 describe('generateTokens', () => {
   let payload: UserWithCredentials;

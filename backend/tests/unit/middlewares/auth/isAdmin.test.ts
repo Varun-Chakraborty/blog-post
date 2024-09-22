@@ -14,7 +14,7 @@ describe('isAdmin', () => {
     };
     next = jest.fn();
   });
-  
+
   it('should return 401 if req.user is not present', () => {
     isAdmin(
       req as ExpressTypes.Req,
@@ -27,7 +27,7 @@ describe('isAdmin', () => {
       expect.objectContaining({
         message: 'Unauthorized'
       })
-    )
+    );
   });
 
   it('should return 403 if req.user is not admin', () => {
@@ -49,7 +49,7 @@ describe('isAdmin', () => {
       expect.objectContaining({
         message: 'Forbidden'
       })
-    )
+    );
   });
 
   it('should call next if req.user is present, it means user is authenticated', () => {

@@ -5,8 +5,9 @@ function WelcomeCard() {
   const name =
     profiles.find((profile) => profile.id === currentProfile)?.name || "Guest";
   return (
+    /* TODO: match the colors to the theme */
     <div
-      className="bg-primary text-white h-fit w-full p-3 rounded-lg space-y-3"
+      className="bg-primary dark:bg-[#5F5F5F] text-white h-fit w-full p-3 rounded-lg space-y-3"
       style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}
     >
       <span className="text-2xl font-montserrat capitalize">Hello {name}</span>

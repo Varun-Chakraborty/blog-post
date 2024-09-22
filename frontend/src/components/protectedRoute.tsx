@@ -2,7 +2,7 @@ import { checkIfCurrentIsGuestProfile } from "@/hooks/checkIfCurrentIsGuestProfi
 import { Navigate } from "react-router-dom";
 import { useToast } from "./ui/use-toast";
 
-export function ProtectedRoute({ children }: { children: JSX.Element }) {
+export function ProtectedRoute({ children }: Readonly<{ children: JSX.Element }>) {
   const isItGuest = checkIfCurrentIsGuestProfile();
   const { toast } = useToast();
   if (isItGuest) {

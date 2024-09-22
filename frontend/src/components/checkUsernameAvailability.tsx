@@ -7,12 +7,7 @@ import { useEffect, useState } from "react";
 import { Tooltip } from "./tooltip";
 import { UseFormSetError, UseFormTrigger } from "react-hook-form";
 
-export function CheckUsernameAvailability({
-  trigger,
-  setError,
-  username,
-  className,
-}: {
+interface Props {
   trigger: UseFormTrigger<{
     name: string;
     username: string;
@@ -27,11 +22,37 @@ export function CheckUsernameAvailability({
   }>;
   username: string;
   className?: string;
-}) {
+}
+
+export function CheckUsernameAvailability({
+  trigger,
+  setError,
+  username,
+  className,
+}: Readonly<Props>) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isUsernameAvailable, setIsUsernameAvailable] = useState<
     boolean | undefined
   >(true);
+
+  const renderLoader = isLoading ? <InfiniteLoader /> : null;
+  const renderUsernameAvailable = isUsernameAvailable !== undefined ? (
+    <>
+      {isUsernameAvailable ? (
+        <MdCheck
+          className={cn("text-success", {
+            hidden: !isUsernameAvailable,
+          })}
+        />
+      ) : (
+        <RxCross1
+          className={cn("text-error", {
+            hidden: !isUsernameAvailable,
+          })}
+        />
+      )}
+    </>
+  ) : null;
 
   useEffect(() => {
     setIsLoading(true);
@@ -62,22 +83,7 @@ export function CheckUsernameAvailability({
       className="absolute -top-9 -right-7 text-nowrap"
     >
       <div className={cn("h-4 rounded-full pl-2", className)}>
-        {isLoading ? (
-          <InfiniteLoader />
-        ) : isUsernameAvailable !== undefined ? (
-          <>
-            <MdCheck
-              className={cn("text-success", {
-                hidden: !isUsernameAvailable,
-              })}
-            />
-            <RxCross1
-              className={cn("text-warning", {
-                hidden: isUsernameAvailable,
-              })}
-            />
-          </>
-        ) : null}
+        {renderLoader ?? renderUsernameAvailable}
       </div>
     </Tooltip>
   );

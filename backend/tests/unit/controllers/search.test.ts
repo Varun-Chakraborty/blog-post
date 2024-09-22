@@ -1,7 +1,3 @@
-import { search } from '@/controllers';
-import { prisma } from '@/db';
-import { ExpressTypes, User } from '@/types';
-
 jest.mock('@/db', () => ({
   prisma: {
     user: {
@@ -9,6 +5,10 @@ jest.mock('@/db', () => ({
     }
   }
 }));
+
+import { search } from '@/controllers';
+import { prisma } from '@/db';
+import { ExpressTypes, User } from '@/types';
 
 describe('search', () => {
   let req: Partial<ExpressTypes.Req>;

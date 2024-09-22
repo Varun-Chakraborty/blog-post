@@ -6,3 +6,5 @@ export const store = configureStore({
     profile,
   },
 });
+
+export type RootState = ReturnType<typeof store.getState>;

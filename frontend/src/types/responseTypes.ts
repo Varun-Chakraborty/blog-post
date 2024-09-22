@@ -1,4 +1,4 @@
-import { Profile } from ".";
+import { Profile, Post } from ".";
 
 interface APIResponse {
   status: number;
@@ -6,12 +6,15 @@ interface APIResponse {
   data?: any;
 }
 
-export type SearchResult = Profile;
+export interface SearchResult {
+  users: Profile[];
+  posts: Post[];
+}
 
 export interface SearchResponse extends APIResponse {
   data?: {
     query: string;
-    searchResult: { users: SearchResult[]; /* posts: SearchResult[] */ };
+    searchResult: SearchResult;
   };
 }
 

@@ -1,7 +1,3 @@
-import { isUsernameAvailable } from '@/controllers/user.controller';
-import { prisma } from '@/db';
-import { ExpressTypes } from '@/types';
-
 jest.mock('@/db', () => ({
   prisma: {
     user: {
@@ -9,6 +5,10 @@ jest.mock('@/db', () => ({
     }
   }
 }));
+
+import { isUsernameAvailable } from '@/controllers/user.controller';
+import { prisma } from '@/db';
+import { ExpressTypes } from '@/types';
 
 describe('isUsernameAvailable', () => {
   let req: Partial<ExpressTypes.Req>;

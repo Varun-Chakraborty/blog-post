@@ -1,7 +1,3 @@
-import { signout } from '@/controllers/auth.controller';
-import { prisma } from '@/db';
-import { ExpressTypes } from '@/types';
-
 jest.mock('@/db', () => ({
   prisma: {
     user: {
@@ -9,6 +5,10 @@ jest.mock('@/db', () => ({
     }
   }
 }));
+
+import { signout } from '@/controllers/auth.controller';
+import { prisma } from '@/db';
+import { ExpressTypes } from '@/types';
 
 describe('signout', () => {
   let req: Partial<ExpressTypes.Req>;

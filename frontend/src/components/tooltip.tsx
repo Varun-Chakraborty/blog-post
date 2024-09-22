@@ -5,15 +5,17 @@ import {
   TooltipTrigger,
 } from "./ui/tooltip";
 
+interface Props {
+  tooltipContent: string;
+  children: React.ReactNode;
+  className?: string;
+}
+
 export function Tooltip({
   tooltipContent,
   children,
-  className
-}: {
-  tooltipContent: string;
-  children: React.ReactNode;
-  className?: string
-}) {
+  className,
+}: Readonly<Props>) {
   return (
     <TooltipProvider>
       <TooltipShadcn>

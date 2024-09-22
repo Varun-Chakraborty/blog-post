@@ -1,8 +1,4 @@
-import {
-  AccessJWTPayload,
-  AccessJWTResponse,
-  RefreshJWTResponse,
-} from '@/types';
+import { User } from '@/types';
 import { sign, verify } from 'jsonwebtoken';
 
 export function generateToken(data: any, secret: string, expiresIn: string) {
@@ -11,19 +7,19 @@ export function generateToken(data: any, secret: string, expiresIn: string) {
 
 export function verifyToken(token: string, secret: string) {
   try {
-    return verify(token, secret) as AccessJWTResponse | RefreshJWTResponse;
+    return verify(token, secret);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (error) {
     return null;
   }
 }
 
-interface data extends AccessJWTPayload {
+interface Data extends User {
   password?: string;
   refreshToken?: string;
 }
 
-export function sanitizePayload(data: data): AccessJWTPayload {
+export function sanitizePayload(data: Data): User {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { password, refreshToken, ...rest } = data;
   return rest;

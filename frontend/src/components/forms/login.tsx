@@ -16,14 +16,18 @@ import { toast } from "@/components/ui/use-toast";
 import { CiUser } from "react-icons/ci";
 import { MdPassword } from "react-icons/md";
 import { cn } from "@/lib/utils";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AxiosError } from "axios";
 import { useAppDispatch } from "@/hooks/redux";
 import { profileActions } from "@/redux/profile";
 import api from "@/api";
+import { useState } from "react";
 
-export function Login({ className }: { className?: string }) {
+export function Login({ className }: Readonly<{ className?: string }>) {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const [submitting, setIsSubmitting] = useState(false);
 
   const FormSchema = z.object({
     username: z.string().min(1, {
@@ -43,6 +47,7 @@ export function Login({ className }: { className?: string }) {
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
+      setIsSubmitting(true);
       const response = await api.login(
         data.username.toString(),
         data.password.toString()
@@ -52,6 +57,7 @@ export function Login({ className }: { className?: string }) {
         title: "Login successful",
         description: "You are now logged in.",
       });
+      navigate("/");
     } catch (error) {
       if (error instanceof AxiosError && error.response?.status === 401) {
         toast({
@@ -67,6 +73,8 @@ export function Login({ className }: { className?: string }) {
         });
         console.error(error);
       }
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -137,7 +145,7 @@ export function Login({ className }: { className?: string }) {
             Register
           </Link>
         </div>
-        <Button className="w-full" type="submit">
+        <Button disabled={submitting} className="w-full" type="submit">
           Submit
         </Button>
       </form>

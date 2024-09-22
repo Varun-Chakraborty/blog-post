@@ -1,12 +1,11 @@
 import { cn } from "@/lib/utils";
-import { TitleAndUser } from "./titleAndProfile";
+import { TitleAndUser } from "./titleAndUser";
 import { Menu } from "./menu";
 import { Settings } from "./settings";
 import React from "react";
 
 interface LeftPanelProps {
   className?: string;
-  open?: boolean;
   isMenuOpen: boolean;
   setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -15,7 +14,7 @@ export function LeftPanel({
   className,
   isMenuOpen,
   setMenuOpen,
-}: LeftPanelProps): JSX.Element {
+}: Readonly<LeftPanelProps>): JSX.Element {
   return (
     <div
       className={cn(

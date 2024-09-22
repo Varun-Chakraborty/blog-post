@@ -29,7 +29,7 @@ export interface PostWithMeta extends Post {
   updatedAt: string;
 }
 
-export interface AccessJWTResponse extends AccessJWTPayload {
+export interface AccessJWTResponse extends User {
   iat: number;
   exp: number;
 }
@@ -37,5 +37,4 @@ export interface RefreshJWTResponse extends RefreshJWTPayload {
   iat: number;
   exp: number;
 }
-export type AccessJWTPayload = User;
 export type RefreshJWTPayload = Pick<User, 'id'>;

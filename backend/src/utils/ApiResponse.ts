@@ -13,19 +13,17 @@ export class ApiResponse {
 
   success(res: Res) {
     return res
-      .status(this.status || 200)
+      .status(this.status ?? 200)
       .json({ success: true, message: this.message, data: this.data });
   }
 
   error(res: Res) {
-    return res
-      .status(this.status || 500)
-      .json({
-        success: false,
-        message:
-          !this.status || this.status === 500
-            ? 'Internal server error'
-            : this.message
-      });
+    return res.status(this.status ?? 500).json({
+      success: false,
+      message:
+        !this.status || this.status === 500
+          ? 'Internal server error'
+          : this.message
+    });
   }
 }

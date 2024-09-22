@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 
-export function PasswordStrength({ password }: { password: string }) {
+export function PasswordStrength({ password }: Readonly<{ password: string }>) {
   const strength = calculateStrength(password);
   return (
     <div className="flex items-center justify-between gap-2 text-sm text-gray-600 dark:text-slate-400">
@@ -14,15 +14,13 @@ export function PasswordStrength({ password }: { password: string }) {
                 className={cn(
                   "w-6 h-2 rounded-full mr-1",
                   strength > i
-                    ? strength === 1
-                      ? "bg-red-600"
-                      : strength === 2
-                      ? "bg-orange-600"
-                      : strength === 3
-                      ? "bg-yellow-600"
-                      : strength === 4
-                      ? "bg-green-600"
-                      : "bg-blue-600"
+                    ? {
+                        "bg-red-600": strength === 1,
+                        "bg-orange-600": strength === 2,
+                        "bg-yellow-600": strength === 3,
+                        "bg-green-600": strength === 4,
+                        "bg-blue-600": strength === 5,
+                      }
                     : "bg-gray-300"
                 )}
               />
@@ -30,19 +28,7 @@ export function PasswordStrength({ password }: { password: string }) {
           })}
       </div>
       <div>
-        {strength}/5 (
-        {strength === 0
-          ? "very weak"
-          : strength === 1
-          ? "weak"
-          : strength === 2
-          ? "fair"
-          : strength === 3
-          ? "good"
-          : strength === 4
-          ? "strong"
-          : strength === 5 && "very strong"}
-        )
+        {strength}/5 ({strengthInWord(strength)})
       </div>
     </div>
   );
@@ -57,15 +43,15 @@ function calculateStrength(password: string) {
     return 1;
   } else if (password.length >= 8) strength++;
 
-  if (password.match(/[a-z]/)) {
+  if (/[a-z]/.exec(password)) {
     strength++;
   }
 
-  if (password.match(/[A-Z]/)) {
+  if (/[A-Z]/.exec(password)) {
     strength++;
   }
 
-  if (password.match(/[0-9]/)) {
+  if (/[0-9]/.exec(password)) {
     strength++;
   }
 
@@ -74,4 +60,20 @@ function calculateStrength(password: string) {
   }
 
   return strength;
+}
+
+function strengthInWord(strength: number) {
+  if (strength === 0) {
+    return "very weak";
+  } else if (strength === 1) {
+    return "weak";
+  } else if (strength === 2) {
+    return "fair";
+  } else if (strength === 3) {
+    return "good";
+  } else if (strength === 4) {
+    return "strong";
+  } else if (strength === 5) {
+    return "very strong";
+  }
 }

@@ -1,9 +1,9 @@
-import { verifyRefreshTokens } from '@/utils/tokens';
-import { verifyToken } from '@/utils/tokens/tokenUtils';
-
 jest.mock('@/utils/tokens/tokenUtils', () => ({
   verifyToken: jest.fn()
 }));
+
+import { verifyRefreshTokens } from '@/utils/tokens';
+import { verifyToken } from '@/utils/tokens/tokenUtils';
 
 describe('verifyRefreshTokens', () => {
   beforeEach(() => {

@@ -1,9 +1,3 @@
-import { refreshToken } from '@/controllers/auth.controller';
-import { ExpressTypes } from '@/types';
-import { prisma } from '@/db';
-import { generateTokens, verifyRefreshTokens } from '@/utils/tokens';
-import { setCookie } from '@/utils/setCookie';
-
 jest.mock('@/db', () => ({
   prisma: {
     user: {
@@ -23,6 +17,12 @@ jest.mock('@/utils/tokens', () => ({
 jest.mock('@/utils/setCookie', () => ({
   setCookie: jest.fn()
 }));
+
+import { refreshToken } from '@/controllers/auth.controller';
+import { ExpressTypes } from '@/types';
+import { prisma } from '@/db';
+import { generateTokens, verifyRefreshTokens } from '@/utils/tokens';
+import { setCookie } from '@/utils/setCookie';
 
 describe('refreshToken', () => {
   let req: Partial<ExpressTypes.Req>;

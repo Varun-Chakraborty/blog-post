@@ -3,8 +3,8 @@ import { useEffect, useRef } from "react";
 import { CiSearch } from "react-icons/ci";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 
-function triggerSearch(e: string, navigate: NavigateFunction) {
-  navigate(`/search?q=${e}`);
+function triggerSearch(query: string, navigate: NavigateFunction) {
+  navigate(`/search?q=${query}`);
 }
 
 function onReload(input: HTMLInputElement) {
@@ -14,23 +14,21 @@ function onReload(input: HTMLInputElement) {
   }
 }
 
-export function SearchBar({
-  className,
-  full = false,
-}: {
+interface Props {
   className?: string;
   full?: boolean;
-}) {
+}
+
+export function SearchBar({ className, full = false }: Readonly<Props>) {
   const input = useRef<HTMLInputElement | undefined>(undefined);
   const navigate = useNavigate();
   useEffect(() => {
     onReload(input.current!);
     window.addEventListener("popstate", () => onReload(input.current!));
-    return () =>
-    {
+    return () => {
       window.removeEventListener("popstate", () => onReload(input.current!));
       if (input.current) input.current.value = "";
-    }
+    };
   }, []);
   return (
     <form
