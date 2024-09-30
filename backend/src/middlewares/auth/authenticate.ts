@@ -1,3 +1,4 @@
+import { redis } from '@/db';
 import { ExpressTypes } from '@/types';
 import { verifyAccessTokens } from '@/utils/tokens';
 
@@ -6,18 +7,21 @@ export async function authenticate(
   _: ExpressTypes.Res,
   next: ExpressTypes.Next
 ) {
-  const token = req.headers.authorization || req.cookies.accessToken;
+  const token =
+    req.cookies.accessToken ?? req.headers.authorization?.split(' ')[1];
   if (!token) return next();
 
-  // TODO: need to implement redis for this
-  // if (await prisma.dumpedToken.findUnique({ where: { token } })) {
-  //   return next();
-  // }
+  const doesTokenExistOnRedis = await redis.redisClient.exists(
+    `token:${token}`
+  );
+  if (doesTokenExistOnRedis) return next();
 
   const user = verifyAccessTokens(token);
+
   if (!user) return next();
 
   req.user = user;
   req.user.isAdmin = user.role === 'ADMIN';
+  req.tokens = { accessToken: token };
   return next();
 }

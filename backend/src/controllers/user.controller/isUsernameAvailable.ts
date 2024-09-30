@@ -26,7 +26,9 @@ export const isUsernameAvailable = wrapperFx(async function (
     ).error(res);
   }
 
-  const user = await prisma.user.findUnique({ where: { username } });
+  const user = await prisma.prismaClient.user.findUnique({
+    where: { username }
+  });
   if (user)
     return new ApiResponse('Username already exists', undefined, 409).error(
       res

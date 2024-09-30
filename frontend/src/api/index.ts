@@ -24,7 +24,7 @@ class Api {
           return Promise.reject(new Error("Network Error"));
         } else if (error.response?.status === 401) {
           if (error.request?.responseURL?.includes("/auth")) {
-            return Promise.reject(new Error("Session Expired"));
+            return Promise.reject(error as Error);
           } else {
             const currentRequest = error.config!;
             await this.refreshToken();
@@ -76,10 +76,8 @@ class Api {
   }
 
   async getProfile(username: string | null) {
-    const response = username
-      ? await this.api.get(`/user/profile/${username}`)
-      : await this.api.get(`/user/profile`);
-    return response.data.data?.user || null;
+    const response = await this.api.get<APIResponseTypes.GetProfileResponse>(`/user/profile/${username ?? ''}`)
+    return response.data.data?.user ?? undefined;
   }
 
   async isUsernameAvailable(username: string) {

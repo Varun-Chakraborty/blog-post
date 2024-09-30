@@ -1,10 +1,16 @@
 jest.mock('@/db', () => ({
   prisma: {
-    user: {
-      findUnique: jest.fn(),
-      verifyPassword: jest.fn(),
-      update: jest.fn(),
-      create: jest.fn()
+    prismaClient: {
+      user: {
+        findUnique: jest.fn(),
+        update: jest.fn(),
+        create: jest.fn()
+      }
+    }
+  },
+  redis: {
+    redisClient: {
+      exists: jest.fn()
     }
   }
 }));
@@ -16,6 +22,10 @@ jest.mock('@/utils/tokens', () => ({
 
 jest.mock('@/utils/setCookie', () => ({
   setCookie: jest.fn()
+}));
+
+jest.mock('@/utils/verifyPassword', () => ({
+  verifyPassword: jest.fn()
 }));
 
 import { refreshToken } from '@/controllers/auth.controller';
@@ -40,7 +50,10 @@ describe('refreshToken', () => {
   });
 
   it('should return 401 if no refresh token', async () => {
-    req.cookies = {};
+    req = {
+      cookies: {},
+      headers: {}
+    };
 
     await refreshToken(
       req as ExpressTypes.Req,
@@ -57,7 +70,10 @@ describe('refreshToken', () => {
   });
 
   it('should return 401 if invalid refresh token', async () => {
-    req.cookies = { refreshToken: 'invalid' };
+    req = {
+      cookies: { refreshToken: 'invalid' },
+      headers: {}
+    };
     (verifyRefreshTokens as jest.Mock).mockReturnValueOnce(null);
     await refreshToken(
       req as ExpressTypes.Req,
@@ -76,7 +92,9 @@ describe('refreshToken', () => {
   it('should return 401 if the id resolved from the refresh token does not exist', async () => {
     req.cookies = { refreshToken: 'invalid' };
     (verifyRefreshTokens as jest.Mock).mockReturnValueOnce({ id: '1' });
-    (prisma.user.findUnique as jest.Mock).mockResolvedValueOnce(null);
+    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValueOnce(
+      null
+    );
     await refreshToken(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
@@ -94,7 +112,7 @@ describe('refreshToken', () => {
   it('should return 401 if the id resolved from the refresh token does exist but the refresh token does not match', async () => {
     req.cookies = { refreshToken: 'invalid' };
     (verifyRefreshTokens as jest.Mock).mockReturnValueOnce({ id: '1' });
-    (prisma.user.findUnique as jest.Mock).mockResolvedValueOnce({
+    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValueOnce({
       id: '1',
       refreshToken: 'valid'
     });
@@ -115,7 +133,7 @@ describe('refreshToken', () => {
   it('should return 200 if refresh token is valid', async () => {
     req.cookies = { refreshToken: 'valid' };
     (verifyRefreshTokens as jest.Mock).mockReturnValue({ id: '1' });
-    (prisma.user.findUnique as jest.Mock).mockResolvedValue({
+    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue({
       id: '1',
       refreshToken: 'valid'
     });

@@ -1,4 +1,4 @@
-import { hashDuringCreate } from '@/db';
+import { prisma } from '@/db';
 
 describe('hashDuringCreate', () => {
   it('should return query with hashed password', async () => {
@@ -13,7 +13,7 @@ describe('hashDuringCreate', () => {
       }
     };
 
-    await hashDuringCreate({ args, query });
+    await prisma.hashDuringCreate({ args, query });
 
     expect(query).toHaveBeenCalledWith({
       data: {

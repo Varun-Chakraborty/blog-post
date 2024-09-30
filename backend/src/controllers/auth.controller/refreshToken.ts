@@ -1,4 +1,4 @@
-import { prisma } from '@/db';
+import { prisma, redis } from '@/db';
 import { ExpressTypes } from '@/types';
 import { ApiResponse } from '@/utils/ApiResponse';
 import { setCookie } from '@/utils/setCookie';
@@ -9,20 +9,23 @@ export const refreshToken = wrapperFx(async function (
   req: ExpressTypes.Req,
   res: ExpressTypes.Res
 ) {
-  const { refreshToken } = req.cookies;
+  const refreshToken =
+    req.cookies.refreshToken ?? req.headers.authorization?.split(' ')[1];
 
   if (!refreshToken)
     return new ApiResponse('No refresh token found', undefined, 401).error(res);
 
-  const verificationResponse = verifyRefreshTokens(refreshToken);
-
-  if (!verificationResponse) {
+  const doesExists = await redis.redisClient.exists(refreshToken);
+  if (doesExists)
     return new ApiResponse('Invalid refresh token', undefined, 401).error(res);
-  }
+
+  const verificationResponse = verifyRefreshTokens(refreshToken);
+  if (!verificationResponse)
+    return new ApiResponse('Invalid refresh token', undefined, 401).error(res);
 
   const { id } = verificationResponse;
 
-  const user = await prisma.user.findUnique({
+  const user = await prisma.prismaClient.user.findUnique({
     where: { id },
     omit: { password: true }
   });

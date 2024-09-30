@@ -1,10 +1,12 @@
 jest.mock('@/db', () => ({
   prisma: {
-    user: {
-      findUnique: jest.fn(),
-      verifyPassword: jest.fn(),
-      update: jest.fn(),
-      create: jest.fn()
+    prismaClient: {
+      user: {
+        findUnique: jest.fn(),
+        verifyPassword: jest.fn(),
+        update: jest.fn(),
+        create: jest.fn()
+      }
     }
   }
 }));
@@ -86,7 +88,7 @@ describe('signup', () => {
       password: 'password'
     };
 
-    (prisma.user.findUnique as jest.Mock).mockResolvedValue({
+    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue({
       id: '1',
       username: 'existinguser',
       name: 'Test User',
@@ -115,9 +117,11 @@ describe('signup', () => {
       password: 'password'
     };
 
-    (prisma.user.findUnique as jest.Mock).mockResolvedValueOnce(null);
+    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValueOnce(
+      null
+    );
 
-    (prisma.user.findUnique as jest.Mock).mockResolvedValue({
+    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue({
       id: '1',
       username: 'existinguser',
       name: 'Test User',
@@ -146,16 +150,16 @@ describe('signup', () => {
       password: 'password'
     };
 
-    (prisma.user.findUnique as jest.Mock).mockResolvedValue(null);
+    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue(null);
 
-    (prisma.user.create as jest.Mock).mockResolvedValue({
+    (prisma.prismaClient.user.create as jest.Mock).mockResolvedValue({
       id: '1',
       username: 'newuser',
       name: 'Test User',
       email: 'rjQ5H@example.com'
     });
 
-    (prisma.user.update as jest.Mock).mockResolvedValue({
+    (prisma.prismaClient.user.update as jest.Mock).mockResolvedValue({
       id: '1',
       username: 'newuser',
       name: 'Test User',

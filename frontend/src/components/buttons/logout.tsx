@@ -1,9 +1,9 @@
-import api from "@/api";
-import { profileActions } from "@/redux/profile";
-import { useToast } from "../ui/use-toast";
-import { useAppDispatch } from "@/hooks/redux";
-import { AxiosError } from "axios";
-import { cn } from "@/lib/utils";
+import api from '@/api';
+import { profileActions } from '@/redux/profile';
+import { useToast } from '../ui/use-toast';
+import { useAppDispatch } from '@/hooks/redux';
+import { AxiosError } from 'axios';
+import { cn } from '@/lib/utils';
 
 interface Props {
   setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -20,23 +20,22 @@ export function Logout({ setMenuOpen, className }: Readonly<Props>) {
           await api.logout();
           dispatch(profileActions.removeProfile());
           toast({
-            title: "Success",
-            description: "You have been logged out",
+            title: 'Success',
+            description: 'You have been logged out'
           });
         } catch (error) {
           if (error instanceof AxiosError && error.response?.status === 401) {
-            console.log("user is already logged out, removing profile");
             dispatch(profileActions.removeProfile());
             toast({
-              title: "Success",
-              description: "You have been logged out",
+              title: 'Success',
+              description: 'You have been logged out'
             });
             return;
           } else {
             toast({
-              title: "Error",
+              title: 'Error',
               description: (error as Error).message,
-              variant: "destructive",
+              variant: 'destructive'
             });
             console.error(error);
           }
@@ -45,7 +44,7 @@ export function Logout({ setMenuOpen, className }: Readonly<Props>) {
         }
       }}
       className={cn(
-        "bg-destructive hover:bg-destructive/80 text-destructive-foreground font-semibold py-2 px-4 rounded-lg shadow-lg transition duration-300 w-full",
+        'bg-destructive hover:bg-destructive/80 text-destructive-foreground font-semibold py-2 px-4 rounded-lg shadow-lg transition duration-300 w-full',
         className
       )}
     >

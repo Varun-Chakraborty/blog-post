@@ -4,7 +4,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import { FloatingMessage } from "./components/message";
-import { Layout } from "./components/layout";
+import { Layout } from "./layout";
 import { useProfile } from "./hooks/useProfile";
 
 import {
@@ -21,7 +21,7 @@ import {
   Login,
   Register,
   ForgotPassword,
-} from "./components/pages";
+} from "./pages";
 import { ProtectedRoute } from "./components/protectedRoute";
 
 export default function App() {

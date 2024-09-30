@@ -20,7 +20,7 @@ import { cn } from "@/lib/utils";
 import { Link, useNavigate } from "react-router-dom";
 import { PasswordStrength } from "@/components/passwordStrength";
 import api from "@/api";
-import { CheckUsernameAvailability } from "@/components/checkUsernameAvailability";
+import { IsUsernameAvailable } from "@/components/isUsernameAvailable";
 import { AxiosError } from "axios";
 import { useAppDispatch } from "@/hooks/redux";
 import { profileActions } from "@/redux/profile";
@@ -143,7 +143,7 @@ export function Register({ className }: Readonly<{ className?: string }>) {
                     className="rounded-l-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
                   />
                   <div className="absolute right-2 top-1/2 -translate-y-1/2">
-                    <CheckUsernameAvailability username={field.value} trigger={form.trigger} setError={form.setError} />
+                    <IsUsernameAvailable username={field.value} trigger={form.trigger} setError={form.setError} />
                   </div>
                 </div>
               </FormControl>

@@ -1,7 +1,27 @@
 jest.mock('@/db', () => ({
   prisma: {
-    user: {
-      findMany: jest.fn()
+    prismaClient: {
+      user: {
+        findMany: jest.fn(() => [
+          {
+            id: '1',
+            username: 'existinguser',
+            name: 'Existing User',
+            email: 'email',
+            role: 'USER'
+          }
+        ])
+      },
+      post: {
+        findMany: jest.fn(() => [
+          {
+            id: '1',
+            title: 'title',
+            content: 'content',
+            authorId: '1'
+          }
+        ])
+      }
     }
   }
 }));
@@ -24,7 +44,8 @@ describe('search', () => {
   });
   it('should return empty arrays if no query is provided', async () => {
     req.query = {};
-    (prisma.user.findMany as jest.Mock).mockResolvedValue([]);
+    (prisma.prismaClient.user.findMany as jest.Mock).mockResolvedValueOnce([]);
+    (prisma.prismaClient.post.findMany as jest.Mock).mockResolvedValueOnce([]);
     await search(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
@@ -46,15 +67,6 @@ describe('search', () => {
 
   it('should return search results if query is provided', async () => {
     req.query = { q: 'Existing' };
-    (prisma.user.findMany as jest.Mock).mockResolvedValueOnce([
-      {
-        id: '1',
-        username: 'existinguser',
-        name: 'Existing User',
-        email: 'email',
-        role: 'USER'
-      } as User
-    ]);
     await search(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
@@ -75,7 +87,14 @@ describe('search', () => {
                 role: 'USER'
               } as User
             ],
-            posts: []
+            posts: [
+              {
+                id: '1',
+                title: 'title',
+                content: 'content',
+                authorId: '1'
+              }
+            ]
           }
         }
       })

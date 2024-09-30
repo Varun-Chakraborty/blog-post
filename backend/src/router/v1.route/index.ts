@@ -24,7 +24,7 @@ router.use('/user', isAuthenticated, userRouter);
 router.get('/search', search);
 
 router.get('*', (_, res) =>
-  res.send('API v1.0\nAvailable Sub-Routes:\n- ./auth\n- ./search')
+  res.send('API v1.0\nAvailable Sub-Routes:\n- ./user\n- ./auth\n- ./search')
 );
 
 export default router;

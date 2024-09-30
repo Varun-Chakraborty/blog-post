@@ -9,5 +9,6 @@ declare namespace NodeJS {
     REFRESH_COOKIE_MAX_AGE?: string;
     ALLOWED_ORIGINS?: string;
     NODE_ENV: 'production' | 'development';
+    REDIS_HOST: string;
   }
 }

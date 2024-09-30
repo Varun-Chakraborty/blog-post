@@ -17,7 +17,7 @@ export function wrapperFx(
       return await fx(req, res, next);
     } catch (error) {
       console.error(error);
-      return new ApiResponse((error as Error).message, error).error(res);
+      return new ApiResponse((error as Error).message).error(res);
     }
   };
 }

@@ -1,13 +1,31 @@
 jest.mock('@/db', () => ({
   prisma: {
-    user: {
-      update: jest.fn()
+    prismaClient: {
+      user: {
+        findUnique: jest.fn(() => ({ refreshToken: 'refresh' })),
+        update: jest.fn()
+      }
+    }
+  },
+  redis: {
+    redisClient: {
+      set: jest.fn(),
+      expireat: jest.fn()
     }
   }
 }));
 
+jest.mock('@/utils/wrapperFx', () => ({
+  wrapperFx: jest.fn(fx => fx)
+}));
+
+jest.mock('@/utils/tokens', () => ({
+  verifyAccessTokens: jest.fn(() => ({ id: '1', exp: 1 })),
+  verifyRefreshTokens: jest.fn(() => ({ id: '1', exp: 1 }))
+}));
+
 import { signout } from '@/controllers/auth.controller';
-import { prisma } from '@/db';
+import { prisma, redis } from '@/db';
 import { ExpressTypes } from '@/types';
 
 describe('signout', () => {
@@ -33,23 +51,23 @@ describe('signout', () => {
         username: 'testuser',
         role: 'USER'
       },
-      cookies: {
-        accessToken: 'valid',
-        refreshToken: 'valid'
+      tokens: {
+        accessToken: 'valid'
       }
     };
-    (prisma.user.update as jest.Mock).mockResolvedValue({
+    (prisma.prismaClient.user.update as jest.Mock).mockResolvedValue({
       id: '1',
       name: 'Test User',
       username: 'testuser',
       role: 'USER'
     });
+    (redis.redisClient.set as jest.Mock).mockResolvedValue(true);
     await signout(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
       next as ExpressTypes.Next
     );
-    // expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
         message: 'Signout successful'

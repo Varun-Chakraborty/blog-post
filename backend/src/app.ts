@@ -30,8 +30,10 @@ import v1Router from './router/v1.route';
 
 app.use('/api/v1', v1Router);
 
-app.get('/', (req, res) =>
-  res.send('API v1.0\nAvailable Sub-Routes:\n- ./api/v1')
+app.get('/health', (_, res) => res.send('OK'));
+
+app.get('*', (req, res) =>
+  res.send('API v1.0\nAvailable Sub-Routes:\n- ./api/v1\n- ./health')
 );
 
 export default app;

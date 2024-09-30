@@ -4,6 +4,7 @@ import { ApiResponse } from '@/utils/ApiResponse';
 import { wrapperFx } from '@/utils/wrapperFx';
 import { generateTokens } from '@/utils/tokens';
 import { setCookie } from '@/utils/setCookie';
+import { verifyPassword } from '@/utils/verifyPassword';
 
 export const signin = wrapperFx(async function (
   req: ExpressTypes.Req,
@@ -19,12 +20,12 @@ export const signin = wrapperFx(async function (
     ).error(res);
   }
 
-  const user = await prisma.user.findUnique({
+  const user = await prisma.prismaClient.user.findUnique({
     where: { username },
     omit: { refreshToken: true }
   });
 
-  if (!user || !(await prisma.user.verifyPassword(password, user.password))) {
+  if (!user || !(await verifyPassword(password, user.password))) {
     return new ApiResponse('Invalid credentials', undefined, 401).error(res);
   }
 
@@ -42,13 +43,14 @@ export const signin = wrapperFx(async function (
     path: '/api/v1/auth/refresh'
   });
 
-  await prisma.user.update({
+  const updatedUser = await prisma.prismaClient.user.update({
     where: { id: user.id },
-    data: { refreshToken: refresh }
+    data: { refreshToken: refresh },
+    omit: { password: true, refreshToken: true }
   });
 
   return new ApiResponse('Signin successful', {
-    user: { ...user, password: undefined, refreshToken: undefined },
+    user: updatedUser,
     accessToken: access
   }).success(res);
 });

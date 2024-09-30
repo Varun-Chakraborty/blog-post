@@ -20,6 +20,10 @@ export interface Req extends express.Request {
     accessToken?: string;
     refreshToken?: string;
   };
+  tokens?: {
+    accessToken?: string;
+    refreshToken?: string;
+  };
   user?: User;
 }
 

@@ -1,13 +1,20 @@
-export type * as APIResponseTypes from "./responseTypes";
+export type * as APIResponseTypes from './responseTypes';
 
 export interface Profile {
   id: string;
   name: string;
   username: string;
-  email: string;
-  role?: "USER" | "ADMIN";
+  role?: 'USER' | 'ADMIN';
   pfp?: string;
   guest?: boolean;
+}
+
+export interface User extends Omit<Profile, 'guest'> {
+  banner?: string;
+  bio: string;
+  followers: number;
+  following: number;
+  posts: Post[];
 }
 
 export interface Post {

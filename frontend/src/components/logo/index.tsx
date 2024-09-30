@@ -15,12 +15,11 @@ export function Logo({
 }: Readonly<Props>) {
   const navigate = useNavigate();
   return (
-    <button
+    <div
       className={cn(
         "font-montserrat text-xl font-bold flex gap-4 p-2 items-center",
         className
       )}
-      type="button"
     >
       <RxHamburgerMenu
         className={cn(
@@ -29,7 +28,7 @@ export function Logo({
         )}
         onClick={() => setMenuOpen(!isMenuOpen)}
       />
-      <span onClick={() => navigate("/")} className="cursor-pointer">Blog Post</span>
-    </button>
+      <button onClick={() => navigate("/")}>Blog Post</button>
+    </div>
   );
 }

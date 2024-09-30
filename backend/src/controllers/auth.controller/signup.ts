@@ -38,17 +38,20 @@ export const signup = wrapperFx(async function (
     ).error(res);
   }
 
-  if (await prisma.user.findUnique({ where: { username } })) {
+  if (await prisma.prismaClient.user.findUnique({ where: { username } })) {
     return new ApiResponse('Username already exists', undefined, 409).error(
       res
     );
   }
 
-  if (email && (await prisma.user.findUnique({ where: { email } }))) {
+  if (
+    email &&
+    (await prisma.prismaClient.user.findUnique({ where: { email } }))
+  ) {
     return new ApiResponse('Email already exists', undefined, 409).error(res);
   }
 
-  const user = await prisma.user.create({
+  const user = await prisma.prismaClient.user.create({
     data: { username, name, email, password },
     omit: { password: true, refreshToken: true }
   });
@@ -67,14 +70,15 @@ export const signup = wrapperFx(async function (
     path: '/api/v1/auth/refresh'
   });
 
-  await prisma.user.update({
+  const updatedUser = await prisma.prismaClient.user.update({
     where: { id: user.id },
-    data: { refreshToken: refresh }
+    data: { refreshToken: refresh },
+    omit: { password: true, refreshToken: true }
   });
 
   return new ApiResponse(
     'Signup successful',
-    { user: { ...user, password: undefined, refreshToken: undefined } },
+    { user: updatedUser, accessToken: access },
     201
   ).success(res);
 });

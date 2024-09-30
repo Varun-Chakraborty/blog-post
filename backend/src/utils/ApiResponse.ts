@@ -21,7 +21,8 @@ export class ApiResponse {
     return res.status(this.status ?? 500).json({
       success: false,
       message:
-        !this.status || this.status === 500
+        (!this.status || this.status === 500) &&
+        process.env.NODE_ENV !== 'development'
           ? 'Internal server error'
           : this.message
     });

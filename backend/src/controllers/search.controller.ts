@@ -12,22 +12,14 @@ export const search = wrapperFx(async function (
   let users: User[] = [];
   let posts: Post[] = [];
   if (searchFor === 'users' || !searchFor) {
-    users = await prisma.user.findMany({
+    users = await prisma.prismaClient.user.findMany({
       where: {
         AND: [
           {
             role: 'USER',
             OR: [
-              {
-                name: {
-                  contains: query
-                }
-              },
-              {
-                username: {
-                  contains: query
-                }
-              }
+              { name: { contains: query } },
+              { username: { contains: query } }
             ]
           }
         ]
@@ -35,7 +27,15 @@ export const search = wrapperFx(async function (
       omit: { password: true, refreshToken: true }
     });
   }
-  // TODO: Add pagination and post search
+  if (searchFor === 'posts' || !searchFor) {
+    posts = await prisma.prismaClient.post.findMany({
+      where: {
+        title: { contains: query }
+      },
+      include: { author: true }
+    });
+  }
+  // TODO: Add pagination
   return new ApiResponse('Search successful', {
     query: query,
     searchResult: { users, posts }
