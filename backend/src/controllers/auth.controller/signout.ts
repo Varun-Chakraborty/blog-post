@@ -25,12 +25,12 @@ export const signout = wrapperFx(async function (
     data: { refreshToken: null }
   });
 
-  if (!!accessTokenExpiry) {
+  if (accessTokenExpiry) {
     await redis.redisClient.set(`token:${accessToken}`, '');
     await redis.redisClient.expireat(`token:${accessToken}`, accessTokenExpiry);
   }
 
-  if (!!refreshTokenExpiry) {
+  if (refreshTokenExpiry) {
     await redis.redisClient.set(`token:${refreshToken}`, '');
     await redis.redisClient.expireat(
       `token:${refreshToken}`,

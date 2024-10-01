@@ -3,7 +3,7 @@ import { useAppSelector } from "@/hooks/redux";
 function WelcomeCard() {
   const { profiles, currentProfile } = useAppSelector((state) => state.profile);
   const name =
-    profiles.find((profile) => profile.id === currentProfile)?.name || "Guest";
+    profiles.find((profile) => profile.id === currentProfile)?.name ?? "Guest";
   return (
     /* TODO: match the colors to the theme */
     <div

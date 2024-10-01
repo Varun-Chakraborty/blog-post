@@ -51,11 +51,11 @@ function calculateStrength(password: string) {
     strength++;
   }
 
-  if (/[0-9]/.exec(password)) {
+  if (/\d/.exec(password)) {
     strength++;
   }
 
-  if (password.match(/[^a-zA-Z0-9]/)) {
+  if (/[^a-zA-Z0-9]/.exec(password)) {
     strength++;
   }
 

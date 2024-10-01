@@ -3,7 +3,7 @@ import { APIResponseTypes } from "@/types";
 import axios, { AxiosError } from "axios";
 
 class Api {
-  private api = axios.create({
+  private readonly api = axios.create({
     baseURL: import.meta.env.VITE_API_BASE_URL,
     withCredentials: true,
     headers: {

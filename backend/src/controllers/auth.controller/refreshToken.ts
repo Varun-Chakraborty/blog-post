@@ -37,7 +37,7 @@ export const refreshToken = wrapperFx(async function (
 
   res = setCookie('accessToken', access!, res, {
     maxAge: Number(
-      process.env.ACCESS_COOKIE_MAX_AGE || String(1000 * 60 * 60 * 24)
+      process.env.ACCESS_COOKIE_MAX_AGE ?? String(1000 * 60 * 60 * 24)
     )
   });
 

@@ -60,12 +60,12 @@ export const signup = wrapperFx(async function (
 
   res = setCookie('accessToken', access!, res, {
     maxAge: Number(
-      process.env.ACCESS_COOKIE_MAX_AGE || String(1000 * 60 * 60 * 24)
+      process.env.ACCESS_COOKIE_MAX_AGE ?? String(1000 * 60 * 60 * 24)
     )
   });
   res = setCookie('refreshToken', refresh!, res, {
     maxAge: Number(
-      process.env.REFRESH_COOKIE_MAX_AGE || String(1000 * 60 * 60 * 24 * 7)
+      process.env.REFRESH_COOKIE_MAX_AGE ?? String(1000 * 60 * 60 * 24 * 7)
     ),
     path: '/api/v1/auth/refresh'
   });
