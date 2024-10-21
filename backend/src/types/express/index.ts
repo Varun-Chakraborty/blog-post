@@ -1,5 +1,5 @@
 import express from 'express';
-import { User } from '..';
+import { Profile } from '..';
 
 export interface Req extends express.Request {
   body: {
@@ -12,9 +12,10 @@ export interface Req extends express.Request {
     q?: string;
     searchFor?: string;
     username?: string;
+    skipTill?: string;
   };
   params: {
-    id?: string;
+    username?: string;
   };
   cookies: {
     accessToken?: string;
@@ -24,9 +25,7 @@ export interface Req extends express.Request {
     accessToken?: string;
     refreshToken?: string;
   };
-  user?: User;
+  user?: Profile;
 }
-
 export interface Res extends express.Response {}
-
 export interface Next extends express.NextFunction {}

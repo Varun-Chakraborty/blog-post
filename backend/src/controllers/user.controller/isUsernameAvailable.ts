@@ -13,6 +13,12 @@ export const isUsernameAvailable = wrapperFx(async function (
   if (!username)
     return new ApiResponse('Username is required', undefined, 400).error(res);
 
+  if (username === 'me') {
+    return new ApiResponse('Username cannot be "me"', undefined, 400).error(
+      res
+    );
+  }
+
   if (
     !z
       .string()

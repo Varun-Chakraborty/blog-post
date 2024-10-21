@@ -1,26 +1,30 @@
+const userList = [
+  {
+    id: '1',
+    username: 'existinguser',
+    name: 'Existing User',
+    email: 'email',
+    role: 'USER'
+  }
+];
+
+const postList = [
+  {
+    id: '1',
+    title: 'title',
+    content: 'content',
+    authorId: '1'
+  }
+];
+
 jest.mock('@/db', () => ({
   prisma: {
     prismaClient: {
       user: {
-        findMany: jest.fn(() => [
-          {
-            id: '1',
-            username: 'existinguser',
-            name: 'Existing User',
-            email: 'email',
-            role: 'USER'
-          }
-        ])
+        findMany: jest.fn(() => [userList[0]])
       },
       post: {
-        findMany: jest.fn(() => [
-          {
-            id: '1',
-            title: 'title',
-            content: 'content',
-            authorId: '1'
-          }
-        ])
+        findMany: jest.fn(() => [postList[0]])
       }
     }
   }
@@ -28,12 +32,13 @@ jest.mock('@/db', () => ({
 
 import { search } from '@/controllers';
 import { prisma } from '@/db';
-import { ExpressTypes, User } from '@/types';
+import { ExpressTypes } from '@/types';
 
 describe('search', () => {
   let req: Partial<ExpressTypes.Req>;
   let res: Partial<ExpressTypes.Res>;
   let next: Partial<ExpressTypes.Next>;
+
   beforeEach(() => {
     req = {};
     res = {
@@ -42,6 +47,7 @@ describe('search', () => {
     };
     next = jest.fn();
   });
+
   it('should return empty arrays if no query is provided', async () => {
     req.query = {};
     (prisma.prismaClient.user.findMany as jest.Mock).mockResolvedValueOnce([]);
@@ -78,23 +84,8 @@ describe('search', () => {
         data: {
           query: 'existing',
           searchResult: {
-            users: [
-              {
-                id: '1',
-                username: 'existinguser',
-                name: 'Existing User',
-                email: 'email',
-                role: 'USER'
-              } as User
-            ],
-            posts: [
-              {
-                id: '1',
-                title: 'title',
-                content: 'content',
-                authorId: '1'
-              }
-            ]
+            users: [userList[0]],
+            posts: [postList[0]]
           }
         }
       })

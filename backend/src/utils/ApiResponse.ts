@@ -4,11 +4,13 @@ export class ApiResponse {
   status?: number;
   message: string;
   data?: object;
+  stack?: string;
 
-  constructor(message: string, data?: any, status?: number) {
+  constructor(message: string, data?: any, status?: number, stack?: string) {
     this.status = status;
     this.message = message;
     this.data = data;
+    this.stack = stack;
   }
 
   success(res: Res) {
@@ -24,7 +26,8 @@ export class ApiResponse {
         (!this.status || this.status === 500) &&
         process.env.NODE_ENV !== 'development'
           ? 'Internal server error'
-          : this.message
+          : this.message,
+      stack: process.env.NODE_ENV === 'development' ? this.stack : undefined
     });
   }
 }

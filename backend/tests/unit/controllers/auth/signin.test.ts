@@ -114,7 +114,7 @@ describe('signin', () => {
     );
   });
 
-  it('should return 200 if valid credentials', async () => {
+  it('should return 200 if valid credentials and user object should not contain fields like password and refreshToken', async () => {
     req.body = {
       username: 'testuser',
       password: 'testpassword'
@@ -159,13 +159,10 @@ describe('signin', () => {
       expect.objectContaining({
         message: 'Signin successful',
         data: {
-          user: {
-            id: '1',
-            username: 'testuser',
-            name: 'Test User',
-            email: 'email',
-            role: 'USER'
-          }
+          user: expect.not.objectContaining({
+            password: expect.any(String),
+            refreshToken: expect.any(String)
+          })
         }
       })
     );

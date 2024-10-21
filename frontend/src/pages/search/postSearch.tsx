@@ -1,21 +1,39 @@
-import { PostCard } from "@/components/cards";
-import { InfiniteLoader } from "@/components/loaders";
-import { cn } from "@/lib/utils";
-import { Post } from "@/types";
+import { PostCard } from './postCard';
+import { InfiniteLoader } from '@/components/loaders';
+import { cn } from '@/lib/utils';
+import { APIResponseTypes, Post } from '@/types';
+import { searchMore } from './searchMore';
 
 interface Props {
   posts: Post[];
   isLoading: boolean;
+  setResults: React.Dispatch<
+    React.SetStateAction<APIResponseTypes.SearchResult>
+  >;
+  count: number;
+  query: string;
 }
 
-export function Posts({ posts = [], isLoading }: Readonly<Props>) {
+export function Posts({
+  posts = [],
+  isLoading,
+  setResults,
+  count,
+  query
+}: Readonly<Props>) {
   return (
     <>
-      {posts.map((post) => (
+      {posts.map(post => (
         <PostCard key={post.id} post={post} />
       ))}
+      <button
+        className={cn({ hidden: !posts.length })}
+        onClick={() => searchMore(query, 'users', count, setResults)}
+      >
+        Load More
+      </button>
       {isLoading ? (
-        <div className={cn({ "py-2": posts.length })}>
+        <div className={cn({ 'py-2': posts.length })}>
           <InfiniteLoader />
         </div>
       ) : (

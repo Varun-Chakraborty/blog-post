@@ -16,8 +16,19 @@ export function wrapperFx(
     try {
       return await fx(req, res, next);
     } catch (error) {
-      console.error(error);
-      return new ApiResponse((error as Error).message).error(res);
+      if (error instanceof Error) {
+        console.error(error);
+        return new ApiResponse(
+          error.message,
+          undefined,
+          500,
+          error.stack
+        ).error(res);
+      } else {
+        return new ApiResponse((error as Error).message, undefined, 500).error(
+          res
+        );
+      }
     }
   };
 }

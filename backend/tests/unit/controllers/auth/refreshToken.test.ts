@@ -89,6 +89,41 @@ describe('refreshToken', () => {
     );
   });
 
+  it('should return 401 if refresh token is found in cookies but is invalid', async () => {
+    req.cookies = { refreshToken: 'invalid' };
+    (verifyRefreshTokens as jest.Mock).mockReturnValueOnce(null);
+    await refreshToken(
+      req as ExpressTypes.Req,
+      res as ExpressTypes.Res,
+      next as ExpressTypes.Next
+    );
+
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Invalid refresh token'
+      })
+    );
+  });
+
+  it('should return 401 if the refresh token is found but also found in redis', async () => {
+    req.cookies = { refreshToken: 'invalid' };
+    (verifyRefreshTokens as jest.Mock).mockReturnValueOnce({ id: '1' });
+    (redis.redisClient.exists as jest.Mock).mockReturnValueOnce(true);
+    await refreshToken(
+      req as ExpressTypes.Req,
+      res as ExpressTypes.Res,
+      next as ExpressTypes.Next
+    );
+
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Invalid refresh token'
+      })
+    );
+  });
+
   it('should return 401 if the id resolved from the refresh token does not exist', async () => {
     req.cookies = { refreshToken: 'invalid' };
     (verifyRefreshTokens as jest.Mock).mockReturnValueOnce({ id: '1' });
