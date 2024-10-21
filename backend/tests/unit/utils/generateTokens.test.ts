@@ -15,7 +15,6 @@ describe('generateTokens', () => {
       id: '1',
       username: 'test',
       name: 'Test User',
-      email: 'email@example.com',
       role: 'USER',
       password: 'testpassword'
     };

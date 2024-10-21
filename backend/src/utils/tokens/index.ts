@@ -1,22 +1,14 @@
 const accessSecret = process.env.JWT_ACCESS_SECRET;
 const refreshSecret = process.env.JWT_REFRESH_SECRET;
-const accessExpiration = process.env.JWT_ACCESS_EXPIRATION || '1d';
-const refreshExpiration = process.env.JWT_REFRESH_EXPIRATION || '7d';
+const accessExpiration = process.env.JWT_ACCESS_EXPIRATION ?? '1d';
+const refreshExpiration = process.env.JWT_REFRESH_EXPIRATION ?? '7d';
 
 type TokenType = 'access' | 'refresh';
 
-import {
-  AccessJWTResponse,
-  RefreshJWTResponse,
-  User,
-  UserWithCredentials
-} from '@/types';
+import { AccessJWTResponse, Profile, RefreshJWTResponse } from '@/types';
 import { generateToken, sanitizePayload, verifyToken } from './tokenUtils';
 
-export function generateTokens(
-  data: UserWithCredentials | User,
-  type: TokenType | 'both'
-) {
+export function generateTokens(data: Profile, type: TokenType | 'both') {
   const sanitizedData = sanitizePayload(data);
   if (type === 'both')
     return {
@@ -24,7 +16,7 @@ export function generateTokens(
       refresh: generateToken(
         { id: sanitizedData.id },
         refreshSecret!,
-        refreshExpiration!
+        refreshExpiration
       )
     };
   else if (type === 'access')

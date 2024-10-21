@@ -1,3 +1,4 @@
+import { AdminCapsule /* PremiumCapsule */ } from '@/components/capsules';
 import { User } from '@/types';
 
 export function UserProfile({ user }: Readonly<{ user: User }>) {
@@ -9,25 +10,26 @@ export function UserProfile({ user }: Readonly<{ user: User }>) {
           alt=""
           className="rounded-full w-24 mb-5"
         />
-        <span>@{user.username}</span>
-        <span>{user.role}</span>
+        <div className="flex flex-col items-center">
+          <span>@{user.username}</span>
+          <div>
+            {user.role === 'ADMIN' && <AdminCapsule />}
+            {/* {user.premium && <PremiumCapsule />} */}
+          </div>
+        </div>
       </div>
       <div>
         <div className="flex justify-between gap-4">
-          <div className="flex gap-1 items-center">
-            <span>{user.posts?.length ?? 0}</span>
-            <span>
-              {user.posts && user.posts?.length > 1 ? 'Posts' : 'Post'}
-            </span>
+          <div className="flex justify-center gap-1">
+            <span>{user.posts.length}</span>
+            <span>{user.posts.length > 1 ? 'Posts' : 'Post'}</span>
           </div>
           <div className="flex gap-1 items-center">
-            <span>{user.followers ?? 0}</span>
-            <span>
-              {user.followers && user.followers > 1 ? 'Followers' : 'Follower'}
-            </span>
+            <span>{user.followersCount}</span>
+            <span>{user.followersCount > 1 ? 'Followers' : 'Follower'}</span>
           </div>
           <div className="flex gap-1 items-center">
-            <span>{user.following ?? 0}</span>
+            <span>{user.followingCount}</span>
             <span>Following</span>
           </div>
         </div>

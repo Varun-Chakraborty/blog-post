@@ -59,11 +59,8 @@ describe('authenticate', () => {
   });
 
   it('should call next if token is found in cookies but is invalid', async () => {
-    req = {
-      headers: {},
-      cookies: {
-        accessToken: 'invalid'
-      }
+    req.cookies = {
+      accessToken: 'invalid'
     };
     (verifyAccessTokens as jest.Mock).mockReturnValue(undefined);
     await authenticate(
@@ -75,14 +72,9 @@ describe('authenticate', () => {
     expect(req.user).toBeUndefined();
   });
 
-  it('should call next if token is found in headers or cookies but also found in redis', async () => {
-    req = {
-      headers: {
-        authorization: 'valid'
-      },
-      cookies: {
-        accessToken: 'valid'
-      }
+  it('should call next if token is found but also found in redis', async () => {
+    req.cookies = {
+      accessToken: 'invalid'
     };
     (redis.redisClient.exists as jest.Mock).mockReturnValueOnce(true);
     await authenticate(
@@ -95,13 +87,8 @@ describe('authenticate', () => {
   });
 
   it('should call next if token is valid and add user to req with isAdmin property false if user role is USER', async () => {
-    req = {
-      headers: {
-        authorization: 'valid'
-      },
-      cookies: {
-        accessToken: 'valid'
-      }
+    req.cookies = {
+      accessToken: 'valid'
     };
     (verifyAccessTokens as jest.Mock).mockReturnValue({
       id: '1',
@@ -119,13 +106,8 @@ describe('authenticate', () => {
   });
 
   it('should call next if token is valid and add user to req with isAdmin property true if user role is ADMIN', async () => {
-    req = {
-      headers: {
-        authorization: 'valid'
-      },
-      cookies: {
-        accessToken: 'valid'
-      }
+    req.cookies = {
+      accessToken: 'valid'
     };
     (verifyAccessTokens as jest.Mock).mockReturnValue({
       id: '1',

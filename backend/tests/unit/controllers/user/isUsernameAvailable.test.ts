@@ -55,6 +55,21 @@ describe('isUsernameAvailable', () => {
     );
   });
 
+  it('should return 400 if username is "me"', async () => {
+    req.query = { username: 'me' };
+    await isUsernameAvailable(
+      req as ExpressTypes.Req,
+      res as ExpressTypes.Res,
+      next as ExpressTypes.Next
+    );
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Username cannot be "me"'
+      })
+    );
+  });
+
   it('should return 409 if username already exists', async () => {
     req.query = { username: 'existinguser' };
     (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValueOnce({

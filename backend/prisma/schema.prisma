@@ -28,6 +28,8 @@ model User {
   pfp          String?
   role         Role    @default(USER)
   posts        Post[]
+  followers    Follow[] @relation(name: "followers")
+  following    Follow[] @relation(name: "following")
   refreshToken String?
 }
 
@@ -39,4 +41,14 @@ model Post {
   published Boolean @default(false)
   author    User    @relation(fields: [authorId], references: [id])
   authorId  String
+}
+
+model Follow {
+  id        String  @id @default(cuid())
+  follower  User    @relation(fields: [followerId], references: [id], name: "followers")
+  followerId  String
+  following User    @relation(fields: [followingId], references: [id], name: "following")
+  followingId  String
+
+  @@unique([followerId, followingId])
 }

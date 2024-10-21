@@ -1,12 +1,12 @@
 import api from '@/api';
 import { InfiniteLoader } from '@/components/loaders';
 import { useToast } from '@/components/ui/use-toast';
-import { useAppDispatch } from '@/hooks/redux';
+import { useAppDispatch, useAppSelector } from '@/hooks/redux';
 import { cn } from '@/lib/utils';
 import { profileActions } from '@/redux/profile';
 import { AxiosError } from 'axios';
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { User } from '@/types';
 import { UserProfile } from './userProfile';
 import { NotFound } from './notFound';
@@ -113,8 +113,23 @@ function UserComponent({
                 <button className="hover:bg-primary/10">Likes</button>
               </li>
             </ul>
-            <button className="bg-accent hover:bg-primary p-2 rounded">
-              Follow
+            <button
+              className={cn('bg-accent hover:bg-primary p-2 rounded', {
+                hidden: !isItMyProfile
+              })}
+              onClick={() => console.log('edit profile')}
+            >
+              Edit Profile
+            </button>
+            <button
+              className={cn('bg-accent hover:bg-primary p-2 rounded', {
+                hidden: isItMyProfile
+              })}
+              onClick={() =>
+                isLoggedIn ? api.followUser(user.username) : navigate('/login')
+              }
+            >
+              {isLoggedIn ? 'Follow' : 'Login to follow'}
             </button>
           </div>
           <div>
@@ -126,15 +141,6 @@ function UserComponent({
           </div>
         </div>
       </div>
-    </div>
-  );
-}
-
-function NetworkError() {
-  return (
-    <div className='h-full w-full flex flex-col justify-center items-center'>
-      <h1 className='text-3xl font-bold flex gap-1 mb-3'><MdOutlineSignalWifiStatusbarConnectedNoInternet4 />No Internet</h1>
-      <p>Either you are offline or the server is not responding.</p>
     </div>
   );
 }

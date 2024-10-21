@@ -36,7 +36,16 @@ const profile = createSlice({
       }
     },
     updateProfile(state, action) {
-      state.profiles.filter((profile) => profile.id === action.payload.id)[0] = action.payload;
+      const profiles = state.profiles;
+      const selectedProfile = profiles.find(
+        profile => profile.id === action.payload.id
+      );
+      const selectedProfileIdx = selectedProfile
+        ? profiles.indexOf(selectedProfile)
+        : -1;
+      Object.keys(action.payload).forEach(key => {
+        state.profiles[selectedProfileIdx][key] = action.payload[key];
+      });
     },
     removeProfile(state) {
       const index = state.profiles.findIndex(

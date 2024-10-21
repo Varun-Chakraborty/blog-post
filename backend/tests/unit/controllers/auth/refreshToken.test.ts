@@ -30,7 +30,7 @@ jest.mock('@/utils/verifyPassword', () => ({
 
 import { refreshToken } from '@/controllers/auth.controller';
 import { ExpressTypes } from '@/types';
-import { prisma } from '@/db';
+import { prisma, redis } from '@/db';
 import { generateTokens, verifyRefreshTokens } from '@/utils/tokens';
 import { setCookie } from '@/utils/setCookie';
 
@@ -49,7 +49,7 @@ describe('refreshToken', () => {
     next = jest.fn();
   });
 
-  it('should return 401 if no refresh token', async () => {
+  it('should return 401 if no refresh token is found', async () => {
     req = {
       cookies: {},
       headers: {}
@@ -69,10 +69,10 @@ describe('refreshToken', () => {
     );
   });
 
-  it('should return 401 if invalid refresh token', async () => {
+  it('should return 401 if refresh token is found in headers but is invalid', async () => {
     req = {
-      cookies: { refreshToken: 'invalid' },
-      headers: {}
+      headers: { authorization: 'Bearer invalid' },
+      cookies: {}
     };
     (verifyRefreshTokens as jest.Mock).mockReturnValueOnce(null);
     await refreshToken(

@@ -42,3 +42,9 @@ export interface GetProfileResponse extends APIResponse {
     user?: User;
   };
 }
+
+export interface FollowUserResponse extends APIResponse {
+  data?: {
+    user: User;
+  };
+}
