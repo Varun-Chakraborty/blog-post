@@ -1,80 +1,81 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
-import { CiUser } from "react-icons/ci";
-import { MdPassword } from "react-icons/md";
-import { cn } from "@/lib/utils";
-import { Link, useNavigate } from "react-router-dom";
-import { AxiosError } from "axios";
-import { useAppDispatch } from "@/hooks/redux";
-import { profileActions } from "@/redux/profile";
-import api from "@/api";
-import { useState } from "react";
+  FormMessage
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useToast } from '@/components/ui/use-toast';
+import { CiUser } from 'react-icons/ci';
+import { MdPassword } from 'react-icons/md';
+import { cn } from '@/lib/utils';
+import { Link, useNavigate } from 'react-router-dom';
+import { isAxiosError } from 'axios';
+import { useAppDispatch } from '@/hooks/redux';
+import { profileActions } from '@/redux/profile';
+import api from '@/api';
+import { useState } from 'react';
 
 export function Login({ className }: Readonly<{ className?: string }>) {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const [submitting, setIsSubmitting] = useState(false);
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
   const FormSchema = z.object({
     username: z.string().min(1, {
-      message: "Required field.",
+      message: 'Required field.'
     }),
     password: z.string().min(1, {
-      message: "Required field.",
-    }),
+      message: 'Required field.'
+    })
   });
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      username: "",
-      password: "",
-    },
+      username: '',
+      password: ''
+    }
   });
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
-      setIsSubmitting(true);
+      setSubmitting(true);
       const response = await api.login(
         data.username.toString(),
         data.password.toString()
       );
       dispatch(profileActions.addProfile(response.data!.user));
       toast({
-        title: "Login successful",
-        description: "You are now logged in.",
+        title: 'Login successful',
+        description: 'You are now logged in.'
       });
-      navigate("/");
+      navigate('/');
     } catch (error) {
-      if (error instanceof AxiosError && error.response?.status === 401) {
+      if (isAxiosError(error) && error.response?.status === 401) {
         toast({
-          variant: "destructive",
-          title: "Login failed",
-          description: error.response?.data.message,
+          variant: 'destructive',
+          title: 'Login failed',
+          description: error.response?.data.message
         });
       } else {
         toast({
-          variant: "destructive",
-          title: "Login failed",
-          description: "Something went wrong. Please try again later.",
+          variant: 'destructive',
+          title: 'Login failed',
+          description: 'Something went wrong. Please try again later.'
         });
         console.error(error);
       }
     } finally {
-      setIsSubmitting(false);
+      setSubmitting(false);
     }
   }
 
@@ -83,7 +84,7 @@ export function Login({ className }: Readonly<{ className?: string }>) {
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className={cn(
-          "sm:w-2/3 xl:w-1/3 space-y-6 font-montserrat border border-borderColor px-4 py-6 rounded-xl shadow-[0px_4px_4px_rgba(0,0,0,0.25)] max-h-full",
+          'sm:w-2/3 xl:w-1/3 space-y-6 font-montserrat border border-borderColor px-4 py-6 rounded-xl shadow-[0px_4px_4px_rgba(0,0,0,0.25)] max-h-full',
           className
         )}
       >

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 export function NotFound() {
   const navigate = useNavigate();
@@ -24,7 +24,7 @@ export function NotFound() {
           Go to Previous Page
         </button>
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate('/')}
           className="bg-accent hover:bg-accent/80 text-accent-foreground font-semibold py-2 px-4 rounded-lg shadow-lg transition duration-300"
         >
           Go Home

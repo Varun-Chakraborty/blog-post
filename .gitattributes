@@ -1,0 +1,30 @@
+# Set default behavior to automatically normalize line endings
+* text=auto
+
+# Explicitly define end-of-line normalization for TypeScript files
+*.ts text eol=lf
+*.tsx text eol=lf
+*.js text eol=lf
+*.jsx text eol=lf
+
+# Define end-of-line normalization for HTML and CSS files
+*.html text eol=lf
+*.css text eol=lf
+
+# Handle JSON files
+*.json text eol=lf
+
+# Keep markdown files with CRLF for better compatibility with editors
+*.md text eol=crlf
+
+# Binary files (don't apply any filters)
+*.png binary
+*.jpg binary
+*.gif binary
+*.zip binary
+*.tar.gz binary
+*.exe binary
+
+# Other text files
+*.txt text eol=lf
+*.xml text eol=lf

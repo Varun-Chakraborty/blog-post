@@ -31,11 +31,11 @@ async function hashDuringUpdate({
   return query(args);
 }
 
-namespace global {
-  export let prismaClient: Omit<PrismaClient, '$on' | '$use'>;
+declare global {
+  var prismaClient: PrismaClient | undefined;
 }
 
-if (!global.prismaClient) {
+if (!globalThis.prismaClient) {
   const prismaExt = Prisma.defineExtension({
     query: {
       user: {
@@ -44,12 +44,11 @@ if (!global.prismaClient) {
       }
     }
   });
-  global.prismaClient = new PrismaClient().$extends(prismaExt) as Omit<
-    PrismaClient,
-    '$on' | '$use'
-  >;
+  globalThis.prismaClient = new PrismaClient().$extends(
+    prismaExt
+  ) as PrismaClient;
 }
-const prismaClient = global.prismaClient;
+const prismaClient = globalThis.prismaClient;
 
 export default {
   hashPassword,

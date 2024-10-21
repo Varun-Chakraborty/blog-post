@@ -1,14 +1,14 @@
-import { useAppSelector } from "@/hooks/redux";
+import { useAppSelector } from '@/hooks/redux';
 
 function WelcomeCard() {
-  const { profiles, currentProfile } = useAppSelector((state) => state.profile);
+  const { profiles, currentProfile } = useAppSelector(state => state.profile);
   const name =
-    profiles.find((profile) => profile.id === currentProfile)?.name ?? "Guest";
+    profiles.find(profile => profile.id === currentProfile)?.name ?? 'Guest';
   return (
     /* TODO: match the colors to the theme */
     <div
       className="bg-primary dark:bg-[#5F5F5F] text-white h-fit w-full p-3 rounded-lg space-y-3"
-      style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}
+      style={{ boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)' }}
     >
       <span className="text-2xl font-montserrat capitalize">Hello {name}</span>
       <p>
@@ -26,7 +26,7 @@ function RecentPosts() {
   return (
     <div
       className="border border-borderColor bg-background h-fit w-full p-3 rounded-lg space-y-3"
-      style={{ boxShadow: "1px 2px 9px rgba(0, 0, 0, 0.25)" }}
+      style={{ boxShadow: '1px 2px 9px rgba(0, 0, 0, 0.25)' }}
     >
       <span className="text-2xl font-montserrat">Recent Posts</span>
       <p>

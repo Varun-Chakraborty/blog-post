@@ -1,9 +1,14 @@
-import { Profile, Post, User } from ".";
+import { Profile, Post, User } from '.';
 
 interface APIResponse {
   status: number;
   message: string;
   data?: any;
+}
+
+export interface ErrorResponse extends APIResponse {
+  status: number;
+  message: string;
 }
 
 export interface SearchResult {

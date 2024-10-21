@@ -1,6 +1,6 @@
-import { Post } from "@/types";
-import { useNavigate } from "react-router-dom";
-import { ProfileCard } from "./profileCard";
+import { Post } from '@/types';
+import { useNavigate } from 'react-router-dom';
+import { ProfileCard } from './profileCard';
 
 export function PostCard({ post }: { post: Post }) {
   const navigate = useNavigate();

@@ -1,6 +1,6 @@
-import { LoginButton, LogoutButton, ThemeButton } from "@/components/buttons";
-import { checkIfCurrentIsGuestProfile } from "@/hooks/checkIfCurrentIsGuestProfile";
-import { cn } from "@/lib/utils";
+import { LoginButton, LogoutButton, ThemeButton } from '@/components/buttons';
+import { checkIfCurrentIsGuestProfile } from '@/hooks/checkIfCurrentIsGuestProfile';
+import { cn } from '@/lib/utils';
 
 interface Props {
   setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -10,7 +10,7 @@ interface Props {
 export function Settings({ setMenuOpen, className }: Readonly<Props>) {
   const isItGuest = checkIfCurrentIsGuestProfile();
   return (
-    <div className={cn("w-full p-2 space-y-2 overflow-y-auto", className)}>
+    <div className={cn('w-full p-2 space-y-2', className)}>
       <ThemeButton />
       {isItGuest ? (
         <LoginButton setMenuOpen={setMenuOpen} />

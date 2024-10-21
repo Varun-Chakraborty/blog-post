@@ -25,6 +25,7 @@ model User {
   username     String  @unique
   email        String  @unique
   password     String
+  pfp          String?
   role         Role    @default(USER)
   posts        Post[]
   refreshToken String?
@@ -34,7 +35,7 @@ model Post {
   id        String  @id @default(cuid())
   title     String
   content   String
-  imgUrl    String
+  imgUrl    String?
   published Boolean @default(false)
   author    User    @relation(fields: [authorId], references: [id])
   authorId  String

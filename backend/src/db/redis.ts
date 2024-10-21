@@ -1,14 +1,14 @@
 import { Redis } from 'ioredis';
 
-namespace global {
-  export let redisClient: Redis;
+declare global {
+  var redisClient: Redis;
 }
 
-async function ping() {
-  return await global.redisClient.ping();
+async function ping(instance: Redis) {
+  return await instance.ping();
 }
 
-if (!global.redisClient) {
+if (!globalThis.redisClient) {
   const redisClient = new Redis({
     host: process.env.REDIS_HOST,
     port: 6379
@@ -17,8 +17,8 @@ if (!global.redisClient) {
     console.log('Redis Client Error', err);
   });
 
-  global.redisClient = redisClient;
-  ping().then(() => {
+  globalThis.redisClient = redisClient;
+  ping(globalThis.redisClient).then(() => {
     console.log('Connected to Redis');
   });
 }

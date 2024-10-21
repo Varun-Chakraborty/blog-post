@@ -2,7 +2,7 @@ import api from '@/api';
 import { profileActions } from '@/redux/profile';
 import { useToast } from '../ui/use-toast';
 import { useAppDispatch } from '@/hooks/redux';
-import { AxiosError } from 'axios';
+import { isAxiosError } from 'axios';
 import { cn } from '@/lib/utils';
 
 interface Props {
@@ -24,7 +24,7 @@ export function Logout({ setMenuOpen, className }: Readonly<Props>) {
             description: 'You have been logged out'
           });
         } catch (error) {
-          if (error instanceof AxiosError && error.response?.status === 401) {
+          if (isAxiosError(error) && error.response?.status === 401) {
             dispatch(profileActions.removeProfile());
             toast({
               title: 'Success',

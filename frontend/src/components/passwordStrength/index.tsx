@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 export function PasswordStrength({ password }: Readonly<{ password: string }>) {
   const strength = calculateStrength(password);
@@ -12,16 +12,16 @@ export function PasswordStrength({ password }: Readonly<{ password: string }>) {
               <div
                 key={i}
                 className={cn(
-                  "w-6 h-2 rounded-full mr-1",
+                  'w-6 h-2 rounded-full mr-1',
                   strength > i
                     ? {
-                        "bg-red-600": strength === 1,
-                        "bg-orange-600": strength === 2,
-                        "bg-yellow-600": strength === 3,
-                        "bg-green-600": strength === 4,
-                        "bg-blue-600": strength === 5,
+                        'bg-red-600': strength === 1,
+                        'bg-orange-600': strength === 2,
+                        'bg-yellow-600': strength === 3,
+                        'bg-green-600': strength === 4,
+                        'bg-blue-600': strength === 5
                       }
-                    : "bg-gray-300"
+                    : 'bg-gray-300'
                 )}
               />
             );
@@ -64,16 +64,16 @@ function calculateStrength(password: string) {
 
 function strengthInWord(strength: number) {
   if (strength === 0) {
-    return "very weak";
+    return 'very weak';
   } else if (strength === 1) {
-    return "weak";
+    return 'weak';
   } else if (strength === 2) {
-    return "fair";
+    return 'fair';
   } else if (strength === 3) {
-    return "good";
+    return 'good';
   } else if (strength === 4) {
-    return "strong";
+    return 'strong';
   } else if (strength === 5) {
-    return "very strong";
+    return 'very strong';
   }
 }

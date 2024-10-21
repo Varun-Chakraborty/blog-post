@@ -63,6 +63,7 @@
     "react-resizable-panels": "^2.0.17",
     "react-router-dom": "^6.22.3",
     "reselect": "^5.1.1",
+    "socket.io-client": "^4.8.0",
     "sonner": "^1.4.41",
     "styled-components": "^6.1.12",
     "tailwind-merge": "^2.5.2",

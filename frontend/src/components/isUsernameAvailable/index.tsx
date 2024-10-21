@@ -1,11 +1,11 @@
-import { MdCheck } from "react-icons/md";
-import { InfiniteLoader } from "../loaders";
-import { RxCross1 } from "react-icons/rx";
-import { cn } from "@/lib/utils";
-import api from "@/api";
-import { useEffect, useState } from "react";
-import { Tooltip } from "../tooltip";
-import { UseFormSetError, UseFormTrigger } from "react-hook-form";
+import { MdCheck } from 'react-icons/md';
+import { InfiniteLoader } from '../loaders';
+import { RxCross1 } from 'react-icons/rx';
+import { cn } from '@/lib/utils';
+import api from '@/api';
+import { useEffect, useState } from 'react';
+import { Tooltip } from '../tooltip';
+import { UseFormSetError, UseFormTrigger } from 'react-hook-form';
 
 interface Props {
   trigger: UseFormTrigger<{
@@ -28,7 +28,7 @@ export function IsUsernameAvailable({
   trigger,
   setError,
   username,
-  className,
+  className
 }: Readonly<Props>) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isUsernameAvailable, setIsUsernameAvailable] = useState<
@@ -36,23 +36,24 @@ export function IsUsernameAvailable({
   >(true);
 
   const renderLoader = isLoading ? <InfiniteLoader /> : null;
-  const renderUsernameAvailable = isUsernameAvailable !== undefined ? (
-    <>
-      {isUsernameAvailable ? (
-        <MdCheck
-          className={cn("text-success", {
-            hidden: !isUsernameAvailable,
-          })}
-        />
-      ) : (
-        <RxCross1
-          className={cn("text-error", {
-            hidden: !isUsernameAvailable,
-          })}
-        />
-      )}
-    </>
-  ) : null;
+  const renderUsernameAvailable =
+    isUsernameAvailable !== undefined ? (
+      <>
+        {isUsernameAvailable ? (
+          <MdCheck
+            className={cn('text-success', {
+              hidden: !isUsernameAvailable
+            })}
+          />
+        ) : (
+          <RxCross1
+            className={cn('text-error', {
+              hidden: !isUsernameAvailable
+            })}
+          />
+        )}
+      </>
+    ) : null;
 
   useEffect(() => {
     setIsLoading(true);
@@ -61,13 +62,13 @@ export function IsUsernameAvailable({
       (async function () {
         try {
           if (!username) return setIsUsernameAvailable(undefined);
-          const isValid = await trigger("username");
+          const isValid = await trigger('username');
           if (!isValid) return setIsUsernameAvailable(undefined);
           else {
             const isAvailable = await api.isUsernameAvailable(username);
             setIsUsernameAvailable(isAvailable);
             if (!isAvailable)
-              setError("username", { message: "Not Available" });
+              setError('username', { message: 'Not Available' });
           }
         } finally {
           setIsLoading(false);
@@ -79,10 +80,10 @@ export function IsUsernameAvailable({
 
   return (
     <Tooltip
-      tooltipContent={isUsernameAvailable ? "Available" : "Not Available"}
+      tooltipContent={isUsernameAvailable ? 'Available' : 'Not Available'}
       className="absolute -top-9 -right-7 text-nowrap"
     >
-      <div className={cn("h-4 rounded-full pl-2", className)}>
+      <div className={cn('h-4 rounded-full pl-2', className)}>
         {renderLoader ?? renderUsernameAvailable}
       </div>
     </Tooltip>

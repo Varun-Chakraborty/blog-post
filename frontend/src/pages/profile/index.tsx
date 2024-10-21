@@ -10,18 +10,27 @@ import { useNavigate } from 'react-router-dom';
 import { User } from '@/types';
 import { UserProfile } from './userProfile';
 import { NotFound } from './notFound';
-import { MdOutlineSignalWifiStatusbarConnectedNoInternet4 } from "react-icons/md";
+import { NetworkError } from '@/components/networkError';
+import { checkIfCurrentIsGuestProfile } from '@/hooks/checkIfCurrentIsGuestProfile';
 
 export function Profile({ className }: Readonly<{ className?: string }>) {
   const [user, setUser] = useState<User | undefined>(undefined);
   const { toast } = useToast();
-  const userNameRequested = new URLSearchParams(window.location.search).get(
-    'username'
+  const location = useLocation();
+  const userNameRequested = location.pathname.split('/')[2];
+  const currentProfile = useAppSelector(state =>
+    state.profile.profiles.find(
+      profile => profile.username === state.profile.currentProfile
+    )
   );
-  const [loading, setLoading] = useState(false);
+  const isItMyProfile =
+    userNameRequested === 'me' ||
+    userNameRequested === currentProfile?.username;
+  const [loading, setLoading] = useState(true);
   const [isNetworkError, setIsNetworkError] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const isLoggedIn = !checkIfCurrentIsGuestProfile();
 
   useEffect(() => {
     setLoading(true);
@@ -32,7 +41,7 @@ export function Profile({ className }: Readonly<{ className?: string }>) {
       })
       .catch(err => {
         if (err instanceof AxiosError) {
-          console.log(err.response);
+          console.error(err.response);
           if (err.response?.status === 401) {
             toast({
               title: 'Session expired',
@@ -56,7 +65,8 @@ export function Profile({ className }: Readonly<{ className?: string }>) {
               variant: 'destructive'
             });
             return console.error(err);
-          } else setIsNetworkError(true);
+          }
+          setIsNetworkError(true);
         }
       })
       .finally(() => setLoading(false));
@@ -66,15 +76,28 @@ export function Profile({ className }: Readonly<{ className?: string }>) {
   const renderNetworkError = isNetworkError ? <NetworkError /> : null;
 
   return (
-    <div className={cn('h-full w-full box-border', className)}>
+    <div className={cn('h-full w-full box-border p-3', className)}>
       {renderLoader ??
         renderNetworkError ??
-        (user ? <UserComponent user={user} /> : <NotFound />)}
+        (user ? (
+          <UserComponent
+            user={user}
+            isItMyProfile={isItMyProfile}
+            isLoggedIn={isLoggedIn}
+          />
+        ) : (
+          <NotFound />
+        ))}
     </div>
   );
 }
 
-function UserComponent({ user }: Readonly<{ user: User }>) {
+function UserComponent({
+  user,
+  isItMyProfile,
+  isLoggedIn
+}: Readonly<{ user: User; isItMyProfile: boolean; isLoggedIn: boolean }>) {
+  const navigate = useNavigate();
   return (
     <div className="h-full w-full">
       <div className={`h-[calc(min(20%, 200px))] bg-[url(${user.banner})]`} />
@@ -95,7 +118,11 @@ function UserComponent({ user }: Readonly<{ user: User }>) {
             </button>
           </div>
           <div>
-            <div></div>
+            {user.posts.length > 0 ? (
+              <pre>{JSON.stringify(user.posts, null, 2)}</pre>
+            ) : (
+              <p>No posts yet</p>
+            )}
           </div>
         </div>
       </div>

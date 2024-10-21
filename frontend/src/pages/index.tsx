@@ -1,19 +1,20 @@
-export { Home } from "./home";
-export { Messages } from "./messages";
-export { Notifications } from "./notifications";
-export { Dashboard } from "./dashboard";
-export { CreatePost } from "./createPost";
-export { Search } from "./search";
-export { NotFound } from "./notFound";
-export { ShowPost } from "./showPost";
-export { Settings } from "./settings";
-export { Profile } from "./profile";
+export { Home } from './home';
+export { Messages } from './messages';
+export { Notifications } from './notifications';
+export { Dashboard } from './dashboard';
+export { CreatePost } from './createPost';
+export { Search } from './search';
+export { NotFound } from './notFound';
+export { ShowPost } from './showPost';
+export { Settings } from './settings';
+export { Profile } from './profile';
+export { HandleErrors } from './handleErrors';
 
 import {
   ForgotPasswordForm,
   LoginForm,
-  RegisterForm,
-} from "@/components/forms";
+  RegisterForm
+} from '@/components/forms';
 
 export function Login() {
   return (

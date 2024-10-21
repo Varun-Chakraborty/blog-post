@@ -1,8 +1,10 @@
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
-export function InfiniteLoader({ className }: Readonly<{ className?: string }>) {
+export function InfiniteLoader({
+  className
+}: Readonly<{ className?: string }>) {
   return (
-    <div className={cn("flex justify-center items-center", className)}>
+    <div className={cn('flex justify-center items-center', className)}>
       <svg
         className="animate-spin h-5 w-5"
         xmlns="http://www.w3.org/2000/svg"

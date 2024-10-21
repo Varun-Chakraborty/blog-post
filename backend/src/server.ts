@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
+import http from 'node:http';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -33,7 +34,7 @@ app.use('/api/v1', v1Router);
 app.get('/health', (_, res) => res.send('OK'));
 
 app.get('*', (req, res) =>
-  res.send('API v1.0\nAvailable Sub-Routes:\n- ./api/v1\n- ./health')
+  res.send('API v1.0\nAvailable Sub-Routes:\n- ./api/v1\n- ./health\n')
 );
 
-export default app;
+export const server = http.createServer(app);

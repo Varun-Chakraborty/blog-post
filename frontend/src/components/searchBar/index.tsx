@@ -1,10 +1,19 @@
 import { cn } from '@/lib/utils';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CiSearch } from 'react-icons/ci';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 
-function triggerSearch(query: string, navigate: NavigateFunction) {
+function search(query: string, navigate: NavigateFunction) {
   navigate(`/search?q=${query}`);
+}
+
+function triggerSearch(
+  query: string,
+  navigate: NavigateFunction,
+  timeout?: NodeJS.Timeout
+) {
+  if (timeout) clearTimeout(timeout);
+  return setTimeout(() => search(query, navigate), 300); // debounce
 }
 
 function onReload(input: HTMLInputElement) {
@@ -19,22 +28,23 @@ interface Props {
   full?: boolean;
 }
 
-export function SearchBar({ className, full = false }: Readonly<Props>) {
+export function SearchBar({ className }: Readonly<Props>) {
   const input = useRef<HTMLInputElement | undefined>(undefined);
+  const [timeout, setTimeout] = useState<NodeJS.Timeout | undefined>(undefined);
   const navigate = useNavigate();
   useEffect(() => {
     onReload(input.current!);
     window.addEventListener('popstate', () => onReload(input.current!));
     return () => {
       window.removeEventListener('popstate', () => onReload(input.current!));
-      if (input.current) input.current.value = '';
     };
   }, []);
   return (
     <form
       onSubmit={e => {
         e.preventDefault();
-        triggerSearch(input.current!.value, navigate);
+        if (timeout) clearTimeout(timeout);
+        search(input.current!.value, navigate);
       }}
       className={cn('p-2 flex', className)}
     >
@@ -42,23 +52,19 @@ export function SearchBar({ className, full = false }: Readonly<Props>) {
         ref={input as React.RefObject<HTMLInputElement>}
         onChange={e => {
           e.preventDefault();
-          triggerSearch(e.target.value, navigate);
+          setTimeout(triggerSearch(e.target.value, navigate, timeout));
         }}
         type="text"
-        name=""
-        id=""
         placeholder="Search..."
         className={cn(
-          'py-1 px-6 border border-border outline-none rounded-l-lg md:block hidden dark:bg-inherit',
-          { block: full }
+          'py-1 px-6 border border-border outline-none rounded-l-lg dark:bg-inherit'
         )}
       />
       <button
         name="Search"
-        onClick={() => triggerSearch(input.current!.value, navigate)}
+        type="submit"
         className={cn(
-          'bg-accent hover:bg-accent/80 text-accent-foreground font-semibold py-2 px-4 md:rounded-l-none rounded-lg shadow-lg transition duration-300',
-          { 'rounded-l-none': full }
+          'bg-accent hover:bg-accent/80 text-accent-foreground font-semibold py-2 px-4 rounded-lg rounded-l-none shadow-lg transition duration-300'
         )}
       >
         <CiSearch className="aspect-square sm:w-6 w-5" />

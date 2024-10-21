@@ -1,17 +1,17 @@
-import api from "@/api";
-import { SearchBar } from "@/components/searchBar";
-import { cn } from "@/lib/utils";
-import { APIResponseTypes } from "@/types";
-import { useEffect, useState } from "react";
-import { Posts } from "./postSearch";
-import { Profiles } from "./profileSearch";
+import api from '@/api';
+import { SearchBar } from '@/components/searchBar';
+import { cn } from '@/lib/utils';
+import { APIResponseTypes } from '@/types';
+import { useEffect, useState } from 'react';
+import { Posts } from './postSearch';
+import { Profiles } from './profileSearch';
 
 export function Search({ className }: Readonly<{ className?: string }>) {
   const [searchQuery, setSearchQuery] = useState<string | undefined>(undefined);
   const newSearchQuery = new URLSearchParams(window.location.search).get("q");
   const [results, setResults] = useState<APIResponseTypes.SearchResult>({
     users: [],
-    posts: [],
+    posts: []
   });
   const [loading, setLoading] = useState(false);
   const [type, setType] = useState<"users" | "posts">("users");

@@ -1,11 +1,10 @@
 import {
   createBrowserRouter,
   Navigate,
-  RouterProvider,
-} from "react-router-dom";
-import { FloatingMessage } from "./components/message";
-import { Layout } from "./layout";
-import { useProfile } from "./hooks/useProfile";
+  RouterProvider
+} from 'react-router-dom';
+import { Layout } from './layout';
+import { useProfile } from './hooks/useProfile';
 
 import {
   Home,
@@ -21,92 +20,93 @@ import {
   Login,
   Register,
   ForgotPassword,
-} from "./pages";
-import { ProtectedRoute } from "./components/protectedRoute";
+  HandleErrors
+} from './pages';
+import { ProtectedRoute } from './components/protectedRoute';
 
 export default function App() {
   const router = createBrowserRouter([
     {
-      path: "/",
-      element: <Layout />,
+      path: '/',
+      Component: Layout,
       children: [
         {
-          path: "",
-          element: <Home />,
+          path: '',
+          Component: Home
         },
         {
           path: "messages",
           element: <Messages />,
         },
         {
-          path: "notifications",
-          element: <Notifications />,
+          path: 'notifications',
+          Component: Notifications
         },
         {
-          path: "dashboard",
-          element: <Dashboard />,
+          path: 'dashboard',
+          Component: Dashboard
         },
         {
-          path: "search",
-          element: <Search />,
+          path: 'search',
+          Component: Search
         },
         {
-          path: "post/",
+          path: 'post/',
           children: [
             {
-              path: "",
-              element: <ShowPost />,
+              path: '',
+              Component: ShowPost
             },
             {
-              path: "create",
+              path: 'create',
               element: (
                 <ProtectedRoute>
                   <CreatePost />
                 </ProtectedRoute>
-              ),
-            },
-          ],
+              )
+            }
+          ]
         },
         {
-          path: "*",
-          element: <NotFound />,
+          path: '*',
+          Component: NotFound
         },
         {
-          path: "/signin",
-          element: <Login />,
+          path: 'signin',
+          Component: Login
         },
         {
-          path: "/signup",
-          element: <Register />,
+          path: 'signup',
+          Component: Register
         },
         {
-          path: "/login",
-          element: <Navigate to="/signin" />,
+          path: 'login',
+          element: <Navigate to="/signin" />
         },
         {
-          path: "/register",
-          element: <Navigate to="/signup" />,
+          path: 'register',
+          element: <Navigate to="/signup" />
         },
         {
-          path: "/settings",
-          element: <Settings />,
+          path: 'settings',
+          Component: Settings
         },
         {
           path: "/profile",
           element: <Profile />,
         },
         {
-          path: "/forgot-password",
-          element: <ForgotPassword />,
-        },
+          path: 'forgot-password',
+          Component: ForgotPassword
+        }
       ],
-    },
+      ErrorBoundary: HandleErrors
+    }
   ]);
   useProfile();
   return (
     <main className="h-screen w-screen flex justify-between">
       <RouterProvider router={router} />
-      <FloatingMessage />
     </main>
   );
 }

@@ -1,7 +1,8 @@
-import app from './app';
+import { server } from './server';
+import { io as socketServer } from './socket';
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT ?? 3000;
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Listening on port ${port}`);
 });

@@ -5,7 +5,7 @@ export interface Profile {
   name: string;
   username: string;
   role?: 'USER' | 'ADMIN';
-  pfp?: string;
+  pfp?: string | null;
   guest?: boolean;
 }
 

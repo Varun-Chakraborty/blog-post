@@ -1,6 +1,7 @@
 import { CiBellOn, CiChat1 } from 'react-icons/ci';
 import { useNavigate, Outlet } from 'react-router-dom';
 import { SearchBar } from '@/components/searchBar';
+import { SearchButton } from '@/components/buttons';
 import { cn } from '@/lib/utils';
 import { Logo } from '@/components/logo';
 
@@ -23,8 +24,8 @@ export function RightPanel({ isMenuOpen, setMenuOpen }: Readonly<Props>) {
   const navigate = useNavigate();
   const currentPage = pages[window.location.pathname];
   return (
-    <div className="h-full xl:w-5/6 lg:4/5 sm:2/3 w-full p-2 flex flex-col gap-4">
-      <div className="flex justify-between items-center select-none">
+    <div className="sm:h-full h-svh xl:w-5/6 lg:4/5 sm:2/3 w-full flex flex-col">
+      <div className="flex justify-between items-center select-none p-2">
         <div className={cn('text-2xl font-montserrat sm:block hidden')}>
           {currentPage}
         </div>
@@ -34,7 +35,11 @@ export function RightPanel({ isMenuOpen, setMenuOpen }: Readonly<Props>) {
           className="sm:hidden"
         />
         <div className="flex sm:gap-4 gap-2 items-center">
-          <SearchBar />
+          <SearchBar className="sm:flex hidden" />
+          <SearchButton
+            className="sm:hidden"
+            onClick={() => navigate('/search')}
+          />
           <button
             name="Notifications"
             className="p-2 border border-borderColor rounded cursor-pointer hover:bg-primary/10 relative"
@@ -47,7 +52,7 @@ export function RightPanel({ isMenuOpen, setMenuOpen }: Readonly<Props>) {
           <button
             name="Messages"
             className="p-2 border border-borderColor rounded cursor-pointer hover:bg-primary/10 relative"
-            onClick={() => navigate('/messages')}
+            onClick={() => navigate('/chat')}
             type="button"
           >
             <CiChat1 className="aspect-square sm:h-6 w-5" />
@@ -55,9 +60,10 @@ export function RightPanel({ isMenuOpen, setMenuOpen }: Readonly<Props>) {
           </button>
         </div>
       </div>
-
-      <div className="bg-card h-full w-full xl:rounded-[40px] lg:rounded-[30px] md:rounded-[20px] sm:rounded-[10px] rounded-[5px] p-6 shadow-lg overflow-y-auto">
-        <Outlet />
+      <div className="p-2 overflow-y-auto h-full w-full">
+        <div className="bg-card h-full w-full md:rounded-[20px] sm:rounded-[10px] rounded-[5px] shadow-lg">
+          <Outlet />
+        </div>
       </div>
     </div>
   );

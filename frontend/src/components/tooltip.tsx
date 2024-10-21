@@ -2,8 +2,8 @@ import {
   TooltipContent,
   TooltipProvider,
   Tooltip as TooltipShadcn,
-  TooltipTrigger,
-} from "./ui/tooltip";
+  TooltipTrigger
+} from './ui/tooltip';
 
 interface Props {
   tooltipContent: string;
@@ -14,7 +14,7 @@ interface Props {
 export function Tooltip({
   tooltipContent,
   children,
-  className,
+  className
 }: Readonly<Props>) {
   return (
     <TooltipProvider>
