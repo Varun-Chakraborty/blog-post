@@ -19,7 +19,7 @@ router.use('/user/:username', userRouter);
 
 router.get('/search', search);
 
-router.get('*', (_, res) =>
+router.get('*path', (_, res) =>
   res.send(
     'API v1.0\nAvailable Sub-Routes:\n- ./user/:username\n- ./auth\n- ./search\n'
   )

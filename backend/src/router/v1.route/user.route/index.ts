@@ -6,7 +6,7 @@ const router = Router({ mergeParams: true }); // to access the param "username" 
 
 router.get('/profile', userController.getProfile);
 
-router.get('*', (_: Req, res: Res) =>
+router.get('*path', (_: Req, res: Res) =>
   res.send('API v1.0\nAvailable Sub-Routes:\n- ./profile\n')
 );
 

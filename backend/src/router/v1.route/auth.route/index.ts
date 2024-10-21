@@ -13,7 +13,7 @@ router.post('/signin', authController.signin);
 router.post('/signup', authController.signup);
 router.get('/refresh', authController.refreshToken);
 
-router.get('*', (_, res) =>
+router.get('*path', (_, res) =>
   res.send(
     'API v1.0\nAvailable Sub-Routes:\n- ./login\n- ./signup\n- ./signout\n- ./refresh'
   )

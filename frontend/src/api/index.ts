@@ -49,6 +49,10 @@ class Api {
     );
   }
 
+  sendMessage(chatId: string, message: string) {
+    this.socket.emit('message', { chatId, message });
+  }
+
   async refreshToken() {
     const response = await this.api.get('/auth/refresh');
     return response.data;
@@ -107,9 +111,21 @@ class Api {
     }
   }
 
-  async search(query: string) {
+  async search(
+    query: string,
+    searchFor?: 'users' | 'posts',
+    skipTill?: number
+  ) {
+    const params = [
+      `q=${query}`,
+      searchFor ? `searchFor=${searchFor}` : '',
+      skipTill ? `skipTill=${skipTill}` : ''
+    ]
+      .filter(Boolean)
+      .join('&');
+
     const response = await this.api.get<APIResponseTypes.SearchResponse>(
-      `/search?q=${query}`
+      `/search?${params}`
     );
     return response.data.data!.searchResult;
   }

@@ -23,6 +23,7 @@ import {
   HandleErrors
 } from './pages';
 import { ProtectedRoute } from './components/protectedRoute';
+import { ChatScreen } from './components/chatScreen';
 
 export default function App() {
   const router = createBrowserRouter([
@@ -35,8 +36,14 @@ export default function App() {
           Component: Home
         },
         {
-          path: "messages",
-          element: <Messages />,
+          path: 'chat',
+          Component: Messages,
+          children: [
+            {
+              path: '*',
+              Component: ChatScreen
+            }
+          ]
         },
         {
           path: 'notifications',
@@ -92,8 +99,13 @@ export default function App() {
           Component: Settings
         },
         {
-          path: "/profile",
-          element: <Profile />,
+          path: 'user',
+          children: [
+            {
+              path: '*',
+              Component: Profile
+            }
+          ]
         },
         {
           path: 'forgot-password',
