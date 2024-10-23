@@ -1,7 +1,7 @@
 import { Profile } from '@/types';
 import { useNavigate } from 'react-router-dom';
 
-export function ProfileCard({ profile }: { profile: Profile }) {
+export function ProfileCard({ profile }: Readonly<{ profile: Profile }>) {
   const navigate = useNavigate();
   return (
     <button
@@ -10,7 +10,7 @@ export function ProfileCard({ profile }: { profile: Profile }) {
       type="button"
     >
       <img
-        src={profile.pfp || '/placeholder-user.jpg'}
+        src={profile.pfp ?? '/placeholder-user.jpg'}
         alt=""
         className="w-10 h-10 rounded-full border border-borderColor"
       />

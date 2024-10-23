@@ -16,38 +16,71 @@ This is the part of full-stack BlogPost, backend is hosted on render.com
 
 ### Prerequisites
 
-- Node.js
+- [Node.js](https://nodejs.org/en/)
 - NPM (or any other package manager, you prefer, but you would need to change the installation command)
-- A postgres database, if you prefer other sql based databases, you would need to change it in the prisma schema file, a no sql database is not supported.
+- docker cli **(or docker desktop)**
+- docker-compose **(or docker desktop)**
 
-### Installation steps
+### Steps to set up the backend
 
-To run the Blog Post backend locally, follow these steps:
+- [For development of backend](#for-development-of-backend)
+- [For using api to develop frontend](#for-using-api-to-develop-frontend)
 
-1. Install Dependencies:
+### For development of backend
+
+1. Set Up databases if not already:
+
+   ```bash
+   docker-compose -f /path/to/docker-compose.dev.yml up -d
+   ```
+
+2. Install Dependencies:
+
    ```bash
    cd backend
    npm install
    ```
-2. Set Up Environment Variables:
 
-   - Create a .env file in the root directory.
-   - Add the necessary environment variables as specified in .env.sample.
+  3. Set Up Environment Variables:
+  - Create a .env file in the root directory.
+  - Add the necessary environment variables as specified in [here](.env.sample).
 
-3. Start the Development Server:
+  4. Migrate Database:
 
-   ```bash
-   npm run dev
-   ```
+     ```bash
+     npm run migrate
+     ```
 
-4. Access the API: API could be accessed at http://localhost:3000 (3000 is the default port for the backend, you can change it in the .env file).
+  5. Start the Development Server:
+
+     ```bash
+     npm run dev
+     ```
+     ```bash
+     npm run dev
+     ```
+
+  6. Access the API: API could be accessed at http://localhost:3000 (3000 is the default port for the backend, you can change it in the .env file).
+
+### For using api to develop frontend
+
+  - Set up the enviroment variables: 
+    - Create a file named .env.docker.dev
+    - Add the necessary environment variables as specified in [here](.env.docker.dev.sample).
+
+  - Set up the app and DBs on docker from [docker-compose file](docker-compose.yml):
+    ```bash
+    docker-compose -f /path/to/docker-compose.yml up -d
+    ```
+  
+  - Access the api at http://localhost:4002 (4002 is the default port for the backend, you can change it in the [docker-compose file](docker-compose.yml) (line 24 and 35)).
 
 ## API Documentation
 
 ### Usage
 
 - Softwares like Postman can be used to test the API.
-- Or just run the [frontend](../frontend/) locally and run the API server to test the API, just remember to put the local frontend url in the .env file.
+- Or just run the [frontend](../frontend/) locally and run the API server to test the API, just remember to put your frontend url in the .env file or docker-compose file whatever you prefer.
 
 ### BASE URL
 
@@ -57,6 +90,8 @@ To run the Blog Post backend locally, follow these steps:
 
 - The response format is JSON.
 - In times of success:
+
+
   ```json
   {
     "status": 200, // codes will range between [200, 299] for success
@@ -65,6 +100,8 @@ To run the Blog Post backend locally, follow these steps:
     "data": {}
   }
   ```
+
+
   **_NOTE: The data field will contain the response data. And depending upon the endpoint, the data may not be present._**
 
 - In times of error:
@@ -79,203 +116,214 @@ To run the Blog Post backend locally, follow these steps:
 
 ### Endpoints
 
-#### 1. GET /api/v1/isUsernameAvailable
+- authentication
 
-- **Purpose**
-  This endpoint is used to check if a username is available.
-- **Request**
-  - **Method**: GET
-  - **URL**: `/api/v1/isUsernameAvailable`
-  - **Headers**:
-    - `Content-Type: application/json`
-  - **Query Parameters**:
-    - `username` _(string, required)_: The username to check.
-- **Response:**
+  - [POST /api/v1/auth/signup](#1-post-apiv1authsignup)
+  - [POST /api/v1/auth/signin](#2-post-apiv1authsignin)
+  - [POST /api/v1/auth/signout](#3-post-apiv1authsignout)
+  - [GET /api/v1/auth/refresh](#4-get-apiv1authrefresh)
+
+- search
+
+  - [GET /api/v1/search](#5-get-apiv1search)
+
+- user
+  - [GET /api/v1/user/:username/profile](#6-get-apiv1userusernameprofile)
+
+#### 1. POST /api/v1/auth/signup
+
+- **Purpose**: Register a new user.
+- **Method**: POST
+- **URL**: `/api/v1/auth/signup`
+- **Sample Request**:
   ```json
   {
-    "status": 200,
-    "success": true,
-    "message": "Username is available."
+    "username": "username",
+    "name": "name",
+    "email": "email",
+    "password": "password"
   }
   ```
-
-#### 2. GET /api/v1/search
-
-- **Purpose**
-  This endpoint is used to search for posts.
-- **Request**
-  - **Method**: GET
-  - **URL**: `/api/v1/search`
-  - **Headers**:
-    - `Content-Type: application/json`
-  - **Query Parameters**:
-    - `query` _(string, required)_: The search query.
-- **Response:**
-  ```json
-  {
-    "status": 200,
-    "success": true,
-    "message": "Search results retrieved successfully.",
-    "data": {
-      "query": "exampleQuery",
-      "searchResult": {
-          users: [
-              {
-                  id: /* userId */,
-                  username: "exampleUser",
-                  email: "exampleEmail"
-              }
-          ],
-      }
-    }
-  }
-  ```
-  **_NOTE: Yet to implement post search._**
-
-#### 3. POST /api/v1/auth/signup
-
-- **Purpose**
-  This endpoint is used to create a new user.
-- **Request**
-  - **Method**: POST
-  - **URL**: `/api/v1/auth/signup`
-  - **Headers**:
-    - `Content-Type: application/json`
-  - **Request Body**:
-    - `username` _(string, required)_: The user's username.
-    - `name` _(string, required)_: The user's name.
-    - `email` _(string, required)_: The user's email.
-    - `password` _(string, required)_: The user's password.
-- **Example Request Body:**
-  ```json
-  {
-    "username": "exampleUser",
-    "name": "exampleName",
-    "email": "exampleEmail",
-    "password": "examplePassword"
-  }
-  ```
-- **Response:**
+- **Sample Response**:
   ```json
   {
     "status": 201,
     "success": true,
-    "message": "User created successfully.",
+    "message": "Signup successful.",
     "data": {
       "user": {
-        "id": /* userId */,
-        "username": "exampleUser",
-        "email": "exampleEmail",
-        "name": "exampleName",
+        "id": 1,
+        "username": "username",
+        "name": "name",
+        "email": "email",
+        "pfp": null, // we are yet to support adding pfp at the time of registration
+        "role": "USER"
       },
-      "accessToken": "exampleAccessToken"
+      "accessToken": "accessToken"
     }
   }
   ```
 
-#### 4. POST /api/v1/auth/signin
+#### 2. POST /api/v1/auth/signin
 
-- **Purpose**
-  This endpoint authenticates a user with their `username` and `password`. If the credentials are valid, the user is signed in and an access token is returned.
-- **Request**
-
-  - **Method**: POST
-  - **URL**: `/api/v1/auth/signin`
-  - **Headers**:
-    - `Content-Type: application/json`
-  - **Request Body**:
-    - `username` _(string, required)_: The user's username.
-    - `password` _(string, required)_: The user's password.
-
-- **Example Request Body:**
+- **Purpose**: Sign in a user.
+- **Method**: POST
+- **URL**: `/api/v1/auth/signin`
+- **Sample Request**:
   ```json
   {
-    "username": "exampleUser",
-    "password": "examplePassword"
+    "username": "username",
+    "password": "password"
   }
   ```
-- **Response:**
+- **Sample Response**:
+- **Sample Response**:
   ```json
   {
     "status": 200,
     "success": true,
-    "message": "Login successful.",
+    "message": "Signin successful.",
     "data": {
       "user": {
-        "id": /* userId */,
-        "username": "exampleUser",
-        "email": "exampleEmail",
-        "name": "exampleName",
+        "id": 1,
+        "username": "username",
+        "name": "name",
+        "email": "email",
+        "pfp": null,
+        "role": "USER"
       },
-      "accessToken": "exampleAccessToken"
+      "accessToken": "accessToken"
+      "accessToken": "accessToken"
     }
   }
   ```
 
-#### 5. GET /api/v1/auth/refresh
+#### 3. POST /api/v1/auth/signout
 
-- **Purpose**
-  This endpoint is used to refresh the access token.
-- **Request**
-  - **Method**: GET
-  - **URL**: `/api/v1/auth/refresh`
-  - **Headers**:
-    - `Content-Type: application/json`
-  - **Response:**
+- **Purpose**: Sign out a user.
+- **Method**: POST
+- **URL**: `/api/v1/auth/signout`
+- **Required Parameters**:
+  - the `accessToken` of the user either from the cookie as set by the server or from the `Authorization` header
+- **Sample Request Header**:
+  ```json
+  {
+    "Authorization": "Bearer accessToken"
+  }
+  ```
+- **Sample Response**:
+- **Sample Response**:
   ```json
   {
     "status": 200,
     "success": true,
-    "message": "Access token refreshed.",
+    "message": "Signout successful."
+  }
+  ```
+
+#### 4. GET /api/v1/auth/refresh
+
+- **Purpose**: Refresh the access token.
+- **Method**: GET
+- **URL**: `/api/v1/auth/refresh`
+- **Required Parameters**:
+  - the `refreshToken` of the user either from the cookie as set by the server or from the `Authorization` header
+- **Sample Request Header**:
+  ```json
+  {
+    "Authorization": "Bearer refreshToken"
+  }
+  ```
+- **Sample Response**:
+  ```json
+  {
+    "status": 200,
+    "success": true,
+    "message": "Refresh successful.",
     "data": {
-      "accessToken": "exampleAccessToken"
+      "accessToken": "accessToken"
     }
-  }
-
-#### 6. POST /api/v1/auth/signout`
-
-- **Purpose**
-  This endpoint is used to sign out a user.
-- **Request**
-  - **Method**: POST
-  - **URL**: `/api/v1/auth/signout`
-  - **Headers**:
-    - `Content-Type: application/json`
-  - **Response:**
-  ```json
-  {
-    "status": 200,
-    "success": true,
-    "message": "Logout successful."
   }
   ```
 
-#### 7. GET /api/v1/user/profile
+#### 5. GET /api/v1/search
 
-- **Purpose**
-  This endpoint is used to get the profile of a user.
-- **Request**
-  - **Method**: GET
-  - **URL**: `/api/v1/user/profile`
-  - **Headers**:
-    - `Content-Type: application/json`
-  - **Response:**
+- **Purpose**: Search for users.
+- **Method**: GET
+- **URL**: `/api/v1/search`
+- **Required Parameters**:
+  - the `q` of the search query
+  - the `searchFor` of the search query
+  - the `skipTill` of the search query
+- **Sample Request**:
+  `/api/v1/search?q=query&searchFor=users&skipTill=10`
+- **Sample Response**:
   ```json
   {
     "status": 200,
     "success": true,
-    "message": "Profile retrieved successfully.",
+    "message": "Search successful.",
+    "data": {
+      "searchResult": [
+        {
+          "id": 1,
+          "username": "username",
+          "name": "name",
+          "email": "email",
+          "pfp": null,
+          "role": "USER"
+        },
+        {
+          "id": 2,
+          "username": "username",
+          "name": "name",
+          "email": "email",
+          "pfp": null,
+          "role": "USER"
+        }
+      ]
+    }
+  }
+  ```
+
+#### 6. GET /api/v1/user/:username/profile
+
+- **Purpose**: Get the profile of a user.
+- **Method**: GET
+- **URL**: `/api/v1/user/:username/profile`
+- **Required Parameters**:
+
+  - the `username` of the user
+
+  **_Note: The `username` supports a special keyword `me` which will return the profile of the currently logged in user, if user is not logged in it will return [401](#error-handling) error._**
+
+- **Sample Request**:
+  `/api/v1/user/username/profile`
+- **Sample Response**:
+  ```json
+  {
+    "status": 200,
+    "success": true,
+    "message": "User found.",
+    "message": "User found.",
     "data": {
       "user": {
-        "id": /* userId */,
-        "username": "exampleUser",
-        "email": "exampleEmail",
-        "name": "exampleName",
+        "id": 1,
+        "username": "username",
+        "name": "name",
+        "email": "email",
+        "pfp": null,
+        "role": "USER"
+        "id": 1,
+        "username": "username",
+        "name": "name",
+        "email": "email",
+        "pfp": null,
+        "role": "USER"
       }
     }
   }
   ```
-  **_NOTE: Yet to implement profile of other users._**
 
 ## Error Handling
 

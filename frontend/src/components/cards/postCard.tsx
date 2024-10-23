@@ -2,7 +2,7 @@ import { Post } from '@/types';
 import { useNavigate } from 'react-router-dom';
 import { ProfileCard } from './profileCard';
 
-export function PostCard({ post }: { post: Post }) {
+export function PostCard({ post }: Readonly<{ post: Post }>) {
   const navigate = useNavigate();
   return (
     <button
