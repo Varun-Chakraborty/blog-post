@@ -5,7 +5,7 @@ import { Profile } from '@/types';
 import { createSelector } from 'reselect';
 import { RootState } from '@/redux';
 
-function useLoadProfiles() {
+function useLoadUserProfiles() {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(true);
   useEffect(() => {
@@ -20,7 +20,7 @@ function useLoadProfiles() {
   return loading;
 }
 
-function useSaveProfiles(loading: boolean) {
+function useSaveUserProfiles(loading: boolean) {
   const selectProfiles = createSelector(
     (state: RootState) => state.profile.profiles,
     profiles => profiles.filter(profile => !profile.guest)
@@ -33,7 +33,7 @@ function useSaveProfiles(loading: boolean) {
   }, [profiles, loading]);
 }
 
-export function useProfile() {
-  const loading = useLoadProfiles();
-  useSaveProfiles(loading);
+export function useUserProfile() {
+  const loading = useLoadUserProfiles();
+  useSaveUserProfiles(loading);
 }

@@ -1,7 +1,7 @@
 import api from '@/api';
 import { InfiniteLoader } from '@/components/loaders';
 import { useToast } from '@/components/ui/use-toast';
-import { useAppDispatch, useAppSelector } from '@/hooks/redux';
+import { useAppDispatch, useAppSelector, isGuestProfile } from '@/hooks';
 import { cn } from '@/lib/utils';
 import { profileActions } from '@/redux/profile';
 import { AxiosError } from 'axios';
@@ -11,7 +11,6 @@ import { User } from '@/types';
 import { UserProfile } from './userProfile';
 import { NotFound } from './notFound';
 import { NetworkError } from '@/components/networkError';
-import { checkIfCurrentIsGuestProfile } from '@/hooks/checkIfCurrentIsGuestProfile';
 
 export function Profile({ className }: Readonly<{ className?: string }>) {
   const [user, setUser] = useState<User | undefined>(undefined);
@@ -30,7 +29,7 @@ export function Profile({ className }: Readonly<{ className?: string }>) {
   const [isNetworkError, setIsNetworkError] = useState(false);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const isLoggedIn = !checkIfCurrentIsGuestProfile();
+  const isLoggedIn = !isGuestProfile();
 
   useEffect(() => {
     setLoading(true);

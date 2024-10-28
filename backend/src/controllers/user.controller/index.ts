@@ -1,2 +1,10 @@
 export { isUsernameAvailable } from './isUsernameAvailable';
 export { getProfile } from './getProfile';
+export { getChatPreviews } from './getChatPreviews';
+export { getUnreadChats } from './getUnreadChats';
+export { followUser } from './follow';
+export { unfollowUser } from './unfollow';
+export { getFollowers } from './getFollowers';
+export { getFollowing } from './getFollowing';
+export { isFollowed } from './isFollowed';
+export { isFollowing } from './isFollowing';

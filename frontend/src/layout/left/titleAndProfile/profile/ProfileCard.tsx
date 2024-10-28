@@ -1,7 +1,7 @@
 import { Profile } from '@/types';
 import { IoChevronDown, IoChevronUp } from 'react-icons/io5';
-import { AdminCapsule /* PremiumCapsule */ } from '@/components/capsules';
-import { cn } from '@/lib/utils';
+import { AdminBadge, PremiumBadge } from '@/components/badges';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 interface ProfileProps {
   profile: Profile;
@@ -23,11 +23,12 @@ export function ProfileCard({
       type="button"
     >
       <div className="flex items-center gap-2">
-        <img
-          src={profile.pfp ?? '/placeholder-user.jpg'}
-          alt=""
-          className="w-10 h-10 rounded-full border border-borderColor"
-        />
+        <Avatar>
+          <AvatarImage src={profile.pfp ?? '/placeholder-user.jpg'} />
+          <AvatarFallback>
+            {profile.name.charAt(0).toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
         <div className="flex flex-col justify-center">
           <span className="font-semibold uppercase text-sm">
             {profile.name}
@@ -38,8 +39,8 @@ export function ProfileCard({
         </div>
       </div>
       <div className="flex gap-1">
-        {profile.role === 'ADMIN' && <AdminCapsule className={cn('')} />}
-        {/* {profile.premium && <PremiumCapsule className={cn('')} />} */}
+        {profile.role === 'ADMIN' && <AdminBadge />}
+        {/* {profile.premium && <PremiumBadge />} */}
         {current &&
           (listOpen ? (
             <IoChevronUp className="w-4 h-4" />

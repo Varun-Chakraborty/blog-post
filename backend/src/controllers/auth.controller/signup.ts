@@ -1,9 +1,6 @@
 import { ExpressTypes } from '@/types';
 import { prisma } from '@/db';
-import { ApiResponse } from '@/utils/ApiResponse';
-import { wrapperFx } from '@/utils/wrapperFx';
-import { generateTokens } from '@/utils/tokens';
-import { setCookie } from '@/utils/setCookie';
+import { ApiResponse, wrapperFx, tokens, setCookie } from '@/utils';
 import { z } from 'zod';
 
 export const signup = wrapperFx(async function (
@@ -56,7 +53,7 @@ export const signup = wrapperFx(async function (
     omit: { password: true, refreshToken: true }
   });
 
-  const { access, refresh } = generateTokens(user, 'both');
+  const { access, refresh } = tokens.generateTokens(user, 'both');
 
   res = setCookie('accessToken', access!, res, {
     maxAge: Number(

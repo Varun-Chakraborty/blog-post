@@ -4,6 +4,7 @@ import { SearchBar } from '@/components/searchBar';
 import { SearchButton } from '@/components/buttons';
 import { cn } from '@/lib/utils';
 import { Logo } from '@/components/logo';
+import { useAppSelector } from '@/hooks';
 
 const pages: Record<string, string> = {
   '/dashboard': 'Dashboard',
@@ -40,24 +41,8 @@ export function RightPanel({ isMenuOpen, setMenuOpen }: Readonly<Props>) {
             className="sm:hidden"
             onClick={() => navigate('/search')}
           />
-          <button
-            name="Notifications"
-            className="p-2 border border-borderColor rounded cursor-pointer hover:bg-primary/10 relative"
-            onClick={() => navigate('/notifications')}
-            type="button"
-          >
-            <CiBellOn className="aspect-square sm:h-6 w-5" />
-            <div className="w-2 h-2 bg-accent rounded-full absolute -top-1 -right-1"></div>
-          </button>
-          <button
-            name="Messages"
-            className="p-2 border border-borderColor rounded cursor-pointer hover:bg-primary/10 relative"
-            onClick={() => navigate('/chat')}
-            type="button"
-          >
-            <CiChat1 className="aspect-square sm:h-6 w-5" />
-            <div className="w-2 h-2 bg-accent rounded-full absolute -top-1 -right-1"></div>
-          </button>
+          <ChatButton />
+          <NotificationsButton />
         </div>
       </div>
       <div className="p-2 overflow-y-auto h-full w-full">
@@ -66,5 +51,55 @@ export function RightPanel({ isMenuOpen, setMenuOpen }: Readonly<Props>) {
         </div>
       </div>
     </div>
+  );
+}
+
+function ChatButton({ className }: Readonly<{ className?: string }>) {
+  const navigate = useNavigate();
+  const unreadChats = useAppSelector(state => state.chat.unreadChats);
+  return (
+    <button
+      name="Messages"
+      className={cn(
+        'p-2 border border-borderColor rounded cursor-pointer hover:bg-primary/10 relative',
+        className
+      )}
+      onClick={() => navigate('/chat')}
+      type="button"
+    >
+      <CiChat1 className="aspect-square sm:h-6 w-5" />
+      <div
+        className={cn(
+          'w-2 h-2 bg-accent rounded-full absolute -top-1 -right-1',
+          { hidden: unreadChats.length === 0 }
+        )}
+      ></div>
+    </button>
+  );
+}
+
+function NotificationsButton({ className }: Readonly<{ className?: string }>) {
+  const navigate = useNavigate();
+  const notifications = useAppSelector(
+    state => state.notification.unreadNotifications
+  );
+  return (
+    <button
+      name="Notifications"
+      className={cn(
+        'p-2 border border-borderColor rounded cursor-pointer hover:bg-primary/10 relative',
+        className
+      )}
+      onClick={() => navigate('/notifications')}
+      type="button"
+    >
+      <CiBellOn className="aspect-square sm:h-6 w-5" />
+      <div
+        className={cn(
+          'w-2 h-2 bg-accent rounded-full absolute -top-1 -right-1',
+          { hidden: notifications.length === 0 }
+        )}
+      ></div>
+    </button>
   );
 }

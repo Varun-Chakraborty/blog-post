@@ -18,7 +18,7 @@ import { MdPassword } from 'react-icons/md';
 import { cn } from '@/lib/utils';
 import { Link, useNavigate } from 'react-router-dom';
 import { isAxiosError } from 'axios';
-import { useAppDispatch } from '@/hooks/redux';
+import { useAppDispatch } from '@/hooks';
 import { profileActions } from '@/redux/profile';
 import api from '@/api';
 import { useState } from 'react';

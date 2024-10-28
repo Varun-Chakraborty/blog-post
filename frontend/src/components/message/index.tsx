@@ -3,12 +3,29 @@ import { useEffect, useRef, useState } from 'react';
 import { IoChevronDown } from 'react-icons/io5';
 import { MessageComponent } from './messageComponent';
 import { useLocation } from 'react-router-dom';
+import { useAppSelector, useFetchUnreadChats } from '@/hooks';
+
+function handleClickOutside(
+  event: MouseEvent,
+  currentComponent: React.RefObject<HTMLDivElement>,
+  setExpanded: React.Dispatch<React.SetStateAction<boolean>>
+) {
+  if (
+    currentComponent.current &&
+    !currentComponent.current.contains(event.target as HTMLDivElement)
+  ) {
+    setExpanded(false);
+  }
+}
 
 export function FloatingMessage() {
   const [expanded, setExpanded] = useState(false);
   const [isChatCurrentPath, setIsChatCurrentPath] = useState(false);
   const currentComponent = useRef<HTMLDivElement>(null);
   const location = useLocation();
+  useFetchUnreadChats();
+
+  const unreadChats = useAppSelector(state => state.chat.unreadChats);
 
   useEffect(() => {
     const currentPath = location.pathname.split('/')[1];
@@ -16,17 +33,13 @@ export function FloatingMessage() {
   }, [location]);
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        currentComponent.current &&
-        !currentComponent.current.contains(event.target as HTMLDivElement)
-      ) {
-        setExpanded(false);
-      }
-    }
-    document.addEventListener('click', handleClickOutside);
+    document.addEventListener('click', e =>
+      handleClickOutside(e, currentComponent, setExpanded)
+    );
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener('click', e =>
+        handleClickOutside(e, currentComponent, setExpanded)
+      );
     };
   });
 
@@ -47,7 +60,11 @@ export function FloatingMessage() {
         type="button"
       >
         <div className="flex items-center gap-2">
-          <div className="h-2 aspect-square bg-accent rounded-full"></div>
+          <div
+            className={cn('h-2 aspect-square bg-accent rounded-full', {
+              hidden: !unreadChats.length
+            })}
+          />
           <span className="text-lg">Messages</span>
         </div>
         <div className="p-2 hover:bg-primary/10 rounded-full">
@@ -58,10 +75,10 @@ export function FloatingMessage() {
       </button>
       <div className={cn('transition-all', !expanded ? 'h-0' : 'h-fit')}>
         <div className="py-2 px-3 space-y-2">
-          {messages.map(message => (
+          {unreadChats.map(chat => (
             <MessageComponent
-              message={message}
-              key={message.id}
+              chat={chat}
+              key={chat.id}
               setExpanded={setExpanded}
             />
           ))}
@@ -70,28 +87,3 @@ export function FloatingMessage() {
     </div>
   );
 }
-
-const messages = [
-  {
-    id: '1',
-    sender: {
-      id: '1',
-      username: 'john',
-      name: 'John Doe',
-      pfp: '/placeholder-user.jpg'
-    },
-    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    chatId: '1'
-  },
-  {
-    id: '2',
-    sender: {
-      id: '1',
-      username: 'john',
-      name: 'John Doe',
-      pfp: '/placeholder-user.jpg'
-    },
-    message: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-    chatId: '2'
-  }
-];

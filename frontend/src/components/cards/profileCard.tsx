@@ -1,5 +1,6 @@
 import { Profile } from '@/types';
 import { useNavigate } from 'react-router-dom';
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 export function ProfileCard({ profile }: Readonly<{ profile: Profile }>) {
   const navigate = useNavigate();
@@ -9,11 +10,10 @@ export function ProfileCard({ profile }: Readonly<{ profile: Profile }>) {
       className="p-3 hover:bg-primary/10 border-b border-borderColor cursor-pointer flex gap-3 rounded-lg"
       type="button"
     >
-      <img
-        src={profile.pfp ?? '/placeholder-user.jpg'}
-        alt=""
-        className="w-10 h-10 rounded-full border border-borderColor"
-      />
+      <Avatar>
+        <AvatarImage src={profile.pfp ?? '/placeholder-user.jpg'} />
+        <AvatarFallback>{profile.name.charAt(0).toUpperCase()}</AvatarFallback>
+      </Avatar>
       <div>
         <span className="font-bold text-accent group-hover:underline">
           {profile.name}

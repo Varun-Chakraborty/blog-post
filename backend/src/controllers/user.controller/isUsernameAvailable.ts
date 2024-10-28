@@ -1,7 +1,6 @@
 import { prisma } from '@/db';
 import { ExpressTypes } from '@/types';
-import { ApiResponse } from '@/utils/ApiResponse';
-import { wrapperFx } from '@/utils/wrapperFx';
+import { ApiResponse, wrapperFx } from '@/utils';
 import { z } from 'zod';
 
 export const isUsernameAvailable = wrapperFx(async function (

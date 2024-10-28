@@ -1,7 +1,6 @@
 import { prisma } from '@/db';
 import { ExpressTypes, User, Post } from '@/types';
-import { ApiResponse } from '@/utils/ApiResponse';
-import { wrapperFx } from '@/utils/wrapperFx';
+import { ApiResponse, wrapperFx } from '@/utils';
 
 export const search = wrapperFx(async function (
   req: ExpressTypes.Req,
@@ -37,7 +36,7 @@ export const search = wrapperFx(async function (
       },
       include: {
         author: {
-          select: { username: true, pfp: true }
+          select: { username: true, profilePicture: true }
         }
       },
       skip: skipTill,

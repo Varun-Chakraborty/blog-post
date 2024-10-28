@@ -1,21 +1,31 @@
+import { prisma } from '@/db';
 import { ExpressTypes } from '@/types';
-import { ApiResponse } from '@/utils/ApiResponse';
-import { wrapperFx } from '@/utils/wrapperFx';
+import { ApiResponse, wrapperFx } from '@/utils';
 
 export const followUser = wrapperFx(
   async (req: ExpressTypes.Req, res: ExpressTypes.Res) => {
-    const { username } = req.body;
-    if (!username)
-      return new ApiResponse('Username is required', undefined, 400).error(res);
-    return new ApiResponse('User followed').success(res);
-  }
-);
+    const { username } = req.params;
 
-export const unfollowUser = wrapperFx(
-  async (req: ExpressTypes.Req, res: ExpressTypes.Res) => {
-    const { username } = req.body;
     if (!username)
       return new ApiResponse('Username is required', undefined, 400).error(res);
-    return new ApiResponse('User unfollowed').success(res);
+
+    const targetUserId = (
+      await prisma.prismaClient.user.findUnique({
+        where: { username },
+        select: { id: true }
+      })
+    )?.id;
+
+    if (!targetUserId)
+      return new ApiResponse('User does not exist', undefined, 404).error(res);
+
+    await prisma.prismaClient.follow.create({
+      data: {
+        followerId: req.user!.id,
+        followingId: targetUserId
+      }
+    });
+
+    return new ApiResponse('User followed', undefined, 201).success(res);
   }
 );

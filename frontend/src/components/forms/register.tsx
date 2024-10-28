@@ -22,7 +22,7 @@ import { PasswordStrength } from '@/components/passwordStrength';
 import api from '@/api';
 import { IsUsernameAvailable } from '@/components/isUsernameAvailable';
 import { isAxiosError } from 'axios';
-import { useAppDispatch } from '@/hooks/redux';
+import { useAppDispatch } from '@/hooks';
 import { profileActions } from '@/redux/profile';
 import { useState } from 'react';
 

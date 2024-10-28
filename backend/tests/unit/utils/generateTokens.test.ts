@@ -4,7 +4,7 @@ jest.mock('@/utils/tokens/tokenUtils', () => ({
     .sanitizePayload
 }));
 
-import { generateTokens } from '@/utils/tokens/index';
+import { generateTokens } from '@/utils/tokens';
 import { generateToken } from '@/utils/tokens/tokenUtils';
 import { UserWithCredentials } from '@/types';
 

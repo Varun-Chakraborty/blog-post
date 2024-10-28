@@ -1,46 +1,58 @@
+import { useCurrentUserProfile } from '@/hooks';
 import { cn } from '@/lib/utils';
-import { Profile } from '@/types';
+import { ChatPreview } from '@/types';
 import { useNavigate } from 'react-router-dom';
-
-export interface Message {
-  id: string;
-  sender: Profile;
-  message: string;
-  chatId: string;
-}
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
 interface MessageComponentProps {
-  message: Message;
+  chat: ChatPreview;
   setExpanded: React.Dispatch<React.SetStateAction<boolean>>;
   className?: string;
 }
 
 export function MessageComponent({
-  message,
+  chat,
   setExpanded,
   className
 }: Readonly<MessageComponentProps>) {
   const navigate = useNavigate();
+  const me = useCurrentUserProfile();
   return (
     <button
-      key={message.id}
+      key={chat.id}
       onClick={() => {
-        navigate(`/chat/${message.chatId}`);
+        navigate(`/chat/${chat.chatId}`);
         setExpanded(false);
       }}
       className={cn(
-        'flex items-center gap-4 hover:bg-primary/10 p-2 rounded-lg text-left',
+        'flex items-center gap-4 hover:bg-primary/10 p-2 rounded-lg text-left w-full',
         className
       )}
     >
-      <img
-        src={message.sender.pfp ?? '/placeholder-user.jpg'}
-        alt=""
-        className="h-10 aspect-square rounded-full"
-      />
+      <Avatar>
+        <AvatarImage
+          src={
+            (chat.pfp ?? chat.type === 'GROUP')
+              ? '/placeholder-user.jpg'
+              : '/placeholder-user.jpg'
+          }
+        />
+        <AvatarFallback>
+          {chat.type === 'GROUP'
+            ? chat.groupName!.charAt(0).toUpperCase()
+            : chat.clients
+                .find(c => c.username !== me!.username)!
+                .name.charAt(0)
+                .toUpperCase()}
+        </AvatarFallback>
+      </Avatar>
       <div className="">
-        <div className="font-semibold">{message.sender.name}</div>
-        <div className="text-sm">{message.message}</div>
+        <div className="font-semibold">
+          {chat.type === 'GROUP'
+            ? chat.groupName
+            : chat.clients.find(c => c.username !== me?.username)!.name}
+        </div>
+        <div className="text-sm">{chat.lastMessage.message}</div>
       </div>
     </button>
   );

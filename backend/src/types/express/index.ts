@@ -7,6 +7,9 @@ export interface Req extends express.Request {
     name?: string;
     password?: string;
     username?: string;
+    participants?: string[];
+    groupName?: string;
+    type?: 'CHAT' | 'GROUP';
   };
   query: {
     q?: string;
@@ -16,6 +19,7 @@ export interface Req extends express.Request {
   };
   params: {
     username?: string;
+    chatId?: string;
   };
   cookies: {
     accessToken?: string;

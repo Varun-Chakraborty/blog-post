@@ -1,8 +1,6 @@
 import { prisma, redis } from '@/db';
 import { ExpressTypes } from '@/types';
-import { ApiResponse } from '@/utils/ApiResponse';
-import { verifyAccessTokens, verifyRefreshTokens } from '@/utils/tokens';
-import { wrapperFx } from '@/utils/wrapperFx';
+import { ApiResponse, wrapperFx, tokens } from '@/utils';
 
 export const signout = wrapperFx(async function (
   req: ExpressTypes.Req,
@@ -17,8 +15,8 @@ export const signout = wrapperFx(async function (
     select: { refreshToken: true }
   }))!.refreshToken!;
 
-  const accessTokenExpiry = verifyAccessTokens(accessToken)?.exp;
-  const refreshTokenExpiry = verifyRefreshTokens(refreshToken)?.exp;
+  const accessTokenExpiry = tokens.verifyAccessTokens(accessToken)?.exp;
+  const refreshTokenExpiry = tokens.verifyRefreshTokens(refreshToken)?.exp;
 
   await prisma.prismaClient.user.update({
     where: { id: user.id },

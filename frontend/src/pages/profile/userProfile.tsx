@@ -1,20 +1,20 @@
-import { AdminCapsule /* PremiumCapsule */ } from '@/components/capsules';
 import { User } from '@/types';
+import { AdminBadge, PremiumBadge } from '@/components/badges';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export function UserProfile({ user }: Readonly<{ user: User }>) {
   return (
     <div className="rounded-lg border flex flex-col items-center gap-4 p-2 h-fit">
       <div className="flex flex-col items-center">
-        <img
-          src={user.pfp ?? '/placeholder-user.jpg'}
-          alt=""
-          className="rounded-full w-24 mb-5"
-        />
+        <Avatar>
+          <AvatarImage src={user.pfp ?? '/placeholder-user.jpg'} />
+          <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+        </Avatar>
         <div className="flex flex-col items-center">
           <span>@{user.username}</span>
           <div>
-            {user.role === 'ADMIN' && <AdminCapsule />}
-            {/* {user.premium && <PremiumCapsule />} */}
+            {user.role === 'ADMIN' && <AdminBadge />}
+            {/* {user.premium && <PremiumBadge />} */}
           </div>
         </div>
       </div>

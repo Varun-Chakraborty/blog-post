@@ -4,7 +4,7 @@ import {
   RouterProvider
 } from 'react-router-dom';
 import { Layout } from './layout';
-import { useProfile } from './hooks/useProfile';
+import { useUserProfile } from './hooks';
 
 import {
   Home,
@@ -23,7 +23,6 @@ import {
   HandleErrors
 } from './pages';
 import { ProtectedRoute } from './components/protectedRoute';
-import { ChatScreen } from './components/chatScreen';
 
 export default function App() {
   const router = createBrowserRouter([
@@ -37,13 +36,11 @@ export default function App() {
         },
         {
           path: 'chat',
-          Component: Messages,
-          children: [
-            {
-              path: '*',
-              Component: ChatScreen
-            }
-          ]
+          element: (
+            <ProtectedRoute>
+              <Messages />
+            </ProtectedRoute>
+          )
         },
         {
           path: 'notifications',
@@ -115,7 +112,7 @@ export default function App() {
       ErrorBoundary: HandleErrors
     }
   ]);
-  useProfile();
+  useUserProfile();
   return (
     <main className="h-screen w-screen flex justify-between">
       <RouterProvider router={router} />

@@ -1,38 +1,26 @@
 import { cn } from '@/lib/utils';
-import { ChatComponent } from './chatComponent';
-import { Outlet, useLocation } from 'react-router-dom';
-
-const chatPreviews = [
-  {
-    id: '1',
-    sender: { id: '1', name: 'John doe', username: 'john' },
-    lastMessage: 'Hey!!',
-    at: '1:02pm'
-  },
-  {
-    id: '2',
-    sender: { id: '2', name: 'Jane doe', username: 'jane' },
-    lastMessage: 'Hey!!',
-    at: '1:02pm'
-  }
-];
+import { useEffect, useState } from 'react';
+import { ChatPreview } from '@/types';
+import { useCurrentUserProfile } from '@/hooks';
+import { ChatScreen } from './chatScreen';
+import { ChatPreviewScreen } from './chatPreviewScreen';
+import api from '@/api';
 
 export function Messages({ className }: Readonly<{ className?: string }>) {
-  const location = useLocation();
-  const isItRoot = location.pathname.endsWith('/chat');
+  const [chats, setChats] = useState<ChatPreview[]>([]);
+  const me = useCurrentUserProfile();
+
+  useEffect(() => {
+    api
+      .getChats(me!.username)
+      .then(res => setChats(res))
+      .catch(e => console.error(e));
+  }, []);
+
   return (
     <div className={cn('h-full w-full flex', className)}>
-      <div
-        className={cn(
-          'border-r p-4 space-y-2 w-1/5 shrink-0 sm:block sm:w-auto hidden',
-          { 'block w-full': isItRoot }
-        )}
-      >
-        {chatPreviews.map(chatPreview => (
-          <ChatComponent chatPreview={chatPreview} key={chatPreview.id} />
-        ))}
-      </div>
-      <Outlet />
+      <ChatPreviewScreen chats={chats} setChats={setChats} />
+      <ChatScreen />
     </div>
   );
 }

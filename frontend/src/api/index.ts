@@ -11,7 +11,7 @@ class Api {
       'Content-Type': 'application/json'
     }
   });
-  private readonly socket = io('http://localhost:4002/api/socket');
+  readonly socket = io('http://localhost:4002');
 
   constructor() {
     this.api.interceptors.response.use(
@@ -140,6 +140,77 @@ class Api {
       `/user/${username}/follow`
     );
     return response.data;
+  }
+
+  async unfollowUser(username: string) {
+    const response = await this.api.post<APIResponseTypes.APIResponse>(
+      `/user/${username}/unfollow`
+    );
+    return response.data;
+  }
+
+  async getFollowers(username?: string) {
+    const response = await this.api.get<APIResponseTypes.GetFollowersResponse>(
+      `/user/${username}/followers`
+    );
+    return response.data.data!.followers;
+  }
+
+  async getFollowing(username: string) {
+    const response = await this.api.get<APIResponseTypes.GetFollowingResponse>(
+      `/user/${username}/following`
+    );
+    return response.data.data!.following;
+  }
+
+  async createChat(
+    participants: string[],
+    type: 'GROUP' | 'CHAT',
+    groupName?: string
+  ) {
+    if (type === 'GROUP' && !groupName) {
+      throw new Error('Chat name is required for group chats');
+    }
+    const response = await this.api.post<APIResponseTypes.CreateChatResponse>(
+      `/chat/create`,
+      {
+        participants,
+        type,
+        groupName
+      }
+    );
+    return response.data.data!.chatId;
+  }
+
+  async getChats(username: string) {
+    const response =
+      await this.api.get<APIResponseTypes.GetChatPreviewsResponse>(
+        `/user/${username}/chats`
+      );
+    return response.data.data!.chatPreviews;
+  }
+
+  async getUnreadChats(username: string) {
+    const response =
+      await this.api.get<APIResponseTypes.GetUnreadChatsResponse>(
+        `/user/${username}/unreadChats`
+      );
+    return response.data.data!.unreadChats;
+  }
+
+  async getChatById(chatId: string) {
+    const response = await this.api.get<APIResponseTypes.GetChatByIdResponse>(
+      `/chat/${chatId}`
+    );
+    return response.data.data!.chat;
+  }
+
+  async getChatPreviewById(chatId: string) {
+    const response =
+      await this.api.get<APIResponseTypes.GetChatPreviewByIdResponse>(
+        `/chat/preview/${chatId}`
+      );
+    return response.data.data!.chat;
   }
 }
 

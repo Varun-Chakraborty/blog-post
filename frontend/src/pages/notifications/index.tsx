@@ -1,29 +1,12 @@
+import { useAppSelector } from '@/hooks';
 import { cn } from '@/lib/utils';
 
-const notifications = [
-  {
-    id: 1,
-    title: 'Notification 1',
-    description: 'Description 1',
-    at: '2022-01-01 00:00:00'
-  },
-  {
-    id: 2,
-    title: 'Notification 2',
-    description: 'Description 2',
-    at: '2022-01-01 00:00:00'
-  },
-  {
-    id: 3,
-    title: 'Notification 3',
-    description: 'Description 3',
-    at: '2022-01-01 00:00:00'
-  }
-];
-
 export function Notifications({ className }: Readonly<{ className?: string }>) {
+  const notifications = useAppSelector(
+    state => state.notification.notifications
+  );
   return (
-    <div className={cn('h-full w-full space-y-2', className)}>
+    <div className={cn('h-full w-full space-y-2 p-4', className)}>
       {notifications.map(notification => (
         <div
           key={notification.id}

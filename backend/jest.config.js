@@ -16,4 +16,10 @@ module.exports = {
   ],
   coverageDirectory: 'coverage',
   testMatch: ['<rootDir>/tests/**/*.test.ts'],
+  testPathIgnorePatterns: [
+    '<rootDir>/docker-dev/', // Exclude docker-dev from tests
+  ],
+  watchPathIgnorePatterns: [
+    '<rootDir>/docker-dev/', // Also exclude docker-dev from watch mode
+  ],
 };

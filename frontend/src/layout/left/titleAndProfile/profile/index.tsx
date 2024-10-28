@@ -1,4 +1,4 @@
-import { useAppSelector } from '@/hooks/redux';
+import { useAppSelector } from '@/hooks';
 import { cn } from '@/lib/utils';
 import { useEffect, useRef, useState } from 'react';
 import { ProfileCard } from './ProfileCard';

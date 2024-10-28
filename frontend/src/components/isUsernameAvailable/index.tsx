@@ -4,8 +4,8 @@ import { RxCross1 } from 'react-icons/rx';
 import { cn } from '@/lib/utils';
 import api from '@/api';
 import { useEffect, useState } from 'react';
-import { Tooltip } from '../tooltip';
 import { UseFormSetError, UseFormTrigger } from 'react-hook-form';
+import { TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
 
 interface Props {
   trigger: UseFormTrigger<{
@@ -79,13 +79,15 @@ export function IsUsernameAvailable({
   }, [username]);
 
   return (
-    <Tooltip
-      tooltipContent={isUsernameAvailable ? 'Available' : 'Not Available'}
-      className="absolute -top-9 -right-7 text-nowrap"
-    >
-      <div className={cn('h-4 rounded-full pl-2', className)}>
-        {renderLoader ?? renderUsernameAvailable}
-      </div>
-    </Tooltip>
+    <TooltipProvider>
+      <TooltipTrigger>
+        <div className={cn('h-4 rounded-full pl-2', className)}>
+          {renderLoader ?? renderUsernameAvailable}
+        </div>
+      </TooltipTrigger>
+      <TooltipContent>
+        {isUsernameAvailable ? 'Available' : 'Not Available'}
+      </TooltipContent>
+    </TooltipProvider>
   );
 }

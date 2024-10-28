@@ -20,17 +20,20 @@ enum Role {
 }
 
 model User {
-  id           String  @id @default(cuid())
-  name         String
-  username     String  @unique
-  email        String  @unique
-  password     String
-  pfp          String?
-  role         Role    @default(USER)
-  posts        Post[]
-  followers    Follow[] @relation(name: "followers")
-  following    Follow[] @relation(name: "following")
-  refreshToken String?
+  id             String    @id @default(cuid())
+  name           String
+  username       String    @unique
+  email          String    @unique
+  password       String
+  profilePicture String?
+  role           Role      @default(USER)
+  posts          Post[]
+  followers      Follow[]  @relation(name: "followers")
+  following      Follow[]  @relation(name: "following")
+  refreshToken   String?
+  chats          Chat[]
+  sentMessages   Message[] @relation(name: "messagesSent")
+  readMessages   Message[] @relation(name: "messagesRead")
 }
 
 model Post {
@@ -39,16 +42,44 @@ model Post {
   content   String
   imgUrl    String?
   published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
+  author    User    @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId  String
 }
 
 model Follow {
-  id        String  @id @default(cuid())
-  follower  User    @relation(fields: [followerId], references: [id], name: "followers")
+  id          String @id @default(cuid())
+  follower    User   @relation(fields: [followerId], references: [id], name: "followers", onDelete: Cascade)
   followerId  String
-  following User    @relation(fields: [followingId], references: [id], name: "following")
-  followingId  String
+  following   User   @relation(fields: [followingId], references: [id], name: "following", onDelete: Cascade)
+  followingId String
 
   @@unique([followerId, followingId])
+}
+
+enum ChatType {
+  GROUP
+  CHAT
+}
+
+model Chat {
+  id           String    @id @default(cuid())
+  participants User[]
+  messages     Message[]
+  type         ChatType
+  groupName    String?
+  groupAvatar  String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  content   String
+  author    User     @relation(name: "messagesSent", fields: [authorId], references: [id])
+  authorId  String
+  readBy    User[]   @relation(name: "messagesRead")
+  chat      Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  chatId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

@@ -25,3 +25,32 @@ export interface Post {
   createdAt?: string;
   updatedAt?: string;
 }
+
+export interface Message {
+  id: string;
+  chatId: string;
+  message: string;
+  sentBy: string;
+  updatedAt: string;
+}
+
+export interface ChatPreview {
+  id: string;
+  chatId: string;
+  type: 'CHAT' | 'GROUP';
+  groupName?: string;
+  pfp?: string;
+  participants: Profile[];
+  latestMessage: Message;
+  updatedAt: string;
+}
+
+export interface Chat {
+  id: string;
+  type: 'CHAT' | 'GROUP';
+  groupName?: string;
+  pfp?: string;
+  participants: Profile[];
+  messages: Message[];
+  updatedAt: string;
+}

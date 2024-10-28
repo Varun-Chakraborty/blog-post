@@ -1,7 +1,7 @@
 import api from '@/api';
 import { profileActions } from '@/redux/profile';
 import { useToast } from '../ui/use-toast';
-import { useAppDispatch } from '@/hooks/redux';
+import { useAppDispatch } from '@/hooks';
 import { isAxiosError } from 'axios';
 import { cn } from '@/lib/utils';
 

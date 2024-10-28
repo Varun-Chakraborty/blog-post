@@ -15,13 +15,13 @@ jest.mock('@/db', () => ({
   }
 }));
 
-jest.mock('@/utils/wrapperFx', () => ({
-  wrapperFx: jest.fn(fx => fx)
-}));
-
-jest.mock('@/utils/tokens', () => ({
-  verifyAccessTokens: jest.fn(() => ({ id: '1', exp: 1 })),
-  verifyRefreshTokens: jest.fn(() => ({ id: '1', exp: 1 }))
+jest.mock('@/utils', () => ({
+  wrapperFx: jest.requireActual('@/utils').wrapperFx,
+  ApiResponse: jest.requireActual('@/utils').ApiResponse,
+  tokens: {
+    verifyAccessTokens: jest.fn(() => ({ id: '1', exp: 1 })),
+    verifyRefreshTokens: jest.fn(() => ({ id: '1', exp: 1 }))
+  }
 }));
 
 import { signout } from '@/controllers/auth.controller';

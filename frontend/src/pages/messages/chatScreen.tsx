@@ -1,66 +1,12 @@
 import api from '@/api';
-import { useMyProfile } from '@/hooks/useMyProfile';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useCurrentUserProfile } from '@/hooks';
 import { cn } from '@/lib/utils';
-import { Profile } from '@/types';
+import { Chat, Message } from '@/types';
 import { useEffect, useState } from 'react';
 import { HiArrowLeft } from 'react-icons/hi';
 import { IoSend } from 'react-icons/io5';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-
-interface Message {
-  id: string;
-  message: string;
-  sentBy: string;
-  at: string;
-}
-
-interface Group {
-  name: string;
-  pfp?: string;
-}
-
-interface Chat {
-  id: string;
-  type: 'CHAT' | 'GROUP';
-  sender?: Profile;
-  groupDetail?: Group;
-  messages: Message[];
-}
-
-const chats: Chat[] = [
-  {
-    id: '2',
-    type: 'GROUP',
-    sender: {
-      id: '1',
-      username: 'john',
-      name: 'John Doe'
-    },
-    groupDetail: {
-      name: 'group'
-    },
-    messages: [
-      {
-        id: '1',
-        message: 'hi',
-        sentBy: 'johnDoe',
-        at: '1:01pm'
-      },
-      {
-        id: '2',
-        message: 'hey',
-        sentBy: 'varun',
-        at: '1:02pm'
-      },
-      {
-        id: '3',
-        message: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
-        sentBy: 'jane',
-        at: '1:02pm'
-      }
-    ]
-  }
-];
 
 export function ChatScreen({
   className
@@ -72,17 +18,29 @@ export function ChatScreen({
   const navigate = useNavigate();
   const [currentChatId, setCurrentChatId] = useState<string | undefined>();
   const location = useLocation();
+  const me = useCurrentUserProfile();
 
   useEffect(() => {
-    const newChatID = location.pathname.split('/')[2];
-    if (currentChatId !== newChatID) setCurrentChatId(newChatID || undefined);
+    const newChatID = location.pathname.split('/')[2] || undefined;
+    if (currentChatId !== newChatID) setCurrentChatId(newChatID);
   }, [location]);
 
   useEffect(() => {
-    const chat = chats.find(chat => chat.id === currentChatId);
-    setChat(chat);
-    if (chat) setIsItGroup(chat.type === 'GROUP');
+    if (!currentChatId) return;
+    api
+      .getChatById(currentChatId)
+      .then(chat => {
+        setChat(chat);
+        if (chat) setIsItGroup(chat.type === 'GROUP');
+      })
+      .then(e => console.error(e));
   }, [currentChatId]);
+
+  api.socket.on('new-message', (message: Message) => {
+    setChat(
+      prev => prev && { ...prev, messages: [...(prev.messages ?? []), message] }
+    );
+  });
 
   const renderNoChatMessage = !chat ? (
     <div
@@ -107,24 +65,34 @@ export function ChatScreen({
           </button>
           <button
             onClick={() =>
-              isItGroup || navigate(`/user/${chat!.sender!.username}`)
+              isItGroup ||
+              navigate(
+                `/user/${chat!.clients.find(c => c.username !== me!.username)!.username}`
+              )
             }
             className="flex gap-2 items-center hover:bg-primary/10 px-2 py-1 rounded-lg"
           >
-            <img
-              src={
-                isItGroup
-                  ? (chat!.groupDetail!.pfp ?? '/placeholder-user.jpg')
-                  : (chat!.sender!.pfp ?? '/placeholder-user.jpg')
-              }
-              alt=""
-              className="rounded-full h-10 border"
-            />
+            <Avatar>
+              <AvatarImage
+                src={
+                  (chat!.pfp ?? isItGroup)
+                    ? '/placeholder-user.jpg'
+                    : '/placeholder-user.jpg'
+                }
+              />
+              <AvatarFallback>
+                {isItGroup
+                  ? chat!.clients.find(c => c.username !== me!.username)!.name
+                  : chat!.groupName}
+              </AvatarFallback>
+            </Avatar>
             <div className={cn({ uppercase: isItGroup })}>
-              {isItGroup ? chat!.groupDetail!.name : chat!.sender!.name}
+              {isItGroup
+                ? chat!.clients.find(c => c.username !== me!.username)!.name
+                : chat!.groupName}
             </div>
           </button>
-          <div></div>
+          <div />
         </div>
         <div className="h-full overflow-y-auto flex flex-col justify-end gap-3 p-4 overscroll-none">
           {chat!.messages.map(message => (
@@ -152,7 +120,7 @@ function MessageBubble({
   isItGroup,
   className
 }: Readonly<MessageBubbleProp>) {
-  const isItFromMe = useMyProfile()?.username === message.sentBy;
+  const isItFromMe = useCurrentUserProfile()?.username === message.sentBy;
   return (
     <button
       className={cn(
@@ -171,7 +139,9 @@ function MessageBubble({
         >{`@${message.sentBy}`}</Link>
       )}
       <span className="text-lg">{message.message}</span>
-      <div className="absolute bottom-1 right-1 text-xs">{message.at}</div>
+      <div className="absolute bottom-1 right-1 text-xs">
+        {message.updatedAt}
+      </div>
     </button>
   );
 }
@@ -182,8 +152,9 @@ interface NewMessageProps {
   className?: string;
 }
 
-function NewMessage({ chatId, setChat, className }: Readonly<NewMessageProps>) {
-  const myUserName = useMyProfile()?.username;
+function NewMessage({ chatId, className }: Readonly<NewMessageProps>) {
+  const myUserName = useCurrentUserProfile()?.username;
+  let timeOut: NodeJS.Timeout | undefined = undefined;
   return (
     <form
       onSubmit={e => {
@@ -191,21 +162,8 @@ function NewMessage({ chatId, setChat, className }: Readonly<NewMessageProps>) {
         if (myUserName) {
           const inputElement = e.currentTarget[0] as HTMLInputElement;
           const message = inputElement.value;
-          const newMessage: Message = {
-            id: '6',
-            message: message,
-            sentBy: myUserName,
-            at: new Date().toLocaleTimeString(undefined, {
-              hour: 'numeric',
-              minute: '2-digit'
-            })
-          };
-          api.sendMessage(chatId, message);
+          api.socket.emit('new-message', message);
           e.currentTarget.reset();
-          setChat(chat => ({
-            ...chat!,
-            messages: [...chat!.messages, newMessage]
-          }));
         }
       }}
       className={cn('flex items-center gap-2 p-2', className)}
@@ -214,6 +172,11 @@ function NewMessage({ chatId, setChat, className }: Readonly<NewMessageProps>) {
         type="text"
         placeholder="Enter your message"
         className="p-2 rounded-lg w-full outline-none selection:bg-slate-300 bg-inherit"
+        onChange={() => {
+          if (timeOut) clearTimeout(timeOut);
+          api.socket.emit('typing');
+          timeOut = setTimeout(() => api.socket.emit('stoppedTyping'), 1000);
+        }}
       />
       <button
         type="submit"
@@ -226,16 +189,29 @@ function NewMessage({ chatId, setChat, className }: Readonly<NewMessageProps>) {
 }
 
 function NewMessageBubble({ className }: Readonly<{ className?: string }>) {
+  const [isTyping, setIsTyping] = useState(false);
+
+  useEffect(() => {
+    api.socket.on('typing', () => setIsTyping(true));
+    api.socket.on('stoppedTyping', () => setIsTyping(false));
+    return () => {
+      api.socket.off('typing');
+      api.socket.off('stoppedTyping');
+    };
+  }, []);
+
   return (
-    <div
-      className={cn(
-        'text-left relative w-fit border rounded-lg px-4 py-2 hover:bg-inherit/80 hover:dark:bg-inherit/80 flex gap-1',
-        className
-      )}
-    >
-      <div className="rounded-full bg-gray-600 aspect-square h-2 animate-pulse duration-500"></div>
-      <div className="rounded-full bg-gray-600 aspect-square h-2 animate-pulse duration-500 delay-150"></div>
-      <div className="rounded-full bg-gray-600 aspect-square h-2 animate-pulse duration-500 delay-300"></div>
-    </div>
+    isTyping && (
+      <div
+        className={cn(
+          'text-left relative w-fit border rounded-lg px-4 py-2 hover:bg-inherit/80 hover:dark:bg-inherit/80 flex gap-1',
+          className
+        )}
+      >
+        <div className="rounded-full bg-gray-600 aspect-square h-2 animate-pulse duration-500" />
+        <div className="rounded-full bg-gray-600 aspect-square h-2 animate-pulse duration-500 delay-150" />
+        <div className="rounded-full bg-gray-600 aspect-square h-2 animate-pulse duration-500 delay-300" />
+      </div>
+    )
   );
 }

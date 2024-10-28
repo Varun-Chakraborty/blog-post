@@ -11,19 +11,19 @@ jest.mock('@/db', () => ({
   }
 }));
 
-jest.mock('@/utils/tokens', () => ({
-  generateTokens: jest.fn()
-}));
-
-jest.mock('@/utils/setCookie', () => ({
-  setCookie: jest.fn()
+jest.mock('@/utils', () => ({
+  setCookie: jest.fn(),
+  wrapperFx: jest.requireActual('@/utils').wrapperFx,
+  ApiResponse: jest.requireActual('@/utils').ApiResponse,
+  tokens: {
+    generateTokens: jest.fn()
+  }
 }));
 
 import { signup } from '@/controllers/auth.controller';
 import { ExpressTypes } from '@/types';
 import { prisma } from '@/db';
-import { generateTokens } from '@/utils/tokens';
-import { setCookie } from '@/utils/setCookie';
+import { tokens, setCookie, ApiResponse } from '@/utils';
 
 describe('signup', () => {
   let req: Partial<ExpressTypes.Req>;
@@ -166,7 +166,7 @@ describe('signup', () => {
       email: 'rjQ5H@example.com'
     });
 
-    (generateTokens as jest.Mock).mockReturnValue({
+    (tokens.generateTokens as jest.Mock).mockReturnValue({
       access: 'access_token',
       refresh: 'refresh_token'
     });

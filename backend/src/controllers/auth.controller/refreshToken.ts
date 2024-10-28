@@ -1,9 +1,6 @@
 import { prisma, redis } from '@/db';
 import { ExpressTypes } from '@/types';
-import { ApiResponse } from '@/utils/ApiResponse';
-import { setCookie } from '@/utils/setCookie';
-import { generateTokens, verifyRefreshTokens } from '@/utils/tokens';
-import { wrapperFx } from '@/utils/wrapperFx';
+import { ApiResponse, wrapperFx, setCookie, tokens } from '@/utils';
 
 export const refreshToken = wrapperFx(async function (
   req: ExpressTypes.Req,
@@ -19,7 +16,7 @@ export const refreshToken = wrapperFx(async function (
   if (doesExists)
     return new ApiResponse('Invalid refresh token', undefined, 401).error(res);
 
-  const verificationResponse = verifyRefreshTokens(refreshToken);
+  const verificationResponse = tokens.verifyRefreshTokens(refreshToken);
   if (!verificationResponse)
     return new ApiResponse('Invalid refresh token', undefined, 401).error(res);
 
@@ -33,7 +30,7 @@ export const refreshToken = wrapperFx(async function (
   if (!user || user.refreshToken !== refreshToken)
     return new ApiResponse('Invalid refresh token', undefined, 401).error(res);
 
-  const { access } = generateTokens(user, 'access');
+  const { access } = tokens.generateTokens(user, 'access');
 
   res = setCookie('accessToken', access!, res, {
     maxAge: Number(

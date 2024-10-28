@@ -1,5 +1,5 @@
 import { ExpressTypes } from '@/types';
-import { ApiResponse } from '@/utils/ApiResponse';
+import { ApiResponse } from '@/utils';
 
 export function isNotAuthenticated(
   req: ExpressTypes.Req,

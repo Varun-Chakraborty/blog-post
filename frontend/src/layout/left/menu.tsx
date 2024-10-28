@@ -8,7 +8,7 @@ import {
 } from 'react-icons/io5';
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { checkIfCurrentIsGuestProfile } from '@/hooks/checkIfCurrentIsGuestProfile';
+import { isGuestProfile } from '@/hooks';
 
 const options = [
   {
@@ -57,7 +57,7 @@ interface Props {
 }
 
 export function Menu({ setMenuOpen, className }: Readonly<Props>) {
-  const isGuestProfile = checkIfCurrentIsGuestProfile();
+  const isItGuest = isGuestProfile();
   return (
     <div
       className={cn(
@@ -66,7 +66,7 @@ export function Menu({ setMenuOpen, className }: Readonly<Props>) {
       )}
     >
       {options
-        .filter(option => !option.isProtected || !isGuestProfile)
+        .filter(option => !option.isProtected || !isItGuest)
         .map(option => (
           <NavLink
             key={option.id}

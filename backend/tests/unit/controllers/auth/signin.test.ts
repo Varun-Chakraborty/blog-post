@@ -9,24 +9,20 @@ jest.mock('@/db', () => ({
   }
 }));
 
-jest.mock('@/utils/tokens', () => ({
-  generateTokens: jest.fn()
-}));
-
-jest.mock('@/utils/setCookie', () => ({
-  setCookie: jest.fn()
-}));
-
-jest.mock('@/utils/verifyPassword', () => ({
-  verifyPassword: jest.fn(fx => fx)
+jest.mock('@/utils', () => ({
+  setCookie: jest.fn(),
+  verifyPassword: jest.fn(fx => fx),
+  wrapperFx: jest.requireActual('@/utils').wrapperFx,
+  ApiResponse: jest.requireActual('@/utils').ApiResponse,
+  tokens: {
+    generateTokens: jest.fn()
+  }
 }));
 
 import { signin } from '@/controllers/auth.controller';
 import { ExpressTypes } from '@/types';
 import { prisma } from '@/db';
-import { generateTokens } from '@/utils/tokens';
-import { setCookie } from '@/utils/setCookie';
-import { verifyPassword } from '@/utils/verifyPassword';
+import { setCookie, verifyPassword, tokens } from '@/utils';
 
 describe('signin', () => {
   let req: Partial<ExpressTypes.Req>;
@@ -130,7 +126,7 @@ describe('signin', () => {
 
     (verifyPassword as jest.Mock).mockResolvedValueOnce(true);
 
-    (generateTokens as jest.Mock).mockResolvedValueOnce({
+    (tokens.generateTokens as jest.Mock).mockResolvedValueOnce({
       access: 'access',
       refresh: 'refresh'
     });

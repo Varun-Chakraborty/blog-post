@@ -1,10 +1,12 @@
 import { ExpressTypes } from '@/types';
 import { prisma } from '@/db';
-import { ApiResponse } from '@/utils/ApiResponse';
-import { wrapperFx } from '@/utils/wrapperFx';
-import { generateTokens } from '@/utils/tokens';
-import { setCookie } from '@/utils/setCookie';
-import { verifyPassword } from '@/utils/verifyPassword';
+import {
+  ApiResponse,
+  wrapperFx,
+  setCookie,
+  tokens,
+  verifyPassword
+} from '@/utils';
 
 export const signin = wrapperFx(async function (
   req: ExpressTypes.Req,
@@ -29,7 +31,7 @@ export const signin = wrapperFx(async function (
     return new ApiResponse('Invalid credentials', undefined, 401).error(res);
   }
 
-  const { access, refresh } = generateTokens(user, 'both');
+  const { access, refresh } = tokens.generateTokens(user, 'both');
 
   res = setCookie('accessToken', access!, res, {
     maxAge: Number(
