@@ -1,4 +1,4 @@
-import { getFollowing } from '@/controllers/user.controller';
+import { getUnreadChats } from '@/controllers/user.controller';
 import { prisma } from '@/db';
 import { ExpressTypes } from '@/types';
 
@@ -8,17 +8,18 @@ jest.mock('@/db', () => ({
       user: {
         findUnique: jest.fn()
       },
-      follow: {
+      chat: {
         findMany: jest.fn()
       }
     }
   }
 }));
 
-describe('getFollowing', () => {
+describe('getUreadChats', () => {
   let req: Partial<ExpressTypes.Req>;
   let res: Partial<ExpressTypes.Res>;
   let next: Partial<ExpressTypes.Next>;
+
   beforeEach(() => {
     jest.clearAllMocks();
     req = {};
@@ -31,7 +32,7 @@ describe('getFollowing', () => {
 
   it('should return 400 if username is not provided', async () => {
     req.params = {};
-    await getFollowing(
+    await getUnreadChats(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
       next as ExpressTypes.Next
@@ -44,22 +45,28 @@ describe('getFollowing', () => {
     );
   });
 
-  it('should return 404 if user is not found', async () => {
+  it('should return 403 if accessing messages of other users', async () => {
     req = {
       params: {
         username: 'nonexistentuser'
+      },
+      user: {
+        id: '1',
+        username: 'testuser',
+        name: 'Test User',
+        role: 'USER'
       }
     };
     (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue(null);
-    await getFollowing(
+    await getUnreadChats(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
       next as ExpressTypes.Next
     );
-    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.status).toHaveBeenCalledWith(403);
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
-        message: 'User does not exist'
+        message: 'You can only access your own chats'
       })
     );
   });
@@ -68,51 +75,31 @@ describe('getFollowing', () => {
     req = {
       params: {
         username: 'testuser'
+      },
+      user: {
+        id: '1',
+        username: 'testuser',
+        name: 'Test User',
+        role: 'USER'
       }
     };
     (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue({
       id: '1',
       username: 'testuser',
       name: 'Test User',
+      email: 'email',
       role: 'USER'
     });
-    (prisma.prismaClient.follow.findMany as jest.Mock).mockResolvedValue([
-      {
-        id: '1',
-        username: 'testuser',
-        name: 'Test User',
-        profilePicture: 'profilePicture'
-      },
-      {
-        id: '2',
-        username: 'testuser2',
-        name: 'Test User 2',
-        profilePicture: 'profilePicture2'
-      }
-    ]);
-    await getFollowing(
+    await getUnreadChats(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
       next as ExpressTypes.Next
     );
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      data: expect.objectContaining({
-        followings: [
-          {
-            id: '1',
-            username: 'testuser',
-            name: 'Test User',
-            profilePicture: 'profilePicture'
-          },
-          {
-            id: '2',
-            username: 'testuser2',
-            name: 'Test User 2',
-            profilePicture: 'profilePicture2'
-          }
-        ]
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Chats fetched'
       })
-    }));
+    );
   });
 });

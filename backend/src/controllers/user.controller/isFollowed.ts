@@ -32,9 +32,9 @@ export const isFollowed = wrapperFx(async function (
 
   if (!isFollowed)
     return new ApiResponse(
-      'This user is not following you',
+      'You are not following this user',
       undefined,
       404
     ).error(res);
-  return new ApiResponse('This user is following you').success(res);
+  return new ApiResponse('You are following this user').success(res);
 });

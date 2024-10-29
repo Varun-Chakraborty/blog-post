@@ -163,4 +163,59 @@ describe('signin', () => {
       })
     );
   });
+
+  it('should return 200 and have predefined expiry time for access token and refresh token if not available in environment variables', async () => {
+    req.body = {
+      username: 'testuser',
+      password: 'testpassword'
+    };
+    process.env.ACCESS_COOKIE_MAX_AGE = undefined;
+    process.env.REFRESH_COOKIE_MAX_AGE = undefined;
+    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValueOnce({
+      id: '1',
+      username: 'testuser',
+      name: 'Test User',
+      email: 'email',
+      role: 'USER'
+    });
+
+    (verifyPassword as jest.Mock).mockResolvedValueOnce(true);
+
+    (tokens.generateTokens as jest.Mock).mockResolvedValueOnce({
+      access: 'access',
+      refresh: 'refresh'
+    });
+
+    (prisma.prismaClient.user.update as jest.Mock).mockResolvedValueOnce({
+      id: '1',
+      username: 'testuser',
+      name: 'Test User',
+      email: 'email',
+      role: 'USER'
+    });
+
+    (setCookie as jest.Mock).mockImplementation((key, value, res) => {
+      res.cookie(key, value, { maxAge: 1000 * 60 * 60 * 24 });
+      return res;
+    });
+
+    await signin(
+      req as ExpressTypes.Req,
+      res as ExpressTypes.Res,
+      next as ExpressTypes.Next
+    );
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Signin successful',
+        data: {
+          user: expect.not.objectContaining({
+            password: expect.any(String),
+            refreshToken: expect.any(String)
+          })
+        }
+      })
+    );
+  });
 });

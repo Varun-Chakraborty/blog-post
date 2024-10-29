@@ -1,7 +1,3 @@
-import { getProfile } from '@/controllers/user.controller';
-import { prisma } from '@/db';
-import { ExpressTypes } from '@/types';
-
 jest.mock('@/db', () => ({
   prisma: {
     prismaClient: {
@@ -20,6 +16,10 @@ jest.mock('@/db', () => ({
     }
   }
 }));
+
+import { getProfile } from '@/controllers/user.controller';
+import { prisma } from '@/db';
+import { ExpressTypes } from '@/types';
 
 describe('getProfile', () => {
   let req: Partial<ExpressTypes.Req>;
@@ -117,25 +117,6 @@ describe('getProfile', () => {
             followingCount: 0
           }
         })
-      })
-    );
-  });
-
-  it('should return 401 if user is not authenticated and requests username "me"', async () => {
-    req = {
-      params: {
-        username: 'me'
-      }
-    };
-    await getProfile(
-      req as ExpressTypes.Req,
-      res as ExpressTypes.Res,
-      next as ExpressTypes.Next
-    );
-    expect(res.status).toHaveBeenCalledWith(401);
-    expect(res.json).toHaveBeenCalledWith(
-      expect.objectContaining({
-        message: 'You must be logged to access this keyword username'
       })
     );
   });

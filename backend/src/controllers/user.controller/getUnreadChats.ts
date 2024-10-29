@@ -18,7 +18,8 @@ export const getUnreadChats = wrapperFx(async function (
       undefined,
       403
     ).error(res);
-  const unreadChats = await prisma.prismaClient.chat.findMany({
+    
+    const unreadChats = await prisma.prismaClient.chat.findMany({
     where: {
       messages: {
         some: {

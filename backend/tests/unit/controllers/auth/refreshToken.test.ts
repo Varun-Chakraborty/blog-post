@@ -194,4 +194,38 @@ describe('refreshToken', () => {
       })
     );
   });
+
+  it('should return 200 and have predefined expiry time for access token if not available in environment variables', async () => {
+    req.cookies = { refreshToken: 'valid' };
+    process.env.ACCESS_COOKIE_MAX_AGE = undefined;
+    (tokens.verifyRefreshTokens as jest.Mock).mockReturnValue({ id: '1' });
+    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue({
+      id: '1',
+      refreshToken: 'valid'
+    });
+    (tokens.generateTokens as jest.Mock).mockReturnValue({
+      access: 'access'
+    });
+
+    (setCookie as jest.Mock).mockImplementation((key, value, res) => {
+      res.cookie(key, value);
+      return res;
+    });
+
+    await refreshToken(
+      req as ExpressTypes.Req,
+      res as ExpressTypes.Res,
+      next as ExpressTypes.Next
+    );
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: {
+          accessToken: 'access'
+        },
+        message: 'Refresh successful'
+      })
+    );
+  });
 });

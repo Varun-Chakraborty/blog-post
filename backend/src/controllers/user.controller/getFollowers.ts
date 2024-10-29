@@ -11,12 +11,20 @@ export const getFollowers = wrapperFx(async function (
   if (!username)
     return new ApiResponse('Username is required', undefined, 400).error(res);
 
+  const user = await prisma.prismaClient.user.findUnique({
+    where: { username },
+    select: { id: true }
+  });
+  
+  if (!user)
+    return new ApiResponse('User does not exist', undefined, 404).error(res);
+
   const followers = await prisma.prismaClient.follow.findMany({
     where: {
-      following: { username }
+      followingId: user.id
     },
     select: {
-      follower: { select: { id: true, username: true, profilePicture: true } }
+      follower: { select: { id: true, username: true, name: true, profilePicture: true } }
     }
   });
   return new ApiResponse('Followers fetched', { followers }).success(res);

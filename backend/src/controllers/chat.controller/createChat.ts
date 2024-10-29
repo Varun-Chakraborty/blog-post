@@ -18,8 +18,10 @@ export const createChat = wrapperFx(async function (
   if (!type)
     return new ApiResponse('Chat type is required', undefined, 400).error(res);
 
+  if (type !== 'GROUP' && type !== 'CHAT')
+    return new ApiResponse('Invalid chat type', undefined, 400).error(res);
+
   if (type === 'GROUP') {
-    console.log(participants, participantsSet.size);
     if (participantsSet.size < 2)
       return new ApiResponse(
         'Group must have at least 2 participants',
@@ -52,5 +54,5 @@ export const createChat = wrapperFx(async function (
     select: { id: true }
   });
 
-  return new ApiResponse('Chat created', { chatId: chat.id }, 201).success(res);
+  return new ApiResponse('Chat created successfully', { chatId: chat.id }, 201).success(res);
 });

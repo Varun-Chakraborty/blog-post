@@ -8,6 +8,10 @@ export const getChatPreviewById = wrapperFx(async function (
 ) {
   const { chatId } = req.params;
 
+  if (!chatId) {
+    return new ApiResponse('ChatId is required', undefined, 400).error(res);
+  }
+
   const chat = await prisma.prismaClient.chat.findUnique({
     where: {
       id: chatId
@@ -33,5 +37,5 @@ export const getChatPreviewById = wrapperFx(async function (
     lastMessage: latestMessage
   };
 
-  return new ApiResponse('Chat fetched', { chatPreview }).success(res);
+  return new ApiResponse('Chat preview retrieved successfully', { chatPreview }).success(res);
 });

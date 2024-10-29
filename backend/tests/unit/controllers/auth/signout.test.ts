@@ -27,6 +27,7 @@ jest.mock('@/utils', () => ({
 import { signout } from '@/controllers/auth.controller';
 import { prisma, redis } from '@/db';
 import { ExpressTypes } from '@/types';
+import { verifyAccessTokens, verifyRefreshTokens } from '@/utils/tokens';
 
 describe('signout', () => {
   let req: Partial<ExpressTypes.Req>;
@@ -43,7 +44,7 @@ describe('signout', () => {
     next = jest.fn();
   });
 
-  it('should return 200', async () => {
+  it('should verify tokens and return 200', async () => {
     req = {
       user: {
         id: '1',
