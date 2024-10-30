@@ -1,26 +1,26 @@
-import { getChatPreviewById } from '@/controllers/chat.controller';
-import { ExpressTypes } from '@/types';
-import { prisma } from '@/db';
+const prismaMock = {
+  chat: {
+    findUnique: jest.fn()
+  },
+  message: {
+    findFirst: jest.fn()
+  }
+};
 
 jest.mock('@/db', () => ({
-  prisma: {
-    prismaClient: {
-      chat: {
-        findUnique: jest.fn()
-      },
-      message: {
-        findFirst: jest.fn()
-      }
-    }
-  }
+  getPrismaClient: jest.fn(() => prismaMock)
 }));
+
+import { getChatPreviewById } from '@/controllers/chat.controller';
+import { ExpressTypes } from '@/types';
 
 describe('getChatPreviewById', () => {
   let req: Partial<ExpressTypes.Req>;
   let res: Partial<ExpressTypes.Res>;
   let next: Partial<ExpressTypes.Next>;
 
-  beforeAll(() => {
+  beforeEach(() => {
+    jest.clearAllMocks();
     req = {};
     res = {
       status: jest.fn().mockReturnThis(),
@@ -37,36 +37,46 @@ describe('getChatPreviewById', () => {
       next as ExpressTypes.Next
     );
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      message: 'ChatId is required'
-    }));
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'ChatId is required'
+      })
+    );
   });
-  
+
   it('should return 404 if chat is not found', async () => {
     req.params = { chatId: 'testChatId' };
-    (prisma.prismaClient.chat.findUnique as jest.Mock).mockResolvedValue(null);
+    (prismaMock.chat.findUnique as jest.Mock).mockResolvedValue(null);
     await getChatPreviewById(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
       next as ExpressTypes.Next
     );
     expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      message: 'Chat not found'
-    }));
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Chat not found'
+      })
+    );
   });
 
   it('should return 200 if chat is found', async () => {
     req.params = { chatId: 'testChatId' };
-    (prisma.prismaClient.chat.findUnique as jest.Mock).mockResolvedValue({});
+    (prismaMock.chat.findUnique as jest.Mock).mockResolvedValue({
+      id: 'testChatId',
+      title: 'Test Chat',
+      createdAt: new Date()
+    });
     await getChatPreviewById(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
       next as ExpressTypes.Next
     );
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      message: 'Chat preview retrieved successfully'
-    }));
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Chat preview retrieved successfully'
+      })
+    );
   });
 });

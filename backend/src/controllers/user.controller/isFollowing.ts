@@ -1,4 +1,4 @@
-import { prisma } from '@/db';
+import { getPrismaClient } from '@/db';
 import { ExpressTypes } from '@/types';
 import { ApiResponse, wrapperFx } from '@/utils';
 
@@ -11,8 +11,10 @@ export const isFollowing = wrapperFx(async function (
   if (!username)
     return new ApiResponse('Username is required', undefined, 400).error(res);
 
+  const prisma = getPrismaClient();
+
   const targetUserId = (
-    await prisma.prismaClient.user.findUnique({
+    await prisma.user.findUnique({
       where: { username },
       select: { id: true }
     })
@@ -21,7 +23,7 @@ export const isFollowing = wrapperFx(async function (
   if (!targetUserId)
     return new ApiResponse('User does not exist', undefined, 404).error(res);
 
-  const isFollowing = await prisma.prismaClient.follow.findUnique({
+  const isFollowing = await prisma.follow.findUnique({
     where: {
       followerId_followingId: {
         followerId: req.user!.id,

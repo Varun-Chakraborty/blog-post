@@ -1,31 +1,33 @@
-jest.mock('@/db', () => ({
-  prisma: {
-    prismaClient: {
-      user: {
-        findUnique: jest.fn(() => ({
-          id: '1',
-          name: 'Test User',
-          username: 'testuser',
-          role: 'USER',
-          email: 'email',
-          followers: [],
-          following: [],
-          posts: []
-        }))
-      }
-    }
+const prismaMock = {
+  user: {
+    findUnique: jest.fn(() => ({
+      id: '1',
+      name: 'Test User',
+      username: 'testuser',
+      role: 'USER',
+      email: 'email',
+      followers: [],
+      following: [],
+      posts: []
+    }))
   }
+};
+
+jest.mock('@/db', () => ({
+  getPrismaClient: jest.fn(() => prismaMock)
 }));
 
 import { getProfile } from '@/controllers/user.controller';
-import { prisma } from '@/db';
+
 import { ExpressTypes } from '@/types';
 
 describe('getProfile', () => {
   let req: Partial<ExpressTypes.Req>;
   let res: Partial<ExpressTypes.Res>;
   let next: Partial<ExpressTypes.Next>;
+
   beforeEach(() => {
+    jest.clearAllMocks();
     req = {};
     res = {
       status: jest.fn().mockReturnThis(),
@@ -127,9 +129,7 @@ describe('getProfile', () => {
         username: 'nonexistentuser'
       }
     };
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValueOnce(
-      null
-    );
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValueOnce(null);
     await getProfile(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,

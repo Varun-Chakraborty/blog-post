@@ -1,5 +1,5 @@
 import { ExpressTypes } from '@/types';
-import { prisma } from '@/db';
+import { getPrismaClient } from '@/db';
 import { ApiResponse, wrapperFx, tokens, setCookie } from '@/utils';
 import { z } from 'zod';
 
@@ -35,20 +35,19 @@ export const signup = wrapperFx(async function (
     ).error(res);
   }
 
-  if (await prisma.prismaClient.user.findUnique({ where: { username } })) {
+  const prisma = getPrismaClient();
+
+  if (await prisma.user.findUnique({ where: { username } })) {
     return new ApiResponse('Username already exists', undefined, 409).error(
       res
     );
   }
 
-  if (
-    email &&
-    (await prisma.prismaClient.user.findUnique({ where: { email } }))
-  ) {
+  if (email && (await prisma.user.findUnique({ where: { email } }))) {
     return new ApiResponse('Email already exists', undefined, 409).error(res);
   }
 
-  const user = await prisma.prismaClient.user.create({
+  const user = await prisma.user.create({
     data: { username, name, email, password },
     omit: { password: true, refreshToken: true }
   });
@@ -67,7 +66,7 @@ export const signup = wrapperFx(async function (
     path: '/api/v1/auth/refresh'
   });
 
-  const updatedUser = await prisma.prismaClient.user.update({
+  const updatedUser = await prisma.user.update({
     where: { id: user.id },
     data: { refreshToken: refresh },
     omit: { password: true, refreshToken: true }

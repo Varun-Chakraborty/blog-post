@@ -1,4 +1,4 @@
-import { redis } from '@/db';
+import { getRedisClient } from '@/db';
 import { ExpressTypes } from '@/types';
 import { verifyAccessTokens } from '@/utils/tokens';
 
@@ -9,11 +9,12 @@ export async function authenticate(
 ) {
   const token =
     req.cookies.accessToken ?? req.headers.authorization?.split(' ')[1];
+
   if (!token) return next();
 
-  const doesTokenExistOnRedis = await redis.redisClient.exists(
-    `token:${token}`
-  );
+  const redis = getRedisClient();
+
+  const doesTokenExistOnRedis = await redis.exists(`token:${token}`);
   if (doesTokenExistOnRedis) return next();
 
   const user = verifyAccessTokens(token);

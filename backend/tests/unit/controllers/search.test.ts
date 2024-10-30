@@ -17,21 +17,21 @@ const postList = [
   }
 ];
 
-jest.mock('@/db', () => ({
-  prisma: {
-    prismaClient: {
-      user: {
-        findMany: jest.fn(() => [userList[0]])
-      },
-      post: {
-        findMany: jest.fn(() => [postList[0]])
-      }
-    }
+const prismaMock = {
+  user: {
+    findMany: jest.fn(() => [userList[0]])
+  },
+  post: {
+    findMany: jest.fn(() => [postList[0]])
   }
+};
+
+jest.mock('@/db', () => ({
+  getPrismaClient: jest.fn(() => prismaMock)
 }));
 
 import { search } from '@/controllers';
-import { prisma } from '@/db';
+
 import { ExpressTypes } from '@/types';
 
 describe('search', () => {
@@ -40,6 +40,7 @@ describe('search', () => {
   let next: Partial<ExpressTypes.Next>;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     req = {};
     res = {
       status: jest.fn().mockReturnThis(),
@@ -50,8 +51,8 @@ describe('search', () => {
 
   it('should return empty arrays if no query is provided', async () => {
     req.query = {};
-    (prisma.prismaClient.user.findMany as jest.Mock).mockResolvedValueOnce([]);
-    (prisma.prismaClient.post.findMany as jest.Mock).mockResolvedValueOnce([]);
+    (prismaMock.user.findMany as jest.Mock).mockResolvedValueOnce([]);
+    (prismaMock.post.findMany as jest.Mock).mockResolvedValueOnce([]);
     await search(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,

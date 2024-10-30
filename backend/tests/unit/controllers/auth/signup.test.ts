@@ -1,14 +1,14 @@
-jest.mock('@/db', () => ({
-  prisma: {
-    prismaClient: {
-      user: {
-        findUnique: jest.fn(),
-        verifyPassword: jest.fn(),
-        update: jest.fn(),
-        create: jest.fn()
-      }
-    }
+const prismaMock = {
+  user: {
+    findUnique: jest.fn(),
+    verifyPassword: jest.fn(),
+    update: jest.fn(),
+    create: jest.fn()
   }
+};
+
+jest.mock('@/db', () => ({
+  getPrismaClient: jest.fn(() => prismaMock)
 }));
 
 jest.mock('@/utils', () => ({
@@ -22,8 +22,8 @@ jest.mock('@/utils', () => ({
 
 import { signup } from '@/controllers/auth.controller';
 import { ExpressTypes } from '@/types';
-import { prisma } from '@/db';
-import { tokens, setCookie, ApiResponse } from '@/utils';
+
+import { tokens, setCookie } from '@/utils';
 
 describe('signup', () => {
   let req: Partial<ExpressTypes.Req>;
@@ -31,6 +31,7 @@ describe('signup', () => {
   let next: Partial<ExpressTypes.Next>;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     req = {};
     res = {
       status: jest.fn().mockReturnThis(),
@@ -88,7 +89,7 @@ describe('signup', () => {
       password: 'password'
     };
 
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue({
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValue({
       id: '1',
       username: 'existinguser',
       name: 'Test User',
@@ -117,11 +118,9 @@ describe('signup', () => {
       password: 'password'
     };
 
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValueOnce(
-      null
-    );
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValueOnce(null);
 
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue({
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValue({
       id: '1',
       username: 'existinguser',
       name: 'Test User',
@@ -150,16 +149,16 @@ describe('signup', () => {
       password: 'password'
     };
 
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue(null);
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValue(null);
 
-    (prisma.prismaClient.user.create as jest.Mock).mockResolvedValue({
+    (prismaMock.user.create as jest.Mock).mockResolvedValue({
       id: '1',
       username: 'newuser',
       name: 'Test User',
       email: 'rjQ5H@example.com'
     });
 
-    (prisma.prismaClient.user.update as jest.Mock).mockResolvedValue({
+    (prismaMock.user.update as jest.Mock).mockResolvedValue({
       id: '1',
       username: 'newuser',
       name: 'Test User',

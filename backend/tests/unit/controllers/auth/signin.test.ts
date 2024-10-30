@@ -1,12 +1,17 @@
-jest.mock('@/db', () => ({
-  prisma: {
-    prismaClient: {
-      user: {
-        findUnique: jest.fn(),
-        update: jest.fn()
-      }
-    }
+const prismaMock = {
+  user: {
+    findUnique: jest.fn(),
+    update: jest.fn()
   }
+};
+
+const redisMock = {
+  exists: jest.fn()
+};
+
+jest.mock('@/db', () => ({
+  getPrismaClient: jest.fn(() => prismaMock),
+  getRedisClient: jest.fn(() => redisMock)
 }));
 
 jest.mock('@/utils', () => ({
@@ -21,7 +26,7 @@ jest.mock('@/utils', () => ({
 
 import { signin } from '@/controllers/auth.controller';
 import { ExpressTypes } from '@/types';
-import { prisma } from '@/db';
+
 import { setCookie, verifyPassword, tokens } from '@/utils';
 
 describe('signin', () => {
@@ -30,6 +35,7 @@ describe('signin', () => {
   let next: Partial<ExpressTypes.Next>;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     req = {};
     res = {
       status: jest.fn().mockReturnThis(),
@@ -62,9 +68,7 @@ describe('signin', () => {
       password: 'testpassword'
     };
 
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValueOnce(
-      null
-    );
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValueOnce(null);
 
     await signin(
       req as ExpressTypes.Req,
@@ -86,7 +90,7 @@ describe('signin', () => {
       password: 'testpassword'
     };
 
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValueOnce({
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValueOnce({
       id: '1',
       username: 'testuser',
       name: 'Test User',
@@ -116,7 +120,7 @@ describe('signin', () => {
       password: 'testpassword'
     };
 
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValueOnce({
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValueOnce({
       id: '1',
       username: 'testuser',
       name: 'Test User',
@@ -131,7 +135,7 @@ describe('signin', () => {
       refresh: 'refresh'
     });
 
-    (prisma.prismaClient.user.update as jest.Mock).mockResolvedValueOnce({
+    (prismaMock.user.update as jest.Mock).mockResolvedValueOnce({
       id: '1',
       username: 'testuser',
       name: 'Test User',
@@ -171,7 +175,7 @@ describe('signin', () => {
     };
     process.env.ACCESS_COOKIE_MAX_AGE = undefined;
     process.env.REFRESH_COOKIE_MAX_AGE = undefined;
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValueOnce({
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValueOnce({
       id: '1',
       username: 'testuser',
       name: 'Test User',
@@ -186,7 +190,7 @@ describe('signin', () => {
       refresh: 'refresh'
     });
 
-    (prisma.prismaClient.user.update as jest.Mock).mockResolvedValueOnce({
+    (prismaMock.user.update as jest.Mock).mockResolvedValueOnce({
       id: '1',
       username: 'testuser',
       name: 'Test User',

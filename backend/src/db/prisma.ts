@@ -1,11 +1,11 @@
 import { Prisma, PrismaClient } from '@prisma/client';
 import bcrypt from 'bcrypt';
 
-async function hashPassword(password: string) {
+export async function hashPassword(password: string) {
   return await bcrypt.hash(password, 10);
 }
 
-async function hashDuringCreate({
+export async function hashDuringCreate({
   args,
   query
 }: {
@@ -17,7 +17,7 @@ async function hashDuringCreate({
   return query(args);
 }
 
-async function hashDuringUpdate({
+export async function hashDuringUpdate({
   args,
   query
 }: {
@@ -31,28 +31,20 @@ async function hashDuringUpdate({
   return query(args);
 }
 
-declare global {
-  var prismaClient: PrismaClient | undefined;
-}
+let prismaClient: PrismaClient | null = null;
 
-if (!globalThis.prismaClient) {
-  const prismaExt = Prisma.defineExtension({
-    query: {
-      user: {
-        create: hashDuringCreate,
-        update: hashDuringUpdate
+export function getPrismaClient() {
+  if (!prismaClient) {
+    const prismaExt = Prisma.defineExtension({
+      query: {
+        user: {
+          create: hashDuringCreate,
+          update: hashDuringUpdate
+        }
       }
-    }
-  });
-  globalThis.prismaClient = new PrismaClient().$extends(
-    prismaExt
-  ) as PrismaClient;
-}
-const prismaClient = globalThis.prismaClient;
+    });
+    prismaClient = new PrismaClient().$extends(prismaExt) as PrismaClient;
+  }
 
-export default {
-  hashPassword,
-  hashDuringCreate,
-  hashDuringUpdate,
-  prismaClient
-};
+  return prismaClient;
+}

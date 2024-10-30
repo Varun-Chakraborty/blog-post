@@ -1,4 +1,4 @@
-import { prisma } from '@/db';
+import { getPrismaClient } from '@/db';
 import { ExpressTypes } from '@/types';
 import { ApiResponse, wrapperFx } from '@/utils';
 import { z } from 'zod';
@@ -31,7 +31,9 @@ export const isUsernameAvailable = wrapperFx(async function (
     ).error(res);
   }
 
-  const user = await prisma.prismaClient.user.findUnique({
+  const prisma = getPrismaClient();
+
+  const user = await prisma.user.findUnique({
     where: { username }
   });
   if (user)

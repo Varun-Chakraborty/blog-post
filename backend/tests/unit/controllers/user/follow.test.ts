@@ -1,25 +1,26 @@
-jest.mock('@/db', () => ({
-  prisma: {
-    prismaClient: {
-      user: {
-        findUnique: jest.fn()
-      },
-      follow: {
-        create: jest.fn()
-      }
-    }
+const prismaMock = {
+  user: {
+    findUnique: jest.fn()
+  },
+  follow: {
+    create: jest.fn()
   }
+};
+
+jest.mock('@/db', () => ({
+  getPrismaClient: jest.fn(() => prismaMock)
 }));
 
 import { followUser } from '@/controllers/user.controller';
 import { ExpressTypes } from '@/types';
-import { prisma } from '@/db';
 
 describe('followUser', () => {
   let req: Partial<ExpressTypes.Req>;
   let res: Partial<ExpressTypes.Res>;
   let next: Partial<ExpressTypes.Next>;
-  beforeAll(() => {
+
+  beforeEach(() => {
+    jest.clearAllMocks();
     req = {};
     res = {
       status: jest.fn().mockReturnThis(),
@@ -47,7 +48,7 @@ describe('followUser', () => {
     req.params = {
       username: 'nonexistentuser'
     };
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue(null);
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValue(null);
     await followUser(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
@@ -73,7 +74,7 @@ describe('followUser', () => {
         role: 'USER'
       }
     };
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue({
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValue({
       id: '1',
       username: 'testuser',
       name: 'Test User',

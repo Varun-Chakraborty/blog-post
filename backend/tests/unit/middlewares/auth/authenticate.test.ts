@@ -2,18 +2,17 @@ jest.mock('@/utils/tokens', () => ({
   verifyAccessTokens: jest.fn()
 }));
 
+const redisMock = {
+  exists: jest.fn()
+};
+
 jest.mock('@/db', () => ({
-  redis: {
-    redisClient: {
-      exists: jest.fn()
-    }
-  }
+  getRedisClient: jest.fn(() => redisMock)
 }));
 
 import { ExpressTypes } from '@/types';
 import { authenticate } from '@/middlewares/auth';
 import { verifyAccessTokens } from '@/utils/tokens';
-import { redis } from '@/db';
 
 describe('authenticate', () => {
   let req: Partial<ExpressTypes.Req>;
@@ -21,6 +20,7 @@ describe('authenticate', () => {
   let next: Partial<ExpressTypes.Next>;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     req = {};
     res = {};
     next = jest.fn();
@@ -76,7 +76,7 @@ describe('authenticate', () => {
     req.cookies = {
       accessToken: 'invalid'
     };
-    (redis.redisClient.exists as jest.Mock).mockReturnValueOnce(true);
+    (redisMock.exists as jest.Mock).mockReturnValueOnce(true);
     await authenticate(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,

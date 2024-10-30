@@ -1,3 +1,13 @@
+const prismaMock = {
+  chat: {
+    findUnique: jest.fn()
+  }
+};
+
+jest.mock('@/db', () => ({
+  getPrismaClient: jest.fn(() => prismaMock)
+}));
+
 import { getChatById } from '@/controllers/chat.controller';
 import { ExpressTypes } from '@/types';
 
@@ -6,7 +16,8 @@ describe('getChatById', () => {
   let res: Partial<ExpressTypes.Res>;
   let next: Partial<ExpressTypes.Next>;
 
-  beforeAll(() => {
+  beforeEach(() => {
+    jest.clearAllMocks();
     req = {
       params: {
         chatId: 'testChatId'
@@ -19,12 +30,50 @@ describe('getChatById', () => {
     next = jest.fn();
   });
 
-  it('should return 200', async () => {
+  it('should call 400 if chatId is not present', async () => {
+    req.params = {};
     await getChatById(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
       next as ExpressTypes.Next
     );
-    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'ChatId is required'
+      })
+    );
+  });
+
+  it('should return 404 if chat is not found', async () => {
+    (prismaMock.chat.findUnique as jest.Mock).mockResolvedValue(null);
+    await getChatById(
+      req as ExpressTypes.Req,
+      res as ExpressTypes.Res,
+      next as ExpressTypes.Next
+    );
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Chat not found'
+      })
+    );
+  });
+
+  it('should return 200 with chat if found', async () => {
+    const chat = { id: 'testChatId', name: 'testChatName' };
+    (prismaMock.chat.findUnique as jest.Mock).mockResolvedValue(chat);
+    await getChatById(
+      req as ExpressTypes.Req,
+      res as ExpressTypes.Res,
+      next as ExpressTypes.Next
+    );
+    // expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Chat retrieved successfully',
+        data: { chat }
+      })
+    );
   });
 });

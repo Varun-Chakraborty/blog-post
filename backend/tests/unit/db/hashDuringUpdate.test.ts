@@ -1,4 +1,4 @@
-import { prisma } from '@/db';
+import { hashDuringUpdate } from '@/db/prisma';
 
 describe('hashDuringUpdate', () => {
   it('should return query with hashed password', async () => {
@@ -14,7 +14,7 @@ describe('hashDuringUpdate', () => {
       }
     };
 
-    await prisma.hashDuringUpdate({ args, query });
+    await hashDuringUpdate({ args, query });
 
     expect(query).toHaveBeenCalledWith(
       expect.objectContaining({

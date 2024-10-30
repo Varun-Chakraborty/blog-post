@@ -1,4 +1,4 @@
-import { prisma } from '@/db';
+import { getPrismaClient } from '@/db';
 import { ExpressTypes } from '@/types';
 import { ApiResponse, wrapperFx } from '@/utils';
 
@@ -43,7 +43,9 @@ export const createChat = wrapperFx(async function (
 
   const participantsArray = Array.from(participantsSet);
 
-  const chat = await prisma.prismaClient.chat.create({
+  const prisma = getPrismaClient();
+
+  const chat = await prisma.chat.create({
     data: {
       type,
       participants: {
@@ -54,5 +56,9 @@ export const createChat = wrapperFx(async function (
     select: { id: true }
   });
 
-  return new ApiResponse('Chat created successfully', { chatId: chat.id }, 201).success(res);
+  return new ApiResponse(
+    'Chat created successfully',
+    { chatId: chat.id },
+    201
+  ).success(res);
 });

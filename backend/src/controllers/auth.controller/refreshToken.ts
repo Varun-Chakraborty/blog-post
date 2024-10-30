@@ -1,4 +1,4 @@
-import { prisma, redis } from '@/db';
+import { getPrismaClient, getRedisClient } from '@/db';
 import { ExpressTypes } from '@/types';
 import { ApiResponse, wrapperFx, setCookie, tokens } from '@/utils';
 
@@ -12,7 +12,10 @@ export const refreshToken = wrapperFx(async function (
   if (!refreshToken)
     return new ApiResponse('No refresh token found', undefined, 401).error(res);
 
-  const doesExists = await redis.redisClient.exists(refreshToken);
+  const redis = getRedisClient();
+  const prisma = getPrismaClient();
+
+  const doesExists = await redis.exists(refreshToken);
   if (doesExists)
     return new ApiResponse('Invalid refresh token', undefined, 401).error(res);
 
@@ -22,7 +25,7 @@ export const refreshToken = wrapperFx(async function (
 
   const { id } = verificationResponse;
 
-  const user = await prisma.prismaClient.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: { id },
     omit: { password: true }
   });

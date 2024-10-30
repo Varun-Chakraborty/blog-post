@@ -7,6 +7,7 @@ import { verifyToken } from '@/utils/tokens/tokenUtils';
 
 describe('verifyAccessTokens', () => {
   beforeEach(() => {
+    jest.clearAllMocks();
     (verifyToken as jest.Mock).mockImplementation((token: string) => {
       if (token === 'valid') return { id: '1' };
       else return null;

@@ -1,4 +1,4 @@
-import { prisma } from '@/db';
+import { getPrismaClient } from '@/db';
 import { ExpressTypes } from '@/types';
 import { ApiResponse, wrapperFx } from '@/utils';
 
@@ -12,14 +12,17 @@ export const getUnreadChats = wrapperFx(async function (
     return new ApiResponse('Username is required', undefined, 400).error(res);
 
   const currentUser = req.user!;
+
+  const prisma = getPrismaClient();
+
   if (username !== 'me' && username !== currentUser.username)
     return new ApiResponse(
       'You can only access your own chats',
       undefined,
       403
     ).error(res);
-    
-    const unreadChats = await prisma.prismaClient.chat.findMany({
+
+  const unreadChats = await prisma.chat.findMany({
     where: {
       messages: {
         some: {

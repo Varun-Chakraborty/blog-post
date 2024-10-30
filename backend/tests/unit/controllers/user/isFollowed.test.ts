@@ -1,24 +1,25 @@
-jest.mock('@/db', () => ({
-  prisma: {
-    prismaClient: {
-      user: {
-        findUnique: jest.fn()
-      },
-      follow: {
-        findUnique: jest.fn()
-      }
-    }
+const prismaMock = {
+  user: {
+    findUnique: jest.fn()
+  },
+  follow: {
+    findUnique: jest.fn()
   }
+};
+
+jest.mock('@/db', () => ({
+  getPrismaClient: jest.fn(() => prismaMock)
 }));
 
 import { isFollowed } from '@/controllers/user.controller';
-import { prisma } from '@/db';
+
 import { ExpressTypes } from '@/types';
 
 describe('isFollowed', () => {
   let req: Partial<ExpressTypes.Req>;
   let res: Partial<ExpressTypes.Res>;
   let next: Partial<ExpressTypes.Next>;
+
   beforeEach(() => {
     jest.clearAllMocks();
     req = {};
@@ -46,7 +47,7 @@ describe('isFollowed', () => {
 
   it('should return 404 if user is not found', async () => {
     req.params = { username: 'test' };
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue(null);
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValue(null);
     await isFollowed(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
@@ -72,14 +73,14 @@ describe('isFollowed', () => {
         role: 'USER'
       }
     };
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue({
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValue({
       id: '1',
       username: 'test',
       name: 'Test User',
       email: 'email',
       role: 'USER'
     });
-    (prisma.prismaClient.follow.findUnique as jest.Mock).mockResolvedValue(null);
+    (prismaMock.follow.findUnique as jest.Mock).mockResolvedValue(null);
     await isFollowed(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
@@ -105,14 +106,14 @@ describe('isFollowed', () => {
         role: 'USER'
       }
     };
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue({
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValue({
       id: '1',
       username: 'test',
       name: 'Test User',
       email: 'email',
       role: 'USER'
     });
-    (prisma.prismaClient.follow.findUnique as jest.Mock).mockResolvedValue({
+    (prismaMock.follow.findUnique as jest.Mock).mockResolvedValue({
       id: '1'
     });
     await isFollowed(

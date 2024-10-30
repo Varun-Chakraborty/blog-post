@@ -1,24 +1,25 @@
-import { getFollowing } from '@/controllers/user.controller';
-import { prisma } from '@/db';
-import { ExpressTypes } from '@/types';
+const prismaMock = {
+  user: {
+    findUnique: jest.fn()
+  },
+  follow: {
+    findMany: jest.fn()
+  }
+};
 
 jest.mock('@/db', () => ({
-  prisma: {
-    prismaClient: {
-      user: {
-        findUnique: jest.fn()
-      },
-      follow: {
-        findMany: jest.fn()
-      }
-    }
-  }
+  getPrismaClient: jest.fn(() => prismaMock)
 }));
+
+import { getFollowing } from '@/controllers/user.controller';
+
+import { ExpressTypes } from '@/types';
 
 describe('getFollowing', () => {
   let req: Partial<ExpressTypes.Req>;
   let res: Partial<ExpressTypes.Res>;
   let next: Partial<ExpressTypes.Next>;
+
   beforeEach(() => {
     jest.clearAllMocks();
     req = {};
@@ -50,7 +51,7 @@ describe('getFollowing', () => {
         username: 'nonexistentuser'
       }
     };
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue(null);
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValue(null);
     await getFollowing(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
@@ -70,13 +71,13 @@ describe('getFollowing', () => {
         username: 'testuser'
       }
     };
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue({
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValue({
       id: '1',
       username: 'testuser',
       name: 'Test User',
       role: 'USER'
     });
-    (prisma.prismaClient.follow.findMany as jest.Mock).mockResolvedValue([
+    (prismaMock.follow.findMany as jest.Mock).mockResolvedValue([
       {
         id: '1',
         username: 'testuser',
@@ -96,23 +97,25 @@ describe('getFollowing', () => {
       next as ExpressTypes.Next
     );
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      data: expect.objectContaining({
-        followings: [
-          {
-            id: '1',
-            username: 'testuser',
-            name: 'Test User',
-            profilePicture: 'profilePicture'
-          },
-          {
-            id: '2',
-            username: 'testuser2',
-            name: 'Test User 2',
-            profilePicture: 'profilePicture2'
-          }
-        ]
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          followings: [
+            {
+              id: '1',
+              username: 'testuser',
+              name: 'Test User',
+              profilePicture: 'profilePicture'
+            },
+            {
+              id: '2',
+              username: 'testuser2',
+              name: 'Test User 2',
+              profilePicture: 'profilePicture2'
+            }
+          ]
+        })
       })
-    }));
+    );
   });
 });

@@ -1,4 +1,4 @@
-import { prisma } from '@/db';
+import { getPrismaClient } from '@/db';
 import { ExpressTypes, User, Post } from '@/types';
 import { ApiResponse, wrapperFx } from '@/utils';
 
@@ -11,10 +11,12 @@ export const getProfile = wrapperFx(async function (
   if (!username)
     return new ApiResponse('Username is required', undefined, 400).error(res);
 
+  const prisma = getPrismaClient();
+
   if (username === 'me') {
     username = req.user!.username;
   }
-  const user: User | null = await prisma.prismaClient.user.findUnique({
+  const user: User | null = await prisma.user.findUnique({
     where: { username },
     omit: { password: true, refreshToken: true },
     include: {

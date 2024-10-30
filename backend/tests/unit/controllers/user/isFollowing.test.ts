@@ -1,24 +1,24 @@
-jest.mock('@/db', () => ({
-  prisma: {
-    prismaClient: {
-      user: {
-        findUnique: jest.fn()
-      },
-      follow: {
-        findUnique: jest.fn()
-      }
-    }
+const prismaMock = {
+  user: {
+    findUnique: jest.fn()
+  },
+  follow: {
+    findUnique: jest.fn()
   }
+};
+
+jest.mock('@/db', () => ({
+  getPrismaClient: jest.fn(() => prismaMock)
 }));
 
 import { isFollowing } from '@/controllers/user.controller';
-import { prisma } from '@/db';
 import { ExpressTypes } from '@/types';
 
 describe('isFollowing', () => {
   let req: Partial<ExpressTypes.Req>;
   let res: Partial<ExpressTypes.Res>;
   let next: Partial<ExpressTypes.Next>;
+
   beforeEach(() => {
     jest.clearAllMocks();
     req = {};
@@ -46,7 +46,7 @@ describe('isFollowing', () => {
 
   it('should return 404 if user is not found', async () => {
     req.params = { username: 'test' };
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue(null);
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValue(null);
     await isFollowing(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
@@ -72,19 +72,21 @@ describe('isFollowing', () => {
         role: 'USER'
       }
     };
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue({
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValue({
       id: 1
     });
-    (prisma.prismaClient.follow.findUnique as jest.Mock).mockResolvedValue(null);
+    (prismaMock.follow.findUnique as jest.Mock).mockResolvedValue(null);
     await isFollowing(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
       next as ExpressTypes.Next
     );
-    // expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      message: 'You are not following this user'
-    }));
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'You are not following this user'
+      })
+    );
   });
 
   it('should return 200 if user is found and following', async () => {
@@ -99,10 +101,10 @@ describe('isFollowing', () => {
         role: 'USER'
       }
     };
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue({
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValue({
       id: 1
     });
-    (prisma.prismaClient.follow.findUnique as jest.Mock).mockResolvedValue({
+    (prismaMock.follow.findUnique as jest.Mock).mockResolvedValue({
       id: 1
     });
     await isFollowing(
@@ -111,8 +113,10 @@ describe('isFollowing', () => {
       next as ExpressTypes.Next
     );
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      message: 'You are following this user'
-    }));
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'You are following this user'
+      })
+    );
   });
 });

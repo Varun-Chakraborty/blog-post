@@ -1,20 +1,20 @@
-import { unfollowUser } from '@/controllers/user.controller';
-import { prisma } from '@/db';
-import { ExpressTypes } from '@/types';
+const prismaMock = {
+  user: {
+    findUnique: jest.fn()
+  },
+  follow: {
+    findUnique: jest.fn(),
+    delete: jest.fn()
+  }
+};
 
 jest.mock('@/db', () => ({
-  prisma: {
-    prismaClient: {
-      user: {
-        findUnique: jest.fn()
-      },
-      follow: {
-        findUnique: jest.fn(),
-        delete: jest.fn()
-      }
-    }
-  }
+  getPrismaClient: jest.fn(() => prismaMock)
 }));
+
+import { unfollowUser } from '@/controllers/user.controller';
+
+import { ExpressTypes } from '@/types';
 
 describe('unfollowUser', () => {
   let req: Partial<ExpressTypes.Req>;
@@ -50,7 +50,7 @@ describe('unfollowUser', () => {
     req.params = {
       username: 'nonexistentuser'
     };
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue(null);
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValue(null);
     await unfollowUser(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
@@ -76,14 +76,14 @@ describe('unfollowUser', () => {
         role: 'USER'
       }
     };
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue({
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValue({
       id: '1',
       username: 'testuser',
       name: 'Test User',
       email: 'email',
       role: 'USER'
     });
-    (prisma.prismaClient.follow.findUnique as jest.Mock).mockResolvedValue(null);
+    (prismaMock.follow.findUnique as jest.Mock).mockResolvedValue(null);
     await unfollowUser(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
@@ -109,20 +109,20 @@ describe('unfollowUser', () => {
         role: 'USER'
       }
     };
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue({
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValue({
       id: '1',
       username: 'testuser',
       name: 'Test User',
       email: 'email',
       role: 'USER'
     });
-    (prisma.prismaClient.follow.findUnique as jest.Mock).mockResolvedValue({
+    (prismaMock.follow.findUnique as jest.Mock).mockResolvedValue({
       id: '1',
       username: 'testuser',
       name: 'Test User',
       profilePicture: 'profilePicture'
     });
-    (prisma.prismaClient.follow.delete as jest.Mock).mockResolvedValue({
+    (prismaMock.follow.delete as jest.Mock).mockResolvedValue({
       id: '1',
       username: 'testuser',
       name: 'Test User',
@@ -133,7 +133,7 @@ describe('unfollowUser', () => {
       res as ExpressTypes.Res,
       next as ExpressTypes.Next
     );
-    // expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
         message: 'User unfollowed'

@@ -6,7 +6,8 @@ describe('describeMeKeyword', () => {
   let res: Partial<ExpressTypes.Res>;
   let next: Partial<ExpressTypes.Next>;
 
-  beforeAll(() => {
+  beforeEach(() => {
+    jest.clearAllMocks();
     req = {};
     res = {
       status: jest.fn().mockReturnThis(),

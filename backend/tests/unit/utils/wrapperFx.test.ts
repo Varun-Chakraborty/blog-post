@@ -7,6 +7,7 @@ describe('wrapperFx', () => {
   let next: jest.Mock;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     req = {};
     res = {
       status: jest.fn().mockReturnThis(),

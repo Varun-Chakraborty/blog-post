@@ -1,18 +1,18 @@
-jest.mock('@/db', () => ({
-  prisma: {
-    prismaClient: {
-      user: {
-        findUnique: jest.fn(() => ({ refreshToken: 'refresh' })),
-        update: jest.fn()
-      }
-    }
-  },
-  redis: {
-    redisClient: {
-      set: jest.fn(),
-      expireat: jest.fn()
-    }
+const prismaMock = {
+  user: {
+    findUnique: jest.fn(() => ({ refreshToken: 'refresh' })),
+    update: jest.fn()
   }
+};
+
+const redisMock = {
+  set: jest.fn(),
+  expireat: jest.fn()
+};
+
+jest.mock('@/db', () => ({
+  getPrismaClient: jest.fn(() => prismaMock),
+  getRedisClient: jest.fn(() => redisMock)
 }));
 
 jest.mock('@/utils', () => ({
@@ -25,7 +25,7 @@ jest.mock('@/utils', () => ({
 }));
 
 import { signout } from '@/controllers/auth.controller';
-import { prisma, redis } from '@/db';
+
 import { ExpressTypes } from '@/types';
 import { verifyAccessTokens, verifyRefreshTokens } from '@/utils/tokens';
 
@@ -35,6 +35,7 @@ describe('signout', () => {
   let next: Partial<ExpressTypes.Next>;
 
   beforeEach(() => {
+    jest.clearAllMocks();
     req = {};
     res = {
       status: jest.fn().mockReturnThis(),
@@ -56,13 +57,14 @@ describe('signout', () => {
         accessToken: 'valid'
       }
     };
-    (prisma.prismaClient.user.update as jest.Mock).mockResolvedValue({
+    (prismaMock.user.update as jest.Mock).mockResolvedValue({
       id: '1',
       name: 'Test User',
       username: 'testuser',
       role: 'USER'
     });
-    (redis.redisClient.set as jest.Mock).mockResolvedValue(true);
+    (redisMock.set as jest.Mock).mockResolvedValue(true);
+    (redisMock.expireat as jest.Mock).mockResolvedValue(true);
     await signout(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,

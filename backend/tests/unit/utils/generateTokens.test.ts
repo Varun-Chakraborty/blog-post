@@ -11,6 +11,7 @@ import { UserWithCredentials } from '@/types';
 describe('generateTokens', () => {
   let payload: UserWithCredentials;
   beforeEach(() => {
+    jest.clearAllMocks();
     payload = {
       id: '1',
       username: 'test',

@@ -1,22 +1,24 @@
-jest.mock('@/db', () => ({
-  prisma: {
-    prismaClient: {
-      user: {
-        findUnique: jest.fn()
-      }
-    }
+const prismaMock = {
+  user: {
+    findUnique: jest.fn()
   }
+};
+
+jest.mock('@/db', () => ({
+  getPrismaClient: jest.fn(() => prismaMock)
 }));
 
 import { isUsernameAvailable } from '@/controllers/user.controller';
-import { prisma } from '@/db';
+
 import { ExpressTypes } from '@/types';
 
 describe('isUsernameAvailable', () => {
   let req: Partial<ExpressTypes.Req>;
   let res: Partial<ExpressTypes.Res>;
   let next: Partial<ExpressTypes.Next>;
+
   beforeEach(() => {
+    jest.clearAllMocks();
     req = {};
     res = {
       status: jest.fn().mockReturnThis(),
@@ -72,7 +74,7 @@ describe('isUsernameAvailable', () => {
 
   it('should return 409 if username already exists', async () => {
     req.query = { username: 'existinguser' };
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValueOnce({
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValueOnce({
       id: '1',
       username: 'existinguser',
       name: 'Existing User',
@@ -94,9 +96,7 @@ describe('isUsernameAvailable', () => {
 
   it('should return 200 if username is available to use', async () => {
     req.query = { username: 'newuser' };
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValueOnce(
-      null
-    );
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValueOnce(null);
     await isUsernameAvailable(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,

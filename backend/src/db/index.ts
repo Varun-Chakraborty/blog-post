@@ -1,2 +1,2 @@
-export { default as prisma } from './prisma';
-export { default as redis } from './redis';
+export { getPrismaClient } from './prisma';
+export { getRedisClient } from './redis';

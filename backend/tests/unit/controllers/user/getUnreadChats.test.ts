@@ -1,19 +1,19 @@
-import { getUnreadChats } from '@/controllers/user.controller';
-import { prisma } from '@/db';
-import { ExpressTypes } from '@/types';
+const prismaMock = {
+  user: {
+    findUnique: jest.fn()
+  },
+  chat: {
+    findMany: jest.fn()
+  }
+};
 
 jest.mock('@/db', () => ({
-  prisma: {
-    prismaClient: {
-      user: {
-        findUnique: jest.fn()
-      },
-      chat: {
-        findMany: jest.fn()
-      }
-    }
-  }
+  getPrismaClient: jest.fn(() => prismaMock)
 }));
+
+import { getUnreadChats } from '@/controllers/user.controller';
+
+import { ExpressTypes } from '@/types';
 
 describe('getUreadChats', () => {
   let req: Partial<ExpressTypes.Req>;
@@ -57,7 +57,7 @@ describe('getUreadChats', () => {
         role: 'USER'
       }
     };
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue(null);
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValue(null);
     await getUnreadChats(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
@@ -83,7 +83,7 @@ describe('getUreadChats', () => {
         role: 'USER'
       }
     };
-    (prisma.prismaClient.user.findUnique as jest.Mock).mockResolvedValue({
+    (prismaMock.user.findUnique as jest.Mock).mockResolvedValue({
       id: '1',
       username: 'testuser',
       name: 'Test User',

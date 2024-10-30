@@ -1,4 +1,4 @@
-import { prisma } from '@/db';
+import { getPrismaClient } from '@/db';
 import { ExpressTypes } from '@/types';
 import { ApiResponse, wrapperFx } from '@/utils';
 
@@ -8,11 +8,12 @@ export const getChatPreviewById = wrapperFx(async function (
 ) {
   const { chatId } = req.params;
 
-  if (!chatId) {
+  if (!chatId)
     return new ApiResponse('ChatId is required', undefined, 400).error(res);
-  }
 
-  const chat = await prisma.prismaClient.chat.findUnique({
+  const prisma = getPrismaClient();
+
+  const chat = await prisma.chat.findUnique({
     where: {
       id: chatId
     },
@@ -23,7 +24,7 @@ export const getChatPreviewById = wrapperFx(async function (
     return new ApiResponse('Chat not found', undefined, 404).error(res);
   }
 
-  const latestMessage = await prisma.prismaClient.message.findFirst({
+  const latestMessage = await prisma.message.findFirst({
     where: {
       chatId: chat.id
     },
@@ -37,5 +38,7 @@ export const getChatPreviewById = wrapperFx(async function (
     lastMessage: latestMessage
   };
 
-  return new ApiResponse('Chat preview retrieved successfully', { chatPreview }).success(res);
+  return new ApiResponse('Chat preview retrieved successfully', {
+    chatPreview
+  }).success(res);
 });

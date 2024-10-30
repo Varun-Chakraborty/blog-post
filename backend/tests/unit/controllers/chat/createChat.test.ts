@@ -1,16 +1,15 @@
-jest.mock('@/db', () => ({
-  prisma: {
-    prismaClient: {
-      chat: {
-        create: jest.fn()
-      }
-    }
+const prismaMock = {
+  chat: {
+    create: jest.fn()
   }
+};
+
+jest.mock('@/db', () => ({
+  getPrismaClient: jest.fn(() => prismaMock)
 }));
 
 import { createChat } from '@/controllers/chat.controller';
 import { ExpressTypes } from '@/types';
-import { prisma } from '@/db';
 
 describe('createChat', () => {
   let req: Partial<ExpressTypes.Req>;
@@ -39,9 +38,11 @@ describe('createChat', () => {
       next as ExpressTypes.Next
     );
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      message: 'Participants are required'
-    }));
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Participants are required'
+      })
+    );
   });
 
   it('should return 400 if type is not provided', async () => {
@@ -56,9 +57,11 @@ describe('createChat', () => {
       next as ExpressTypes.Next
     );
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      message: 'Chat type is required'
-    }));
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Chat type is required'
+      })
+    );
   });
 
   it('should return 400 if type is invalid', async () => {
@@ -75,9 +78,11 @@ describe('createChat', () => {
       next as ExpressTypes.Next
     );
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      message: 'Invalid chat type'
-    }));
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Invalid chat type'
+      })
+    );
   });
 
   it('should return 400 if chat type is group and participants are less than 2', async () => {
@@ -93,9 +98,11 @@ describe('createChat', () => {
       next as ExpressTypes.Next
     );
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      message: 'Group must have at least 2 participants'
-    }));
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Group must have at least 2 participants'
+      })
+    );
   });
 
   it('should return 400 if chat type is group and group name is not provided', async () => {
@@ -111,9 +118,11 @@ describe('createChat', () => {
       next as ExpressTypes.Next
     );
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      message: 'Group name is required'
-    }));
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Group name is required'
+      })
+    );
   });
 
   it('should return 400 if chat type is chat and participants are not 2', async () => {
@@ -129,9 +138,11 @@ describe('createChat', () => {
       next as ExpressTypes.Next
     );
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      message: 'Chat must have exactly 2 participants'
-    }));
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Chat must have exactly 2 participants'
+      })
+    );
   });
 
   it('should return 201 if chat is created', async () => {
@@ -147,16 +158,18 @@ describe('createChat', () => {
         role: 'USER'
       }
     };
-    (prisma.prismaClient.chat.create as jest.Mock).mockResolvedValue({});
+    (prismaMock.chat.create as jest.Mock).mockResolvedValue({});
     await createChat(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
       next as ExpressTypes.Next
     );
     expect(res.status).toHaveBeenCalledWith(201);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      message: 'Chat created successfully'
-    }));
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Chat created successfully'
+      })
+    );
   });
 
   it('should return 201 if group is created', async () => {
@@ -173,15 +186,17 @@ describe('createChat', () => {
         role: 'USER'
       }
     };
-    (prisma.prismaClient.chat.create as jest.Mock).mockResolvedValue({});
+    (prismaMock.chat.create as jest.Mock).mockResolvedValue({});
     await createChat(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
       next as ExpressTypes.Next
     );
     expect(res.status).toHaveBeenCalledWith(201);
-    expect(res.json).toHaveBeenCalledWith(expect.objectContaining({
-      message: 'Chat created successfully'
-    }));
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Chat created successfully'
+      })
+    );
   });
 });

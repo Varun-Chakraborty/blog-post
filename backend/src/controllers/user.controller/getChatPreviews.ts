@@ -1,4 +1,4 @@
-import { prisma } from '@/db';
+import { getPrismaClient } from '@/db';
 import { ExpressTypes } from '@/types';
 import { ApiResponse, wrapperFx } from '@/utils';
 
@@ -11,7 +11,9 @@ export const getChatPreviews = wrapperFx(async function (
   if (!username)
     return new ApiResponse('Username is required', undefined, 400).error(res);
 
-  const chats = await prisma.prismaClient.chat.findMany({
+  const prisma = getPrismaClient();
+
+  const chats = await prisma.chat.findMany({
     where: {
       participants: {
         some: {
@@ -30,7 +32,7 @@ export const getChatPreviews = wrapperFx(async function (
 
   const chatPreviews = await Promise.all(
     chats.map(async chat => {
-      const latestMessage = await prisma.prismaClient.message.findFirst({
+      const latestMessage = await prisma.message.findFirst({
         where: {
           chatId: chat.id
         },

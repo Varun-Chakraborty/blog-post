@@ -1,4 +1,4 @@
-import { prisma } from '@/db';
+import { getPrismaClient } from '@/db';
 import { ExpressTypes, User, Post } from '@/types';
 import { ApiResponse, wrapperFx } from '@/utils';
 
@@ -11,8 +11,10 @@ export const search = wrapperFx(async function (
   const query = q ? q.toString().toLowerCase().trim() : '';
   let users: User[] = [];
   let posts: Post[] = [];
+
+  const prisma = getPrismaClient();
   if (searchFor === 'users' || !searchFor) {
-    users = await prisma.prismaClient.user.findMany({
+    users = await prisma.user.findMany({
       where: {
         AND: [
           {
@@ -30,7 +32,7 @@ export const search = wrapperFx(async function (
     });
   }
   if (searchFor === 'posts' || !searchFor) {
-    posts = await prisma.prismaClient.post.findMany({
+    posts = await prisma.post.findMany({
       where: {
         OR: [{ title: { contains: query } }, { content: { contains: query } }]
       },

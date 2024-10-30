@@ -1,5 +1,5 @@
 import { ExpressTypes } from '@/types';
-import { prisma } from '@/db';
+import { getPrismaClient } from '@/db';
 import {
   ApiResponse,
   wrapperFx,
@@ -22,7 +22,9 @@ export const signin = wrapperFx(async function (
     ).error(res);
   }
 
-  const user = await prisma.prismaClient.user.findUnique({
+  const prisma = getPrismaClient();
+
+  const user = await prisma.user.findUnique({
     where: { username },
     omit: { refreshToken: true }
   });
@@ -45,7 +47,7 @@ export const signin = wrapperFx(async function (
     path: '/api/v1/auth/refresh'
   });
 
-  const updatedUser = await prisma.prismaClient.user.update({
+  const updatedUser = await prisma.user.update({
     where: { id: user.id },
     data: { refreshToken: refresh },
     omit: { password: true, refreshToken: true }

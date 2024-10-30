@@ -1,31 +1,31 @@
-import { getChatPreviews } from '@/controllers/user.controller';
-import { ExpressTypes } from '@/types';
-import { prisma } from '@/db';
-
 jest.mock('@/utils', () => ({
   ApiResponse: jest.requireActual('@/utils').ApiResponse,
   wrapperFx: jest.requireActual('@/utils').wrapperFx
 }));
 
-jest.mock('@/db', () => ({
-  prisma: {
-    prismaClient: {
-      chat: {
-        findMany: jest.fn()
-      },
-      message: {
-        findFirst: jest.fn()
-      }
-    }
+const prismaMock = {
+  chat: {
+    findMany: jest.fn()
+  },
+  message: {
+    findFirst: jest.fn()
   }
+};
+
+jest.mock('@/db', () => ({
+  getPrismaClient: jest.fn(() => prismaMock)
 }));
+
+import { getChatPreviews } from '@/controllers/user.controller';
+import { ExpressTypes } from '@/types';
 
 describe('getChatPreviews', () => {
   let req: Partial<ExpressTypes.Req>;
   let res: Partial<ExpressTypes.Res>;
   let next: Partial<ExpressTypes.Next>;
 
-  beforeAll(() => {
+  beforeEach(() => {
+    jest.clearAllMocks();
     req = {};
     res = {
       status: jest.fn().mockReturnThis(),
@@ -83,14 +83,14 @@ describe('getChatPreviews', () => {
       }
     ];
 
-    (prisma.prismaClient.message.findFirst as jest.Mock).mockResolvedValueOnce(
+    (prismaMock.message.findFirst as jest.Mock).mockResolvedValueOnce(
       latestMessages[0]
     );
-    (prisma.prismaClient.message.findFirst as jest.Mock).mockResolvedValueOnce(
+    (prismaMock.message.findFirst as jest.Mock).mockResolvedValueOnce(
       latestMessages[1]
     );
 
-    (prisma.prismaClient.chat.findMany as jest.Mock).mockResolvedValue(chats);
+    (prismaMock.chat.findMany as jest.Mock).mockResolvedValue(chats);
     await getChatPreviews(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
