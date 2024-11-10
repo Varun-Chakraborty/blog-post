@@ -26,8 +26,8 @@ export const isFollowed = wrapperFx(async function (
   const isFollowed = await prisma.follow.findUnique({
     where: {
       followerId_followingId: {
-        followerId: targetUserId,
-        followingId: req.user!.id
+        followerId: req.user!.id,
+        followingId: targetUserId
       }
     }
   });

@@ -25,9 +25,19 @@ export const getFollowing = wrapperFx(async function (
     where: {
       followerId: user.id
     },
-    select: {
-      following: { select: { id: true, username: true, profilePicture: true } }
+    include: {
+      following: {
+        select: {
+          id: true,
+          username: true,
+          name: true,
+          profilePicture: true,
+          createdAt: true
+        }
+      }
     }
   });
-  return new ApiResponse('Followings fetched', { followings }).success(res);
+  return new ApiResponse('Followings fetched', {
+    following: followings.map(f => f.following)
+  }).success(res);
 });

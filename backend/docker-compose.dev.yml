@@ -16,3 +16,16 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=1234
+  pg-admin:
+    image: dpage/pgadmin4
+    user: ${UID}:${GID}
+    container_name: pg-admin-dev
+    ports:
+      - 5050:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=user@domain.com
+      - PGADMIN_DEFAULT_PASSWORD=1234
+    depends_on:
+      - pg
+    volumes:
+      - ./docker-dev/pgadmin:/var/lib/pgadmin

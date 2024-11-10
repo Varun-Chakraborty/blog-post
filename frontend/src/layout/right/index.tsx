@@ -12,7 +12,8 @@ const pages: Record<string, string> = {
   '/messages': 'Messages',
   '/notifications': 'Notifications',
   '/search': 'Search',
-  '/post': 'Show Post',
+  '/post': 'Show Posts',
+  '/post/:id': 'Show Posts',
   '/settings': 'Settings'
 };
 
@@ -80,7 +81,7 @@ function ChatButton({ className }: Readonly<{ className?: string }>) {
 
 function NotificationsButton({ className }: Readonly<{ className?: string }>) {
   const navigate = useNavigate();
-  const notifications = useAppSelector(
+  const unreadNotifications = useAppSelector(
     state => state.notification.unreadNotifications
   );
   return (
@@ -97,7 +98,7 @@ function NotificationsButton({ className }: Readonly<{ className?: string }>) {
       <div
         className={cn(
           'w-2 h-2 bg-accent rounded-full absolute -top-1 -right-1',
-          { hidden: notifications.length === 0 }
+          { hidden: unreadNotifications.length === 0 }
         )}
       ></div>
     </button>

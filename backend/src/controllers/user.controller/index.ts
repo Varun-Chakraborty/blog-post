@@ -8,3 +8,7 @@ export { getFollowers } from './getFollowers';
 export { getFollowing } from './getFollowing';
 export { isFollowed } from './isFollowed';
 export { isFollowing } from './isFollowing';
+export { getSuggestions } from './getSuggestions';
+export { getProfileSummary } from './getProfileSummary';
+export { getPosts } from './getPosts';
+export { getLikedPosts } from './getLikedPosts';

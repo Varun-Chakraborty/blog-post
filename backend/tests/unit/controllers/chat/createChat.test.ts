@@ -1,6 +1,7 @@
 const prismaMock = {
   chat: {
-    create: jest.fn()
+    create: jest.fn(),
+    findFirst: jest.fn()
   }
 };
 

@@ -19,7 +19,7 @@ import { MdEmail, MdPassword } from 'react-icons/md';
 import { cn } from '@/lib/utils';
 import { Link, useNavigate } from 'react-router-dom';
 import { PasswordStrength } from '@/components/passwordStrength';
-import api from '@/api';
+import { authService } from '@/services';
 import { IsUsernameAvailable } from '@/components/isUsernameAvailable';
 import { isAxiosError } from 'axios';
 import { useAppDispatch } from '@/hooks';
@@ -68,13 +68,13 @@ export function Register({ className }: Readonly<{ className?: string }>) {
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
       setSubmitting(true);
-      const response = await api.signup(
+      const response = await authService.signup(
         data.name,
         data.username,
         data.email,
         data.password
       );
-      dispatch(profileActions.addProfile(response.data!.user));
+      dispatch(profileActions.setProfile(response.data!.user));
       toast({
         title: 'Account created.',
         description: "We've created your account for you."
@@ -103,7 +103,7 @@ export function Register({ className }: Readonly<{ className?: string }>) {
     <Form {...form}>
       <form
         className={cn(
-          'sm:w-2/3 xl:w-1/3 h-full space-y-6 font-montserrat border border-borderColor px-4 py-6 overflow-y-auto rounded-xl shadow-[0px_4px_4px_rgba(0,0,0,0.25)]',
+          'sm:w-2/3 xl:w-1/3 h-full space-y-6 font-montserrat border border-borderColor px-4 py-6 overflow-y-auto rounded-xl shadow-[0px_4px_4px_rgba(0,0,0,0.25)] overscroll-none',
           className
         )}
         onSubmit={form.handleSubmit(onSubmit)}

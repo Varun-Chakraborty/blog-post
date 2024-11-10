@@ -49,35 +49,72 @@ describe('search', () => {
     next = jest.fn();
   });
 
-  it('should return empty arrays if no query is provided', async () => {
+  it('should return 400 if no query is provided', async () => {
     req.query = {};
-    (prismaMock.user.findMany as jest.Mock).mockResolvedValueOnce([]);
-    (prismaMock.post.findMany as jest.Mock).mockResolvedValueOnce([]);
     await search(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
       next as ExpressTypes.Next
     );
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Search query is required'
+      })
+    );
+  });
+
+  it('should return first 10 of the search results if query is provided', async () => {
+    req.query = { query: 'existing' };
+    await search(
+      req as ExpressTypes.Req,
+      res as ExpressTypes.Res,
+      next as ExpressTypes.Next
+    );
+    expect(prismaMock.user.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        skip: 0,
+        take: 10
+      })
+    );
+    expect(prismaMock.post.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        skip: 0,
+        take: 10
+      })
+    );
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
         data: {
-          query: '',
+          query: 'existing',
           searchResult: {
-            users: [],
-            posts: []
+            users: [userList[0]],
+            posts: [postList[0]]
           }
         }
       })
     );
   });
 
-  it('should return search results if query is provided', async () => {
-    req.query = { q: 'Existing' };
+  it('should return first 10 of the search results skipping the count provided in skip', async () => {
+    req.query = { query: 'Existing', skip: '2' };
     await search(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
       next as ExpressTypes.Next
+    );
+    expect(prismaMock.user.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        skip: 2,
+        take: 10
+      })
+    );
+    expect(prismaMock.post.findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        skip: 2,
+        take: 10
+      })
     );
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(

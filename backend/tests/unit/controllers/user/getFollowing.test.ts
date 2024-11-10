@@ -79,16 +79,20 @@ describe('getFollowing', () => {
     });
     (prismaMock.follow.findMany as jest.Mock).mockResolvedValue([
       {
-        id: '1',
-        username: 'testuser',
-        name: 'Test User',
-        profilePicture: 'profilePicture'
+        following: {
+          id: '1',
+          username: 'testuser',
+          name: 'Test User',
+          profilePicture: 'profilePicture'
+        }
       },
       {
-        id: '2',
-        username: 'testuser2',
-        name: 'Test User 2',
-        profilePicture: 'profilePicture2'
+        following: {
+          id: '2',
+          username: 'testuser2',
+          name: 'Test User 2',
+          profilePicture: 'profilePicture2'
+        }
       }
     ]);
     await getFollowing(
@@ -99,8 +103,8 @@ describe('getFollowing', () => {
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
-        data: expect.objectContaining({
-          followings: [
+        data: {
+          following: [
             {
               id: '1',
               username: 'testuser',
@@ -114,7 +118,7 @@ describe('getFollowing', () => {
               profilePicture: 'profilePicture2'
             }
           ]
-        })
+        }
       })
     );
   });

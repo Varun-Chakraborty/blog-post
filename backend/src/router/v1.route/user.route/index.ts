@@ -1,30 +1,91 @@
 import { userController } from '@/controllers';
 import { isAuthenticated } from '@/middlewares/auth';
-import { handleMeKeyword } from '@/middlewares/user';
+import {
+  authorizeIfRequestedUserIsMe,
+  resolveUsernameMeKeyword
+} from '@/middlewares/user';
 import { Req, Res } from '@/types/express';
 import { ApiResponse } from '@/utils';
 import { Router } from 'express';
 
-const router = Router({ mergeParams: true }); // to access the param "username" from the parent router
+const router = Router();
 
-router.use(handleMeKeyword);
-
-router.get('/profile', userController.getProfile);
-router.get('/followers', userController.getFollowers);
-router.get('/following', userController.getFollowing);
+router.get(
+  '/:username/profile',
+  resolveUsernameMeKeyword,
+  userController.getProfile
+);
+router.get(
+  '/:username/profile/summary',
+  resolveUsernameMeKeyword,
+  userController.getProfileSummary
+);
+router.get(
+  '/:username/followers',
+  resolveUsernameMeKeyword,
+  userController.getFollowers
+);
+router.get(
+  '/:username/following',
+  resolveUsernameMeKeyword,
+  userController.getFollowing
+);
+router.get(
+  '/:username/posts',
+  resolveUsernameMeKeyword,
+  userController.getPosts
+);
 
 router.use(isAuthenticated);
 
-router.get('/isFollowed', userController.isFollowed);
-router.get('/isFollowing', userController.isFollowing);
-router.get('/chats', userController.getChatPreviews);
-router.get('/unreadChats', userController.getUnreadChats);
-router.post('/follow', userController.followUser);
-router.post('/unfollow', userController.unfollowUser);
+router.get(
+  '/:username/isFollowedByUser',
+  resolveUsernameMeKeyword,
+  userController.isFollowed
+);
+router.get(
+  '/:username/isFollowingUser',
+  resolveUsernameMeKeyword,
+  userController.isFollowing
+);
+router.get(
+  '/:username/suggestions',
+  resolveUsernameMeKeyword,
+  userController.getSuggestions
+);
+router.post(
+  '/:username/follow',
+  resolveUsernameMeKeyword,
+  userController.followUser
+);
+router.post(
+  '/:username/unfollow',
+  resolveUsernameMeKeyword,
+  userController.unfollowUser
+);
+
+router.get(
+  '/:username/chats',
+  resolveUsernameMeKeyword,
+  authorizeIfRequestedUserIsMe,
+  userController.getChatPreviews
+);
+router.get(
+  '/:username/unreadChats',
+  resolveUsernameMeKeyword,
+  authorizeIfRequestedUserIsMe,
+  userController.getUnreadChats
+);
+router.get(
+  '/:username/likedPosts',
+  resolveUsernameMeKeyword,
+  authorizeIfRequestedUserIsMe,
+  userController.getLikedPosts
+);
 
 router.get('*path', (_: Req, res: Res) =>
   new ApiResponse(
-    'API v1.0\nAvailable Sub-Routes:\n- ./profile\n- ./followers\n- ./following\n- ./chats\n- ./unread-chats\n- ./isFollowed\n- ./isFollowing\n- ./follow\n- ./unfollow\n',
+    'API v1.0\nAvailable Sub-Routes:\n- /:username/profile\n- ./:username/profile/summary\n- ./:username/followers\n- ./:username/following\n- ./:username/isFollowedByUser\n- ./:username/isFollowingUser\n- ./:username/posts\n- ./:username/suggestions\n- ./:username/follow\n- ./:username/unfollow\n- ./:username/chats\n- ./:username/unreadChats\n',
     undefined,
     404
   ).error(res)

@@ -75,16 +75,20 @@ describe('getFollowers', () => {
     });
     (prismaMock.follow.findMany as jest.Mock).mockResolvedValue([
       {
-        id: '1',
-        username: 'testuser',
-        name: 'Test User',
-        profilePicture: 'profilePicture'
+        follower: {
+          id: '1',
+          username: 'testuser',
+          name: 'Test User',
+          profilePicture: 'profilePicture'
+        }
       },
       {
-        id: '2',
-        username: 'testuser2',
-        name: 'Test User 2',
-        profilePicture: 'profilePicture2'
+        follower: {
+          id: '2',
+          username: 'testuser2',
+          name: 'Test User 2',
+          profilePicture: 'profilePicture2'
+        }
       }
     ]);
     await getFollowers(

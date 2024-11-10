@@ -21,6 +21,8 @@ export const followUser = wrapperFx(
     if (!targetUserId)
       return new ApiResponse('User does not exist', undefined, 404).error(res);
 
+    console.log(req.user!.id, targetUserId);
+
     await prisma.follow.create({
       data: {
         followerId: req.user!.id,

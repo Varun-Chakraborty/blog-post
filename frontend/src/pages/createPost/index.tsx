@@ -1,7 +1,5 @@
-import { cn } from '@/lib/utils';
+import { CreatePostForm } from '@/components/forms';
 
 export function CreatePost({ className }: Readonly<{ className?: string }>) {
-  return (
-    <div className={cn('h-full w-full box-border', className)}>Create Post</div>
-  );
+  return <CreatePostForm className={className} />;
 }

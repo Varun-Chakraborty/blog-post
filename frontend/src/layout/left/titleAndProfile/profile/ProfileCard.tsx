@@ -38,7 +38,7 @@ export function ProfileCard({
           </span>
         </div>
       </div>
-      <div className="flex gap-1">
+      <div className="flex items-center gap-1">
         {profile.role === 'ADMIN' && <AdminBadge />}
         {/* {profile.premium && <PremiumBadge />} */}
         {current &&

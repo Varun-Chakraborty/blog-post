@@ -27,9 +27,17 @@ export const getFollowers = wrapperFx(async function (
     },
     select: {
       follower: {
-        select: { id: true, username: true, name: true, profilePicture: true }
+        select: {
+          id: true,
+          username: true,
+          name: true,
+          profilePicture: true,
+          createdAt: true
+        }
       }
     }
   });
-  return new ApiResponse('Followers fetched', { followers }).success(res);
+  return new ApiResponse('Followers fetched', {
+    followers: followers.map(follower => follower.follower)
+  }).success(res);
 });

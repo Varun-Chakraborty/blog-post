@@ -20,7 +20,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { isAxiosError } from 'axios';
 import { useAppDispatch } from '@/hooks';
 import { profileActions } from '@/redux/profile';
-import api from '@/api';
+import { authService } from '@/services';
 import { useState } from 'react';
 
 export function Login({ className }: Readonly<{ className?: string }>) {
@@ -49,11 +49,11 @@ export function Login({ className }: Readonly<{ className?: string }>) {
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     try {
       setSubmitting(true);
-      const response = await api.login(
+      const response = await authService.login(
         data.username.toString(),
         data.password.toString()
       );
-      dispatch(profileActions.addProfile(response.data!.user));
+      dispatch(profileActions.setProfile(response.data!.user));
       toast({
         title: 'Login successful',
         description: 'You are now logged in.'

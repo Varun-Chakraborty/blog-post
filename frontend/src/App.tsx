@@ -4,7 +4,6 @@ import {
   RouterProvider
 } from 'react-router-dom';
 import { Layout } from './layout';
-import { useUserProfile } from './hooks';
 
 import {
   Home,
@@ -15,6 +14,7 @@ import {
   Search,
   NotFound,
   ShowPost,
+  ShowPosts,
   Settings,
   Profile,
   Login,
@@ -43,6 +43,14 @@ export default function App() {
           )
         },
         {
+          path: 'chat/:chatId',
+          element: (
+            <ProtectedRoute>
+              <Messages />
+            </ProtectedRoute>
+          )
+        },
+        {
           path: 'notifications',
           Component: Notifications
         },
@@ -55,11 +63,11 @@ export default function App() {
           Component: Search
         },
         {
-          path: 'post/',
+          path: 'post',
           children: [
             {
               path: '',
-              Component: ShowPost
+              Component: ShowPosts
             },
             {
               path: 'create',
@@ -68,6 +76,10 @@ export default function App() {
                   <CreatePost />
                 </ProtectedRoute>
               )
+            },
+            {
+              path: ':id',
+              Component: ShowPost
             }
           ]
         },
@@ -99,8 +111,14 @@ export default function App() {
           path: 'user',
           children: [
             {
-              path: '*',
-              Component: Profile
+              path: ':username',
+              Component: Profile,
+              children: [
+                {
+                  path: ':section',
+                  Component: Profile
+                }
+              ]
             }
           ]
         },
@@ -112,7 +130,6 @@ export default function App() {
       ErrorBoundary: HandleErrors
     }
   ]);
-  useUserProfile();
   return (
     <main className="h-screen w-screen flex justify-between">
       <RouterProvider router={router} />

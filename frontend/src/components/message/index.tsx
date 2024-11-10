@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { IoChevronDown } from 'react-icons/io5';
 import { MessageComponent } from './messageComponent';
 import { useLocation } from 'react-router-dom';
-import { useAppSelector, useFetchUnreadChats } from '@/hooks';
+import { useAppSelector } from '@/hooks';
 
 function handleClickOutside(
   event: MouseEvent,
@@ -23,7 +23,6 @@ export function FloatingMessage() {
   const [isChatCurrentPath, setIsChatCurrentPath] = useState(false);
   const currentComponent = useRef<HTMLDivElement>(null);
   const location = useLocation();
-  useFetchUnreadChats();
 
   const unreadChats = useAppSelector(state => state.chat.unreadChats);
 

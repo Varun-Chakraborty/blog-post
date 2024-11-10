@@ -2,10 +2,15 @@ import { MdCheck } from 'react-icons/md';
 import { InfiniteLoader } from '../loaders';
 import { RxCross1 } from 'react-icons/rx';
 import { cn } from '@/lib/utils';
-import api from '@/api';
+import { userService } from '@/services';
 import { useEffect, useState } from 'react';
 import { UseFormSetError, UseFormTrigger } from 'react-hook-form';
-import { TooltipContent, TooltipProvider, TooltipTrigger } from '../ui/tooltip';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from '../ui/tooltip';
 
 interface Props {
   trigger: UseFormTrigger<{
@@ -65,7 +70,7 @@ export function IsUsernameAvailable({
           const isValid = await trigger('username');
           if (!isValid) return setIsUsernameAvailable(undefined);
           else {
-            const isAvailable = await api.isUsernameAvailable(username);
+            const isAvailable = await userService.isUsernameAvailable(username);
             setIsUsernameAvailable(isAvailable);
             if (!isAvailable)
               setError('username', { message: 'Not Available' });
@@ -80,14 +85,16 @@ export function IsUsernameAvailable({
 
   return (
     <TooltipProvider>
-      <TooltipTrigger>
-        <div className={cn('h-4 rounded-full pl-2', className)}>
-          {renderLoader ?? renderUsernameAvailable}
-        </div>
-      </TooltipTrigger>
-      <TooltipContent>
-        {isUsernameAvailable ? 'Available' : 'Not Available'}
-      </TooltipContent>
+      <Tooltip>
+        <TooltipTrigger>
+          <div className={cn('h-4 rounded-full pl-2', className)}>
+            {renderLoader ?? renderUsernameAvailable}
+          </div>
+        </TooltipTrigger>
+        <TooltipContent className="right-0">
+          {isUsernameAvailable ? 'Available' : 'Not Available'}
+        </TooltipContent>
+      </Tooltip>
     </TooltipProvider>
   );
 }

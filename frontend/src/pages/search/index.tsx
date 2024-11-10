@@ -1,7 +1,7 @@
-import api from '@/api';
+import { searchService } from '@/services';
 import { SearchBar } from '@/components/searchBar';
 import { cn } from '@/lib/utils';
-import { APIResponseTypes } from '@/types';
+import { SearchResponseTypes } from '@/types/responseTypes';
 import { useEffect, useState } from 'react';
 import { Posts } from './postSearch';
 import { Profiles } from './profileSearch';
@@ -12,7 +12,7 @@ export function Search({ className }: Readonly<{ className?: string }>) {
   const [searchQuery, setSearchQuery] = useState<string | undefined>(undefined);
   const location = useLocation();
   const newSearchQuery = new URLSearchParams(location.search).get('q');
-  const [results, setResults] = useState<APIResponseTypes.SearchResult>({
+  const [results, setResults] = useState<SearchResponseTypes.SearchResult>({
     users: [],
     posts: []
   });
@@ -23,10 +23,10 @@ export function Search({ className }: Readonly<{ className?: string }>) {
     if (newSearchQuery !== searchQuery && newSearchQuery) {
       setLoading(true);
       setSearchQuery(newSearchQuery);
-      api
+      searchService
         .search(newSearchQuery)
         .then(res => {
-          setResults(res);
+          setResults(res!);
         })
         .catch(e => {
           if (e.message === 'Network Error') {
@@ -44,7 +44,6 @@ export function Search({ className }: Readonly<{ className?: string }>) {
         profiles={results.users}
         isLoading={loading}
         setResults={setResults}
-        count={results.users.length}
         query={searchQuery!}
       />
     ) : (
@@ -52,7 +51,6 @@ export function Search({ className }: Readonly<{ className?: string }>) {
         posts={results.posts}
         isLoading={loading}
         setResults={setResults}
-        count={results.posts.length}
         query={searchQuery!}
       />
     );

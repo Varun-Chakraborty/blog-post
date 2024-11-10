@@ -6,11 +6,13 @@ export const search = wrapperFx(async function (
   req: ExpressTypes.Req,
   res: ExpressTypes.Res
 ) {
-  const { q, searchFor } = req.query;
-  const skipTill = req.query.skipTill ? Number(req.query.skipTill) : 0;
-  const query = q ? q.toString().toLowerCase().trim() : '';
+  const { searchFor, skip, take } = req.query;
+  const query = req.query.query?.toLowerCase().trim();
   let users: User[] = [];
   let posts: Post[] = [];
+
+  if (!query)
+    return new ApiResponse('Search query is required', {}, 400).error(res);
 
   const prisma = getPrismaClient();
   if (searchFor === 'users' || !searchFor) {
@@ -27,8 +29,8 @@ export const search = wrapperFx(async function (
         ]
       },
       omit: { password: true, refreshToken: true },
-      skip: skipTill,
-      take: 10
+      take: Number(take ?? 10),
+      skip: Number(skip ?? 0)
     });
   }
   if (searchFor === 'posts' || !searchFor) {
@@ -41,8 +43,8 @@ export const search = wrapperFx(async function (
           select: { username: true, profilePicture: true }
         }
       },
-      skip: skipTill,
-      take: 10
+      take: Number(take ?? 10),
+      skip: Number(skip ?? 0)
     });
   }
 

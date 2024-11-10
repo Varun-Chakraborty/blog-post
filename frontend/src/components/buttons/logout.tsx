@@ -1,9 +1,10 @@
-import api from '@/api';
+import { authService } from '@/services';
 import { profileActions } from '@/redux/profile';
 import { useToast } from '../ui/use-toast';
 import { useAppDispatch } from '@/hooks';
 import { isAxiosError } from 'axios';
 import { cn } from '@/lib/utils';
+import { Button } from '../ui/button';
 
 interface Props {
   setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,10 +15,10 @@ export function Logout({ setMenuOpen, className }: Readonly<Props>) {
   const { toast } = useToast();
   const dispatch = useAppDispatch();
   return (
-    <button
+    <Button
       onClick={async function () {
         try {
-          await api.logout();
+          await authService.logout();
           dispatch(profileActions.removeProfile());
           toast({
             title: 'Success',
@@ -43,12 +44,13 @@ export function Logout({ setMenuOpen, className }: Readonly<Props>) {
           setMenuOpen(false);
         }
       }}
+      variant="destructive"
       className={cn(
-        'bg-destructive hover:bg-destructive/80 text-destructive-foreground font-semibold py-2 px-4 rounded-lg shadow-lg transition duration-300 w-full',
+        'font-semibold py-2 px-4 rounded-lg shadow-lg transition duration-300 w-full',
         className
       )}
     >
       Logout
-    </button>
+    </Button>
   );
 }

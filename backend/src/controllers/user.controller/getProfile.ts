@@ -13,9 +13,6 @@ export const getProfile = wrapperFx(async function (
 
   const prisma = getPrismaClient();
 
-  if (username === 'me') {
-    username = req.user!.username;
-  }
   const user: User | null = await prisma.user.findUnique({
     where: { username },
     omit: { password: true, refreshToken: true },
@@ -25,6 +22,7 @@ export const getProfile = wrapperFx(async function (
       following: { select: { id: true } }
     }
   });
+
   if (!user)
     return new ApiResponse('User not found', undefined, 404).error(res);
   user.followersCount = countFollowers(user.followers!);

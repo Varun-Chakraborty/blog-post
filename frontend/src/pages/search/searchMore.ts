@@ -1,4 +1,4 @@
-import api from '@/api';
+import { searchService } from '@/services';
 import { APIResponseTypes } from '@/types';
 
 export async function searchMore(
@@ -7,7 +7,8 @@ export async function searchMore(
   skipTill: number,
   setResult: React.Dispatch<React.SetStateAction<APIResponseTypes.SearchResult>>
 ) {
-  const newItems = (await api.search(query, searchFor, skipTill)).users;
+  const newItems = (await searchService.search(query, searchFor, skipTill))
+    .users;
   setResult(prev => ({
     ...prev,
     [searchFor]: [...prev[searchFor], ...newItems]

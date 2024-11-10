@@ -1,11 +1,9 @@
-import api from '@/api';
+import { authService } from '@/services';
 import { useEffect, useState } from 'react';
 import { MdOutlineSignalWifiStatusbarConnectedNoInternet4 } from 'react-icons/md';
-import { InfiniteLoader } from './loaders';
 
 export function NetworkError() {
   const [time, setTime] = useState(5);
-  const [pingCount, setPingCount] = useState(0);
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (time > 0) {
@@ -18,15 +16,11 @@ export function NetworkError() {
         });
       }, 1000);
     } else {
-      api
+      authService
         .ping()
         .then(() => window.location.reload())
         .catch(e => {
           console.error(e);
-          setPingCount(prev => {
-            setTime((prev + 2) * 5);
-            return prev + 1;
-          });
         });
     }
     return () => clearInterval(interval);
@@ -38,21 +32,6 @@ export function NetworkError() {
         Cannot Connect
       </h1>
       <p>Either you are offline or the server is not responding.</p>
-      <div className="flex gap-1">
-        <p>
-          Pinging the server{' '}
-          <span>
-            again in {time} {time === 1 ? 'second' : 'seconds'}
-          </span>
-          {''}
-          ...
-        </p>
-        <InfiniteLoader />
-      </div>
-      <p>
-        Already pinged {pingCount} {pingCount > 1 ? 'times' : 'time'}
-      </p>
-      <button onClick={() => {}}>Pause Ping</button>
     </div>
   );
 }

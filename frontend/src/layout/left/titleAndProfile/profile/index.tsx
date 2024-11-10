@@ -2,10 +2,9 @@ import { useAppSelector } from '@/hooks';
 import { cn } from '@/lib/utils';
 import { useEffect, useRef, useState } from 'react';
 import { ProfileCard } from './ProfileCard';
-import { NewProfile } from './newProfile';
 
 export function Profile() {
-  const { profiles, currentProfile } = useAppSelector(state => state.profile);
+  const { profile } = useAppSelector(state => state.profile);
 
   const [openProfileList, setOpenProfileList] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
@@ -38,20 +37,12 @@ export function Profile() {
           { 'shadow-lg': openProfileList }
         )}
       >
-        {profiles
-          .filter(profile => openProfileList || profile.id === currentProfile)
-          .map(profile => (
-            <ProfileCard
-              profile={profile}
-              current
-              key={profile.username}
-              onClick={() => toggleProfileList()}
-              listOpen={openProfileList}
-            />
-          ))}
-        <NewProfile
-          openProfileList={openProfileList}
-          setOpenProfileList={setOpenProfileList}
+        <ProfileCard
+          profile={profile}
+          current
+          key={profile.username}
+          onClick={() => toggleProfileList()}
+          listOpen={openProfileList}
         />
       </div>
     </div>

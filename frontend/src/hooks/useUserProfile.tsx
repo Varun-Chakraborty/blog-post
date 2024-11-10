@@ -1,39 +1,45 @@
 import { profileActions } from '@/redux/profile';
 import { useAppDispatch, useAppSelector } from './redux';
 import { useEffect, useState } from 'react';
-import { Profile } from '@/types';
-import { createSelector } from 'reselect';
-import { RootState } from '@/redux';
+import { userService } from '@/services';
+import { isGuestProfile } from './isGuestProfile';
 
 function useLoadUserProfiles() {
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    const profiles = JSON.parse(localStorage.getItem('profiles') ?? '[]');
-    if (profiles) {
-      profiles.forEach((profile: Profile) => {
-        dispatch(profileActions.addProfile(profile));
-      });
+    const profile = localStorage.getItem('profile');
+    if (!profile) {
+      setLoading(false);
+      return;
+    } else {
+      const profileObj = JSON.parse(profile);
+      dispatch(profileActions.setProfile(profileObj));
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
   return loading;
 }
 
 function useSaveUserProfiles(loading: boolean) {
-  const selectProfiles = createSelector(
-    (state: RootState) => state.profile.profiles,
-    profiles => profiles.filter(profile => !profile.guest)
-  );
-
-  const profiles = useAppSelector(selectProfiles) || [];
+  const { profile } = useAppSelector(state => state.profile);
 
   useEffect(() => {
-    localStorage.setItem('profiles', JSON.stringify(profiles));
-  }, [profiles, loading]);
+    if (!loading) localStorage.setItem('profile', JSON.stringify(profile));
+  }, [profile, loading]);
 }
 
 export function useUserProfile() {
   const loading = useLoadUserProfiles();
   useSaveUserProfiles(loading);
+  const dispatch = useAppDispatch();
+  const isItGuest = isGuestProfile();
+
+  useEffect(() => {
+    if (!isItGuest) {
+      userService.getProfileSummary().then(profileSummary => {
+        dispatch(profileActions.setProfile(profileSummary));
+      });
+    }
+  }, []);
 }

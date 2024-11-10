@@ -10,16 +10,20 @@ export interface Req extends express.Request {
     participants?: string[];
     groupName?: string;
     type?: 'CHAT' | 'GROUP';
+    message?: string;
   };
   query: {
-    q?: string;
+    query?: string;
     searchFor?: string;
     username?: string;
-    skipTill?: string;
+    skip?: string;
+    take?: string;
   };
   params: {
     username?: string;
     chatId?: string;
+    postId?: string;
+    commentId?: string;
   };
   cookies: {
     accessToken?: string;
