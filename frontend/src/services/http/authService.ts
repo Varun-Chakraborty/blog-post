@@ -1,4 +1,4 @@
-import { APIResponseTypes } from '@/types';
+import { AuthResponseTypes } from '@/types/responseTypes';
 import { HTTPService } from './httpService';
 
 class AuthService extends HTTPService {
@@ -7,7 +7,7 @@ class AuthService extends HTTPService {
   }
 
   async login(username: string, password: string) {
-    const response = await this.api.post<APIResponseTypes.LoginResponse>(
+    const response = await this.api.post<AuthResponseTypes.LoginResponse>(
       '/auth/signin',
       {
         username,
@@ -23,7 +23,7 @@ class AuthService extends HTTPService {
     email: string,
     password: string
   ) {
-    const response = await this.api.post<APIResponseTypes.SignupResponse>(
+    const response = await this.api.post<AuthResponseTypes.SignupResponse>(
       '/auth/signup',
       {
         name,

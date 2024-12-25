@@ -36,12 +36,13 @@ export const search = wrapperFx(async function (
   if (searchFor === 'posts' || !searchFor) {
     posts = await prisma.post.findMany({
       where: {
-        OR: [{ title: { contains: query } }, { content: { contains: query } }]
+        OR: [{ title: { contains: query } }, { content: { contains: query } }, { author: { username: query } }]
       },
       include: {
         author: {
-          select: { username: true, profilePicture: true }
-        }
+          select: { name: true, username: true, profilePicture: true }
+        },
+        _count: { select: { comments: true, likes: true } }
       },
       take: Number(take ?? 10),
       skip: Number(skip ?? 0)

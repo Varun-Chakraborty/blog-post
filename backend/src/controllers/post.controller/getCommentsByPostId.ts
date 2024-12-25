@@ -26,7 +26,8 @@ export const getCommentsByPostId = wrapperFx(async function (
       },
       _count: { select: { likes: true, replies: true } },
       likes: { where: { authorId: req.user?.id }, select: { id: true } }
-    }
+    },
+    orderBy: { createdAt: 'desc' }
   });
 
   return new ApiResponse('Comments retrieved successfully', {

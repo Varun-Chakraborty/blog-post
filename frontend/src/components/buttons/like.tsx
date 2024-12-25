@@ -1,18 +1,19 @@
 import { useEffect, useState } from 'react';
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
+import { IoHeartOutline, IoHeartSharp } from 'react-icons/io5';
 
 export function Like({
   liked,
   likesCount,
   onClick,
   className
-}: {
+}: Readonly<{
   liked: boolean;
   likesCount: number;
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   className?: string;
-}) {
+}>) {
   const [likedState, setLikedState] = useState(liked);
   useEffect(() => setLikedState(liked), [liked]);
   return (
@@ -23,7 +24,7 @@ export function Like({
       )}
       onClick={onClick}
     >
-      {likedState ? 'Unlike' : 'Like'}
+      {likedState ? <IoHeartSharp /> : <IoHeartOutline />}
       <span className="ml-2">{likesCount}</span>
     </Button>
   );

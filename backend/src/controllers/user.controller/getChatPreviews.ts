@@ -1,4 +1,5 @@
 import { getPrismaClient } from '@/db';
+import { getSocket } from '@/socket';
 import { ExpressTypes } from '@/types';
 import { ApiResponse, wrapperFx } from '@/utils';
 
@@ -13,25 +14,35 @@ export const getChatPreviews = wrapperFx(async function (
 
   const prisma = getPrismaClient();
 
-  const chats = await prisma.chat.findMany({
-    where: {
-      participants: {
-        some: {
-          username: username
-        }
-      }
-    },
-    omit: { createdAt: true },
-    orderBy: {
-      updatedAt: 'desc'
-    },
-    include: {
-      participants: true
-    }
-  });
-
   const chatPreviews = await Promise.all(
-    chats.map(async chat => {
+    (
+      await prisma.chat.findMany({
+        where: {
+          participants: {
+            some: {
+              username: username
+            }
+          },
+          messages: {
+            some: {}
+          }
+        },
+        omit: { createdAt: true },
+        orderBy: {
+          updatedAt: 'desc'
+        },
+        include: {
+          participants: {
+            select: {
+              id: true,
+              username: true,
+              name: true,
+              profilePicture: true
+            }
+          }
+        }
+      })
+    ).map(async chat => {
       const latestMessage = await prisma.message.findFirst({
         where: {
           chatId: chat.id
@@ -42,10 +53,15 @@ export const getChatPreviews = wrapperFx(async function (
       });
       const chatPreview = {
         ...chat,
-        latestMessage
+        latestMessage,
+        updatedAt: latestMessage?.updatedAt ?? chat.updatedAt
       };
       return chatPreview;
     })
+  );
+
+  chatPreviews.map(chatPreview =>
+    getSocket(req.user!.id)?.join(`chat:${chatPreview.id}`)
   );
 
   return new ApiResponse('Chats fetched', { chatPreviews }).success(res);

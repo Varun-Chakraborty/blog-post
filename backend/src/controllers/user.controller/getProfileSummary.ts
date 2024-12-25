@@ -11,14 +11,6 @@ export const getProfileSummary = wrapperFx(async function (
   if (!username)
     return new ApiResponse('Username is required', undefined, 400).error(res);
 
-  delete req.user?.isAdmin;
-
-  if (username === req.user?.username) {
-    return new ApiResponse('Profile summary retrieved successfully', {
-      profileSummary: req.user
-    }).success(res);
-  }
-
   const prisma = getPrismaClient();
 
   const user = await prisma.user.findUnique({

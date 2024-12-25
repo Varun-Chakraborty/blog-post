@@ -1,7 +1,7 @@
 import { InfiniteLoader } from '@/components/loaders';
 import { cn } from '@/lib/utils';
 import { Post } from '@/types/baseTypes';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { postService } from '@/services';
 import { CommentBlock } from './commentBlock';
@@ -29,6 +29,20 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger
 } from '@/components/ui/alert-dialog';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Copy } from 'lucide-react';
+import { ToastProps } from '@/components/ui/toast';
 
 export function ShowPost({ className }: Readonly<{ className?: string }>) {
   const { id } = useParams();
@@ -92,13 +106,13 @@ export function ShowPost({ className }: Readonly<{ className?: string }>) {
                 </div>
                 {profile?.username === post?.author.username && (
                   <div className="flex gap-3">
+                    <EditButton />
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <DeleteButton />
                       </AlertDialogTrigger>
                       <DeleteDialog postId={post!.id} />
                     </AlertDialog>
-                    <EditButton />
                   </div>
                 )}
               </div>
@@ -111,26 +125,7 @@ export function ShowPost({ className }: Readonly<{ className?: string }>) {
             <LikeButton
               liked={liked}
               onClick={async () => {
-                try {
-                  if (liked) {
-                    await postService.unLikePost(post!.id);
-                    setLiked(false);
-                    setLikesCount(prev => --prev);
-                  } else {
-                    await postService.likePost(post!.id);
-                    setLiked(true);
-                    setLikesCount(prev => ++prev);
-                  }
-                } catch (error) {
-                  if (isAxiosError(error)) {
-                    toast({
-                      title: 'Error',
-                      description: error.response?.data.message,
-                      variant: 'destructive'
-                    });
-                  }
-                  console.error(error);
-                }
+                handleLike(liked, setLiked, setLikesCount, post!, toast);
               }}
               likesCount={likesCount}
             />
@@ -138,7 +133,12 @@ export function ShowPost({ className }: Readonly<{ className?: string }>) {
               commentsCount={post!._count.comments}
               onClick={() => {}}
             />
-            <ShareButton />
+            <Dialog>
+              <DialogTrigger asChild>
+                <ShareButton />
+              </DialogTrigger>
+              <ShareDialog postId={post!.id} />
+            </Dialog>
           </div>
           <CommentBlock
             commentCount={post!._count.comments}
@@ -191,4 +191,69 @@ function DeleteDialog({ postId }: Readonly<{ postId: Post['id'] }>) {
       </AlertDialogFooter>
     </AlertDialogContent>
   );
+}
+
+function ShareDialog({ postId }: Readonly<{ postId: Post['id'] }>) {
+  return (
+    <DialogContent className="sm:max-w-md">
+      <DialogHeader>
+        <DialogTitle>Share link</DialogTitle>
+        <DialogDescription>
+          Anyone who has this link will be able to view this.
+        </DialogDescription>
+      </DialogHeader>
+      <div className="flex items-center space-x-2">
+        <div className="grid flex-1 gap-2">
+          <Label htmlFor="link" className="sr-only">
+            Link
+          </Label>
+          <Input
+            id="link"
+            defaultValue="https://ui.shadcn.com/docs/installation"
+            readOnly
+          />
+        </div>
+        <Button type="submit" size="sm" className="px-3">
+          <span className="sr-only">Copy</span>
+          <Copy />
+        </Button>
+      </div>
+      <DialogFooter className="sm:justify-start">
+        <DialogClose asChild>
+          <Button type="button" variant="secondary">
+            Close
+          </Button>
+        </DialogClose>
+      </DialogFooter>
+    </DialogContent>
+  );
+}
+
+async function handleLike(
+  liked: boolean,
+  setLiked: Dispatch<SetStateAction<boolean>>,
+  setLikesCount: Dispatch<SetStateAction<number>>,
+  post: Post,
+  toast: ToastProps
+) {
+  try {
+    if (liked) {
+      await postService.unLikePost(post!.id);
+      setLiked(false);
+      setLikesCount(prev => --prev);
+    } else {
+      await postService.likePost(post!.id);
+      setLiked(true);
+      setLikesCount(prev => ++prev);
+    }
+  } catch (error) {
+    if (isAxiosError(error)) {
+      toast({
+        title: 'Error',
+        description: error.response?.data.message,
+        variant: 'destructive'
+      });
+    }
+    console.error(error);
+  }
 }

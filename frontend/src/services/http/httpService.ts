@@ -1,10 +1,10 @@
 import { toast } from '@/components/ui/use-toast';
-import { APIResponseTypes } from '@/types';
+import { BaseResponseTypes } from '@/types/responseTypes';
 import axios, { AxiosError } from 'axios';
 
 export class HTTPService {
   private currentRequestResponseObject:
-    | APIResponseTypes.APIResponse
+    | BaseResponseTypes.APIResponse
     | undefined = undefined;
   protected readonly api = axios.create({
     baseURL: `${import.meta.env.VITE_API_HTTP_BASE_URL}`,
@@ -28,7 +28,7 @@ export class HTTPService {
           return Promise.reject(new Error('Network Error'));
         } else if (error.response?.status === 500) {
           const response = error.response.data as
-            | APIResponseTypes.ErrorResponse
+            | BaseResponseTypes.ErrorResponse
             | undefined;
           toast({
             variant: 'destructive',
@@ -47,7 +47,7 @@ export class HTTPService {
             const currentRequest = error.config!;
             console.log(error.response.data);
             this.currentRequestResponseObject = error.response
-              .data as APIResponseTypes.APIResponse;
+              .data as BaseResponseTypes.APIResponse;
             console.log(this.currentRequestResponseObject);
             await this.refreshToken();
             return await this.api.request(currentRequest);
@@ -65,6 +65,5 @@ export class HTTPService {
 
   async ping() {
     await this.api.get('/health');
-    return;
   }
 }

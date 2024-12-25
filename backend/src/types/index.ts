@@ -11,6 +11,7 @@ export interface UserWithCredentials {
 }
 export interface Profile
   extends Omit<UserWithCredentials, 'password' | 'refreshToken'> {}
+
 export interface User extends Profile {
   email: string;
   pfp?: string | null;

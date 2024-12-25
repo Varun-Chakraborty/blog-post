@@ -17,12 +17,16 @@ export const getChatPreviewById = wrapperFx(async function (
     where: {
       id: chatId
     },
+    include: {
+      participants: {
+        select: { id: true, username: true, name: true, profilePicture: true }
+      }
+    },
     omit: { createdAt: true }
   });
 
-  if (!chat) {
+  if (!chat)
     return new ApiResponse('Chat not found', undefined, 404).error(res);
-  }
 
   const latestMessage = await prisma.message.findFirst({
     where: {
@@ -30,12 +34,14 @@ export const getChatPreviewById = wrapperFx(async function (
     },
     orderBy: {
       createdAt: 'desc'
-    }
+    },
+    take: 1
   });
 
   const chatPreview = {
     ...chat,
-    lastMessage: latestMessage
+    latestMessage,
+    updatedAt: latestMessage?.updatedAt ?? chat.updatedAt
   };
 
   return new ApiResponse('Chat preview retrieved successfully', {

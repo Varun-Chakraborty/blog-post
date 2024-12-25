@@ -2,28 +2,32 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { HoverCard, HoverCardTrigger } from '@/components/ui/hover-card';
 import { cn } from '@/lib/utils';
-import {
-  DeleteButton,
-  EditButton,
-  LikeButton,
-  ReplyButton
-} from '@/components/buttons';
+import { LikeButton } from '@/components/buttons';
 import { UserHoverCard } from '@/components/hoverCard';
-import { Comment } from '@/types';
+import { Comment } from '@/types/baseTypes';
 import { useAppSelector } from '@/hooks';
 import { postService } from '@/services';
 import { isAxiosError } from 'axios';
 import { useToast } from '@/components/ui/use-toast';
 import { useState } from 'react';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu';
+import { CiMenuKebab } from 'react-icons/ci';
 
 export function CommentComponent({
   comment,
   setShowReplies,
-  type,
   className
 }: Readonly<{
   comment: Comment;
-  setShowReplies: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowReplies?: React.Dispatch<React.SetStateAction<boolean>>;
   type: 'COMMENT' | 'REPLY';
   className?: string;
 }>) {
@@ -32,9 +36,10 @@ export function CommentComponent({
   const [likesCount, setLikesCount] = useState(comment._count.likes ?? 0);
   const [liked, setLiked] = useState(comment.liked);
   return (
-    <div
+    <button
+      onClick={() => setShowReplies?.(prev => !prev)}
       className={cn(
-        'flex justify-between items-center hover:bg-muted dark:hover:bg-muted/10 cursor-pointer p-2 rounded-lg',
+        'flex justify-between items-center hover:bg-muted dark:hover:bg-muted/10 cursor-pointer p-2 rounded-lg text-left w-full',
         className
       )}
     >
@@ -70,21 +75,10 @@ export function CommentComponent({
         </div>
       </div>
       <div className="flex gap-4 items-center">
-        {profile?.id === comment.author.id && (
-          <>
-            <EditButton onClick={() => {}} />
-            <DeleteButton onClick={() => {}} />
-          </>
-        )}
-        {type === 'COMMENT' && (
-          <ReplyButton
-            onClick={() => setShowReplies(prev => !prev)}
-            commentsCount={comment._count?.replies}
-          />
-        )}
         <LikeButton
           liked={liked}
-          onClick={async () => {
+          onClick={async e => {
+            e.stopPropagation();
             try {
               if (liked) {
                 await postService.unLikeComment(comment.id);
@@ -107,7 +101,26 @@ export function CommentComponent({
           }}
           likesCount={likesCount}
         />
+        {profile?.id === comment.author.id && (
+          <>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="h-8 w-8 p-0">
+                  <CiMenuKebab size={24} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56">
+                <DropdownMenuLabel>Actions on Post</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem>Edit Post</DropdownMenuItem>
+                  <DropdownMenuItem>Delete Post</DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </>
+        )}
       </div>
-    </div>
+    </button>
   );
 }

@@ -1,4 +1,4 @@
-import { APIResponseTypes } from '@/types';
+import { BaseResponseTypes, PostResponseTypes } from '@/types/responseTypes';
 import { HTTPService } from './httpService';
 
 class PostService extends HTTPService {
@@ -8,33 +8,33 @@ class PostService extends HTTPService {
 
   async getPosts() {
     const response =
-      await this.api.get<APIResponseTypes.GetPostsResponse>('/post');
+      await this.api.get<PostResponseTypes.GetPostsResponse>('/post');
     return response.data.data?.posts;
   }
 
   async getPostsByUsername(username: string) {
-    const response = await this.api.get<APIResponseTypes.GetPostsResponse>(
+    const response = await this.api.get<PostResponseTypes.GetPostsResponse>(
       `/user/${username}/posts`
     );
     return response.data.data?.posts;
   }
 
   async getPostById(postId: string) {
-    const response = await this.api.get<APIResponseTypes.GetPostResponse>(
+    const response = await this.api.get<PostResponseTypes.GetPostResponse>(
       `/post/${postId}`
     );
     return response.data.data?.post;
   }
 
   async getCommentsByPostId(postId: string) {
-    const response = await this.api.get<APIResponseTypes.GetCommentsResponse>(
+    const response = await this.api.get<PostResponseTypes.GetCommentsResponse>(
       `/post/${postId}/comments`
     );
     return response.data.data?.comments;
   }
 
   async getRepliesByCommentId(commentId: string) {
-    const response = await this.api.get<APIResponseTypes.GetRepliesResponse>(
+    const response = await this.api.get<PostResponseTypes.GetRepliesResponse>(
       `/comment/${commentId}/replies`
     );
     return response.data.data?.replies;
@@ -42,7 +42,7 @@ class PostService extends HTTPService {
 
   async createComment(message: string, postId: string) {
     const response =
-      await this.api.post<APIResponseTypes.CreateCommentResponse>(
+      await this.api.post<PostResponseTypes.CreateCommentResponse>(
         `/post/${postId}/comment`,
         {
           message
@@ -52,7 +52,7 @@ class PostService extends HTTPService {
   }
 
   async createReply(message: string, commentId: string) {
-    const response = await this.api.post<APIResponseTypes.CreateReplyResponse>(
+    const response = await this.api.post<PostResponseTypes.CreateReplyResponse>(
       `/comment/${commentId}/reply`,
       {
         message
@@ -62,49 +62,49 @@ class PostService extends HTTPService {
   }
 
   async likePost(postId: string) {
-    const response = await this.api.post<APIResponseTypes.LikeResponse>(
+    const response = await this.api.post<PostResponseTypes.LikeResponse>(
       `/post/${postId}/like`
     );
     return response.data.data?.liked;
   }
 
   async likeComment(commentId: string) {
-    const response = await this.api.post<APIResponseTypes.LikeResponse>(
+    const response = await this.api.post<PostResponseTypes.LikeResponse>(
       `/comment/${commentId}/like`
     );
     return response.data.data?.liked;
   }
 
   async likeReply(replyId: string) {
-    const response = await this.api.post<APIResponseTypes.LikeResponse>(
+    const response = await this.api.post<PostResponseTypes.LikeResponse>(
       `/reply/${replyId}/like`
     );
     return response.data.data?.liked;
   }
 
   async unLikePost(postId: string) {
-    const response = await this.api.delete<APIResponseTypes.LikeResponse>(
+    const response = await this.api.delete<PostResponseTypes.LikeResponse>(
       `/post/${postId}/like`
     );
     return response.data.data?.liked;
   }
 
   async unLikeComment(commentId: string) {
-    const response = await this.api.delete<APIResponseTypes.LikeResponse>(
+    const response = await this.api.delete<PostResponseTypes.LikeResponse>(
       `/comment/${commentId}/like`
     );
     return response.data.data?.liked;
   }
 
   async unLikeReply(replyId: string) {
-    const response = await this.api.delete<APIResponseTypes.LikeResponse>(
+    const response = await this.api.delete<PostResponseTypes.LikeResponse>(
       `/reply/${replyId}/like`
     );
     return response.data.data?.liked;
   }
 
   async deletePost(postId: string) {
-    const response = await this.api.delete<APIResponseTypes.APIResponse>(
+    const response = await this.api.delete<BaseResponseTypes.APIResponse>(
       `/post/${postId}`
     );
     return response.data;

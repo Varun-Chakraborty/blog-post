@@ -1,6 +1,6 @@
-import { useCurrentUserProfile } from '@/hooks';
+import { useAppSelector } from '@/hooks';
 import { cn } from '@/lib/utils';
-import { ChatPreview } from '@/types';
+import { ChatPreview } from '@/types/baseTypes';
 import { useNavigate } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 
@@ -16,12 +16,12 @@ export function MessageComponent({
   className
 }: Readonly<MessageComponentProps>) {
   const navigate = useNavigate();
-  const me = useCurrentUserProfile();
+  const { profile } = useAppSelector(state => state.profile);
   return (
     <button
       key={chat.id}
       onClick={() => {
-        navigate(`/chat/${chat.chatId}`);
+        navigate(`/chat/${chat.id}`);
         setExpanded(false);
       }}
       className={cn(
@@ -40,8 +40,8 @@ export function MessageComponent({
         <AvatarFallback>
           {chat.type === 'GROUP'
             ? chat.groupName!.charAt(0).toUpperCase()
-            : chat.clients
-                .find(c => c.username !== me!.username)!
+            : chat.participants
+                .find(c => c.username !== profile.username)!
                 .name.charAt(0)
                 .toUpperCase()}
         </AvatarFallback>
@@ -50,9 +50,10 @@ export function MessageComponent({
         <div className="font-semibold">
           {chat.type === 'GROUP'
             ? chat.groupName
-            : chat.clients.find(c => c.username !== me?.username)!.name}
+            : chat.participants.find(c => c.username !== profile.username)!
+                .name}
         </div>
-        <div className="text-sm">{chat.lastMessage.message}</div>
+        <div className="text-sm">{chat.latestMessage.content}</div>
       </div>
     </button>
   );

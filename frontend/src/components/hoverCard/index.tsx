@@ -1,7 +1,7 @@
 import { CalendarDays } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { HoverCardContent } from '../ui/hover-card';
-import { Profile } from '@/types';
+import { Profile } from '@/types/baseTypes';
 import { cn } from '@/lib/utils';
 
 export function UserHoverCard({

@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useCurrentUserProfile } from '@/hooks';
+import { useAppSelector } from '@/hooks';
 import { cn } from '@/lib/utils';
-import { ChatPreview } from '@/types';
+import { ChatPreview } from '@/types/baseTypes';
 import { NavLink } from 'react-router-dom';
 
 interface ChatComponentProp {
@@ -13,8 +13,7 @@ export function ChatComponent({
   chat,
   className
 }: Readonly<ChatComponentProp>) {
-  const me = useCurrentUserProfile();
-  console.log(chat);
+  const { profile } = useAppSelector(state => state.profile);
   return (
     <NavLink
       to={`/chat/${chat.id}`}
@@ -23,26 +22,26 @@ export function ChatComponent({
         className
       )}
     >
-      <div className="w-1/5">
-        <Avatar>
-          <AvatarImage src={chat.pfp ?? '/placeholder-user.jpg'} />
-          <AvatarFallback>
-            {chat.type === 'GROUP'
-              ? chat.groupName?.charAt(0).toUpperCase()
-              : chat.participants
-                  .find(p => p.username !== me!.username)!
-                  .name.charAt(0)
-                  .toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
-      </div>
+      <Avatar>
+        <AvatarImage src={chat.pfp ?? '/placeholder-user.jpg'} />
+        <AvatarFallback>
+          {chat.type === 'GROUP'
+            ? chat.groupName?.charAt(0).toUpperCase()
+            : chat.participants
+                .find(p => p.username !== profile.username)!
+                .name.charAt(0)
+                .toUpperCase()}
+        </AvatarFallback>
+      </Avatar>
       <div>
         <div className="font-bold">
           {chat.type === 'GROUP'
             ? chat.groupName
-            : chat.participants.find(p => p.username !== me!.username)!.name}
+            : chat.participants
+                .find(p => p.username !== profile.username)!
+                .name.toUpperCase()}
         </div>
-        <div>{chat.latestMessage?.message}</div>
+        <div>{chat.latestMessage?.content}</div>
       </div>
       <div className="absolute right-1 bottom-1 text-sm">
         {new Date(chat.updatedAt).toLocaleTimeString(undefined, {

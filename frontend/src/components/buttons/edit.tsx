@@ -1,13 +1,14 @@
 import { cn } from '@/lib/utils';
 import { Button } from '../ui/button';
+import { RiEditLine } from 'react-icons/ri';
 
 export function Edit({
   onClick,
   className
-}: {
+}: Readonly<{
   onClick?: () => void;
   className?: string;
-}) {
+}>) {
   return (
     <Button
       onClick={onClick}
@@ -16,7 +17,7 @@ export function Edit({
         className
       )}
     >
-      Edit
+      <RiEditLine />
     </Button>
   );
 }

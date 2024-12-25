@@ -1,6 +1,9 @@
 const prismaMock = {
   chat: {
     findUnique: jest.fn()
+  },
+  message: {
+    findMany: jest.fn()
   }
 };
 
@@ -15,7 +18,8 @@ describe('getChatById', () => {
   let req: Partial<ExpressTypes.Req>;
   let res: Partial<ExpressTypes.Res>;
   let next: Partial<ExpressTypes.Next>;
-
+  process.env.NODE_ENV = 'development';
+  
   beforeEach(() => {
     jest.clearAllMocks();
     req = {
@@ -61,8 +65,9 @@ describe('getChatById', () => {
   });
 
   it('should return 200 with chat if found', async () => {
-    const chat = { id: 'testChatId', name: 'testChatName' };
+    const chat = { id: 'testChatId', name: 'testChatName', messages: [] };
     (prismaMock.chat.findUnique as jest.Mock).mockResolvedValue(chat);
+    (prismaMock.message.findMany as jest.Mock).mockResolvedValue([]);
     await getChatById(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,

@@ -1,4 +1,4 @@
-import { Profile } from '@/types';
+import { Profile } from '@/types/baseTypes';
 import { IoChevronDown, IoChevronUp } from 'react-icons/io5';
 import { AdminBadge, PremiumBadge } from '@/components/badges';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -24,12 +24,12 @@ export function ProfileCard({
     >
       <div className="flex items-center gap-2">
         <Avatar>
-          <AvatarImage src={profile.pfp ?? '/placeholder-user.jpg'} />
+          <AvatarImage src={profile.profilePicture ?? '/placeholder-user.jpg'} />
           <AvatarFallback>
             {profile.name.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
-        <div className="flex flex-col justify-center">
+        <div className="flex flex-col justify-center items-start">
           <span className="font-semibold uppercase text-sm">
             {profile.name}
           </span>

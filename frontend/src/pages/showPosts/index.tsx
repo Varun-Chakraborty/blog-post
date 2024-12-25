@@ -1,13 +1,15 @@
+import { NetworkError } from '@/components/networkError';
 import { PostsDisplay } from '@/components/postsDisplay';
 import { useToast } from '@/components/ui/use-toast';
 import { postService } from '@/services';
-import { Post } from '@/types';
+import { Post } from '@/types/baseTypes';
 import { isAxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 
 export function ShowPosts({ className }: Readonly<{ className?: string }>) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isNetworkError, setIsNetworkError] = useState<boolean>(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -24,12 +26,20 @@ export function ShowPosts({ className }: Readonly<{ className?: string }>) {
             title: 'Error',
             description: e.response?.data.message
           });
+        } else {
+          if (e.message === 'Network Error') {
+            setIsNetworkError(true);
+          }
         }
         console.error(e);
       });
   }, []);
 
+  const netWorkError = isNetworkError ? <NetworkError /> : null;
+
   return (
-    <PostsDisplay posts={posts} isLoading={isLoading} className={className} />
+    netWorkError ?? (
+      <PostsDisplay posts={posts} isLoading={isLoading} className={className} />
+    )
   );
 }

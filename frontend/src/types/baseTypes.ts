@@ -49,8 +49,8 @@ export interface Comment {
 export interface Message {
   id: string;
   chatId: string;
-  message: string;
-  sentBy: string;
+  content: string;
+  author: Profile;
   updatedAt: string;
 }
 
@@ -72,5 +72,6 @@ export interface Chat {
   pfp?: string;
   participants: Profile[];
   messages: Message[];
+  groupedMessages: { [key: string]: Message[] };
   updatedAt: string;
 }

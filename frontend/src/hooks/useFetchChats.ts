@@ -7,6 +7,7 @@ import { profileActions } from '@/redux/profile';
 import { useToast } from '@/components/ui/use-toast';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { isGuestProfile } from './isGuestProfile';
+import { Message } from '@/types/baseTypes';
 
 export function useFetchChats() {
   const dispatch = useAppDispatch();
@@ -20,7 +21,9 @@ export function useFetchChats() {
     if (!isItGuest) {
       chatService
         .getUnreadChats()
-        .then(res => dispatch(chatActions.setUnreadChats(res)))
+        .then(unreadChats => {
+          dispatch(chatActions.setUnreadChats({ unreadChats: unreadChats! }));
+        })
         .catch(e => {
           if (isAxiosError(e)) {
             if (e.response?.status === 401) {
@@ -37,7 +40,9 @@ export function useFetchChats() {
 
       chatService
         .getChats()
-        .then(res => dispatch(chatActions.setChats(res)))
+        .then(chats => {
+          dispatch(chatActions.setChats({ chats: chats! }));
+        })
         .catch(e => {
           if (isAxiosError(e)) {
             if (e.response?.status === 401) {
@@ -53,37 +58,46 @@ export function useFetchChats() {
         });
     }
   }, [profile]);
-  socketService.onNewMessage(async data => {
-    const doesThisChatExist = chats.find(c => c.id === data.chatId);
-    if (!doesThisChatExist) {
-      const chat = await chatService.getChatPreviewById(data.chatId);
-      dispatch(chatActions.appendChat(chat));
-    }
-    if (location.pathname !== `/chat/${data.chatId}`) {
-      const doesThisChatExist = unreadChats.find(c => c.id === data.chatId);
-      if (!doesThisChatExist) {
-        try {
-          const chat = (await chatService.getChatPreviewById(data.chatId))!;
-          dispatch(chatActions.appendUnreadChat(chat));
-        } catch (error) {
-          if (isAxiosError(error)) {
-            toast({
-              title: 'Failed to fetch chat',
-              description: error.response?.data.message,
-              variant: 'destructive'
-            });
-          }
-          console.error(error);
-        }
+  useEffect(() => {
+    const newMessageHandler = async (data: {chatId: string; message: Message}) => {
+      let chatPreview = chats.find(c => c.id === data.chatId);
+      
+      // if chat preview is not present, fetch it
+      if (!chatPreview) {
+        chatPreview = await chatService.getChatPreviewById(data.chatId)
+        .then(chatPreview => chatPreview)
+        .catch(e => {
+          toast({
+            title: 'Failed to fetch chat',
+            variant: 'destructive'
+          });
+          console.error(e);
+          return undefined;
+        });
       }
-      dispatch(chatActions.updateLatestMessage(data));
-    } else {
-      dispatch(
-        chatActions.updateLatestMessage({
-          data,
-          toUnreadChats: true
-        })
-      );
-    }
-  });
+
+      // if not in the chat
+      if (location.pathname !== `/chat/${data.chatId}`) {
+        console.log('not in the chat');
+        dispatch(chatActions.appendChat({ newChat: chatPreview! }));
+        const isTheChatUnread = unreadChats.find(c => c.id === data.chatId);
+        if (!isTheChatUnread) {
+          dispatch(chatActions.appendUnreadChat({ newChat: chatPreview! }));
+        }
+        dispatch(
+          chatActions.updateLatestMessage({ data, toUnreadChats: true })
+        );
+      } else {
+        // if already in the chat
+        dispatch(chatActions.appendChat({ newChat: chatPreview! }));
+        dispatch(
+          chatActions.updateLatestMessage({ data, toUnreadChats: false })
+        );
+      }
+    };
+
+    socketService.onNewMessage(newMessageHandler);
+
+    return () => socketService.offNewMessage(newMessageHandler);
+  }, [location]);
 }

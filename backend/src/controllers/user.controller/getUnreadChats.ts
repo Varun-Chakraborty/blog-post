@@ -15,25 +15,53 @@ export const getUnreadChats = wrapperFx(async function (
 
   const prisma = getPrismaClient();
 
-  if (username !== 'me' && username !== currentUser.username)
+  if (username !== currentUser.username)
     return new ApiResponse(
       'You can only access your own chats',
       undefined,
       403
     ).error(res);
 
-  const unreadChats = await prisma.chat.findMany({
-    where: {
-      messages: {
-        some: {
-          readBy: {
-            none: {
-              username: currentUser.username
+  const unreadChats = await Promise.all(
+    (
+      await prisma.chat.findMany({
+        where: {
+          messages: {
+            some: {
+              readBy: {
+                none: {
+                  username: currentUser.username
+                }
+              }
+            }
+          }
+        },
+        include: {
+          participants: {
+            select: {
+              id: true,
+              username: true,
+              name: true,
+              profilePicture: true
             }
           }
         }
-      }
-    }
-  });
-  return new ApiResponse('Chats fetched', { unreadChats }).success(res);
+      })
+    ).map(async chat => {
+      const latestMessage = await prisma.message.findFirst({
+        where: {
+          chatId: chat.id
+        },
+        orderBy: {
+          createdAt: 'desc'
+        }
+      });
+
+      return {
+        ...chat,
+        latestMessage
+      };
+    })
+  );
+  return new ApiResponse('Fetched unread chats', { unreadChats }).success(res);
 });

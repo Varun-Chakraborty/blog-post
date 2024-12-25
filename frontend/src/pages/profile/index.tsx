@@ -1,5 +1,4 @@
 import { userService } from '@/services';
-import { InfiniteLoader } from '@/components/loaders';
 import { useToast } from '@/components/ui/use-toast';
 import { useAppDispatch, useAppSelector, isGuestProfile } from '@/hooks';
 import { cn } from '@/lib/utils';
@@ -16,6 +15,8 @@ import { PostsDisplay } from '@/components/postsDisplay';
 import { FollowButton } from '@/components/buttons';
 import { EditProfile } from '@/components/buttons/editProfile';
 import { ProfilesDisplay } from '@/components/profilesDisplay';
+import { Skeleton } from '@/components/ui/skeleton';
+import { PostCardSkeleton } from '@/components/cards';
 
 export function Profile({ className }: Readonly<{ className?: string }>) {
   const [user, setUser] = useState<User | undefined>(undefined);
@@ -37,7 +38,7 @@ export function Profile({ className }: Readonly<{ className?: string }>) {
         setUser(profile);
       })
       .catch(err => {
-        if (err instanceof AxiosError) {
+        if (isAxiosError(err)) {
           console.error(err.response);
           if (err.response?.status === 401) {
             toast({
@@ -69,7 +70,7 @@ export function Profile({ className }: Readonly<{ className?: string }>) {
       .finally(() => setLoading(false));
   }, []);
 
-  const renderLoader = loading ? <InfiniteLoader /> : null;
+  const renderLoader = loading ? <Loader /> : null;
   const renderNetworkError = isNetworkError ? <NetworkError /> : null;
 
   return (
@@ -281,5 +282,72 @@ function ShowFollowing({
       isLoading={isLoading}
       className={className}
     />
+  );
+}
+
+function Loader({ className }: Readonly<{ className?: string }>) {
+  return (
+    <div
+      className={cn(
+        'w-full h-full flex justify-center items-center',
+        className
+      )}
+    >
+      <ProfileSkeleton className="w-1/4" />
+      <DisplaySkeleton className="w-3/4" />
+    </div>
+  );
+}
+
+function ProfileSkeleton({ className }: Readonly<{ className?: string }>) {
+  return (
+    <div className={cn('w-full h-full p-2 flex flex-col gap-2', className)}>
+      <div className="h-1/5 w-full relative">
+        <div className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-3/4 h-1/2 aspect-square rounded-full overflow-clip">
+          <Skeleton className="h-full w-full" />
+        </div>
+      </div>
+      <div className="mt-16">
+        <div className="p-4 space-y-3">
+          <Skeleton className="h-4 w-2/5" />
+          <Skeleton className="h-3 w-3/5" />
+        </div>
+        <div className="p-4 space-y-3">
+          <Skeleton className="h-4 w-2/5" />
+          <Skeleton className="h-3 w-3/5" />
+        </div>
+        <div className="p-4 space-y-3">
+          <Skeleton className="h-4 w-2/5" />
+          <Skeleton className="h-3 w-3/5" />
+        </div>
+        <div className="p-4 space-y-3">
+          <Skeleton className="h-4 w-2/5" />
+          <Skeleton className="h-3 w-3/5" />
+        </div>
+      </div>
+      <div className="flex gap-5 p-4 justify-center">
+        <Skeleton className="h-10 aspect-square" />
+        <Skeleton className="h-10 aspect-square" />
+        <Skeleton className="h-10 aspect-square" />
+      </div>
+      <Skeleton className="h-10 aspect-video" />
+    </div>
+  );
+}
+
+function DisplaySkeleton({ className }: Readonly<{ className?: string }>) {
+  return (
+    <div className={cn('w-full h-full p-2 flex flex-col', className)}>
+      <div className="flex gap-4 items-center h-16">
+        <Skeleton className="h-7 w-20" />
+        <Skeleton className="h-7 w-20" />
+        <Skeleton className="h-7 w-20" />
+      </div>
+      <div className="h-full overflow-clip p-2 grid grid-cols-4 gap-5">
+        {[...Array(8)].map((_, i) => (
+          <PostCardSkeleton key={i} />
+        ))}
+      </div>
+    </div>
   );
 }

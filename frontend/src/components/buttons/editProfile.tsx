@@ -1,7 +1,7 @@
 import { cn } from '@/lib/utils';
 import { Button } from '../ui/button';
 
-export function EditProfile({ className }: { className?: string }) {
+export function EditProfile({ className }: Readonly<{ className?: string }>) {
   return (
     <Button
       className={cn(

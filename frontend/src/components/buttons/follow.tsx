@@ -9,11 +9,11 @@ export function Follow({
   isLoggedIn,
   user,
   className
-}: {
+}: Readonly<{
   isLoggedIn: boolean;
   user: User;
   className?: string;
-}) {
+}>) {
   const navigate = useNavigate();
   const [following, setFollowing] = useState<boolean>(false);
 

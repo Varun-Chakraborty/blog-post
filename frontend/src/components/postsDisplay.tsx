@@ -22,7 +22,7 @@ export function PostsDisplay({
       )}
       <div
         className={cn(
-          'h-full w-full p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-y-auto',
+          'h-fit w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4',
           className
         )}
       >

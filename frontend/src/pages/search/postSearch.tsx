@@ -1,7 +1,6 @@
 import { SearchResponseTypes } from '@/types/responseTypes';
 import { Post } from '@/types/baseTypes';
 import { PostsDisplay } from '@/components/postsDisplay';
-import { cn } from '@/lib/utils';
 import { searchMore } from './searchMore';
 
 interface Props {

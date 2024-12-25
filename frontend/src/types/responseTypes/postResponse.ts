@@ -1,4 +1,4 @@
-import { Post } from '../baseTypes';
+import { Comment, Post } from '../baseTypes';
 import { APIResponse } from './baseResponse';
 
 export interface GetPostsResponse extends APIResponse {

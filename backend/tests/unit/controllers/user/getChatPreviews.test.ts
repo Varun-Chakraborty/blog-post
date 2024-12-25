@@ -50,8 +50,16 @@ describe('getChatPreviews', () => {
   });
 
   it('should return 200', async () => {
-    req.params = {
-      username: 'testuser'
+    req = {
+      params: {
+        username: 'testuser'
+      },
+      user: {
+        id: '1',
+        username: 'testuser',
+        name: 'Test User',
+        role: 'USER'
+      }
     };
     const chats = [
       {

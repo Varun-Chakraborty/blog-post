@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { CommentComponent } from './commentComponent';
 import { cn } from '@/lib/utils';
 import { RepliesBlock } from './replyBlock';
-import { Comment } from '@/types';
+import { Comment } from '@/types/baseTypes';
 
 export function CommentComponentBlock({
   comment,

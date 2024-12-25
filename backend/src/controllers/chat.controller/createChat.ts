@@ -1,4 +1,5 @@
 import { getPrismaClient } from '@/db';
+import { getSocket } from '@/socket';
 import { ExpressTypes } from '@/types';
 import { ApiResponse, wrapperFx } from '@/utils';
 
@@ -45,7 +46,29 @@ export const createChat = wrapperFx(async function (
 
   const prisma = getPrismaClient();
 
-  const chat = await prisma.chat.create({
+  let chat: { id: string } | null = null;
+  if (type === 'CHAT')
+    chat = await prisma.chat.findFirst({
+      where: {
+        participants: {
+          every: {
+            username: { in: participantsArray }
+          }
+        }
+      },
+      select: { id: true }
+    });
+
+  if (chat) {
+    getSocket(req.user!.id)?.join(`chat:${chat.id}`);
+    return new ApiResponse(
+      'Chat already exists',
+      { chatId: chat.id },
+      200
+    ).success(res);
+  }
+
+  chat = await prisma.chat.create({
     data: {
       type,
       participants: {
@@ -55,6 +78,7 @@ export const createChat = wrapperFx(async function (
     },
     select: { id: true }
   });
+  getSocket(req.user!.id)?.join(`chat:${chat.id}`);
 
   return new ApiResponse(
     'Chat created successfully',

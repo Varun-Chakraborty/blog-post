@@ -4,6 +4,9 @@ const prismaMock = {
   },
   chat: {
     findMany: jest.fn()
+  },
+  message: {
+    findFirst: jest.fn()
   }
 };
 
@@ -71,7 +74,7 @@ describe('getUreadChats', () => {
     );
   });
 
-  it('should return 200 if user is found', async () => {
+  it('should return unread chats if user is found', async () => {
     req = {
       params: {
         username: 'testuser'
@@ -90,6 +93,13 @@ describe('getUreadChats', () => {
       email: 'email',
       role: 'USER'
     });
+    (prismaMock.chat.findMany as jest.Mock).mockResolvedValue([
+      {
+        id: '1',
+        participants: ['1', '2'],
+        type: 'GROUP'
+      }
+    ]);
     await getUnreadChats(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
@@ -98,7 +108,7 @@ describe('getUreadChats', () => {
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
-        message: 'Chats fetched'
+        message: 'Fetched unread chats'
       })
     );
   });

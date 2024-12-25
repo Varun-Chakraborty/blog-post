@@ -22,8 +22,8 @@ const options = [
     id: 2,
     inActiveIcon: MdOutlineSpaceDashboard,
     activeIcon: MdSpaceDashboard,
-    title: 'Dashboard',
-    route: '/dashboard',
+    title: 'Posts',
+    route: '/posts',
     isProtected: true
   },
   {

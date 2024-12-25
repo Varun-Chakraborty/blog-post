@@ -1,24 +1,24 @@
-import { Message } from 'react-hook-form';
+import { Message } from '@/types/baseTypes';
 import { io } from 'socket.io-client';
 
 class SocketService {
   private readonly socket = io(import.meta.env.VITE_API_HOST, {
     withCredentials: true
   });
-  onNewMessage(
-    callback: (data: { chatId: string; message: Message }) => Promise<void>
-  ) {
-    this.socket.on('new-message', (data: string) => {
-      const parsedData = JSON.parse(data) as {
-        chatId: string;
-        message: Message;
-      };
+
+  onNewMessage(callback: (data: {chatId: string; message: Message}) => Promise<void>) {
+      this.socket.on('new-message', (data: string) => {
+      const parsedData = data as unknown as {chatId: string; message: Message};
       callback(parsedData);
     });
   }
 
-  sendMessage(chatId: string, message: string) {
-    this.socket.emit('new-message', { chatId, message });
+  offNewMessage(callback: (data: {chatId: string; message: Message}) => Promise<void>) {
+    this.socket.off('new-message', callback);
+  }
+
+  sendMessage(chatId: string, content: string) {
+    this.socket.emit('new-message', { chatId, content });
   }
 
   emitTyping() {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { CommentComponent } from './commentComponent';
 import { cn } from '@/lib/utils';
-import { Comment } from '@/types';
+import { Comment } from '@/types/baseTypes';
 import { postService } from '@/services';
 import { InfiniteLoader } from '@/components/loaders';
 import { Input } from '@/components/ui/input';
@@ -30,7 +30,7 @@ export function RepliesBlock({
   const renderLoader = isLoading ? <InfiniteLoader /> : null;
 
   return (
-    <div className={cn('pl-5', className)}>
+    <div className={cn('ml-5 pl-5 mb-3 py-3 rounded', className)}>
       <form
         onSubmit={async e => {
           e.preventDefault();

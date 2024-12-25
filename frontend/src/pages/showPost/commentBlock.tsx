@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { Comment } from '@/types';
+import { Comment } from '@/types/baseTypes';
 import { CommentComponentBlock } from './commentComponentBlock';
 import { useEffect, useState } from 'react';
 import { postService } from '@/services';
@@ -32,48 +32,50 @@ export function CommentBlock({
   const renderLoader = isLoading ? <CommentComponentBlockSkeleton /> : null;
 
   return (
-    <div className={cn('flex flex-col gap-2', className)}>
-      <div className="font-bold">
+    <div className={cn('bg-black border rounded shadow-lg p-2', className)}>
+      <div className="font-bold p-2">
         Comments<span className="ml-2 text-primary">{commentCount ?? 2}</span>
       </div>
-      <form
-        className="flex gap-2"
-        onSubmit={async e => {
-          e.preventDefault();
-          const comment = (e.currentTarget[0] as HTMLInputElement).value;
-          if (comment) {
-            try {
-              const res = await postService.createComment(postId, comment);
-              setComments(prev => [res!, ...prev]);
-            } catch (error) {
-              if (isAxiosError(error)) {
-                toast({
-                  title: 'Error',
-                  description: error.response?.data.message,
-                  variant: 'destructive'
-                });
+      <div className="flex flex-col gap-2 mx-6 mt-2 mb-4 p-3 border bg-card rounded-md">
+        <form
+          className="flex gap-2"
+          onSubmit={async e => {
+            e.preventDefault();
+            const comment = (e.currentTarget[0] as HTMLInputElement).value;
+            if (comment) {
+              try {
+                const res = await postService.createComment(comment, postId);
+                setComments(prev => [res!, ...prev]);
+              } catch (error) {
+                if (isAxiosError(error)) {
+                  toast({
+                    title: 'Error',
+                    description: error.response?.data.message,
+                    variant: 'destructive'
+                  });
+                }
+                console.error(error);
               }
-              console.error(error);
             }
-          }
-        }}
-      >
-        <Input
-          placeholder="Write a comment"
-          className="bg-transparent dark:bg-transparent border"
-        />
-        <Button
-          type="submit"
-          className="bg-accent text-accent-foreground hover:bg-accent/80 dark:bg-accent dark:text-accent-foreground dark:hover:bg-accent/80"
+          }}
         >
-          Send
-        </Button>
-      </form>
-      <div className="pl-5 overflow-y-auto">
-        {renderLoader ??
-          comments.map(comment => (
-            <CommentComponentBlock key={comment.id} comment={comment} />
-          ))}
+          <Input
+            placeholder="Write a comment"
+            className="bg-transparent dark:bg-transparent border"
+          />
+          <Button
+            type="submit"
+            className="bg-accent text-accent-foreground hover:bg-accent/80 dark:bg-accent dark:text-accent-foreground dark:hover:bg-accent/80"
+          >
+            Send
+          </Button>
+        </form>
+        <div className="pl-5 pt-3 overflow-y-auto">
+          {renderLoader ??
+            comments.map(comment => (
+              <CommentComponentBlock key={comment.id} comment={comment} />
+            ))}
+        </div>
       </div>
     </div>
   );

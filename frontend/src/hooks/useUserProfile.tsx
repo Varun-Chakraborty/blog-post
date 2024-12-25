@@ -37,9 +37,9 @@ export function useUserProfile() {
 
   useEffect(() => {
     if (!isItGuest) {
-      userService.getProfileSummary().then(profileSummary => {
+      userService.getProfileSummary('me').then(profileSummary => {
         dispatch(profileActions.setProfile(profileSummary));
       });
     }
-  }, []);
+  }, [loading]);
 }

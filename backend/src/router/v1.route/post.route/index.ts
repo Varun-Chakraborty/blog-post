@@ -15,6 +15,7 @@ router.get('/:postId/comments', postController.getCommentsByPostId);
 
 router.use(isAuthenticated);
 
+router.post('/:postId/comment', postController.commentOnPost);
 router.post('/:postId/like', postController.likePost);
 router.delete('/:postId/like', postController.unlikePost);
 

@@ -1,4 +1,4 @@
-import { APIResponseTypes } from '@/types';
+import { ChatResponseTypes } from '@/types/responseTypes';
 import { HTTPService } from './httpService';
 
 class ChatService extends HTTPService {
@@ -14,7 +14,7 @@ class ChatService extends HTTPService {
     if (type === 'GROUP' && !groupName) {
       throw new Error('Chat name is required for group chats');
     }
-    const response = await this.api.post<APIResponseTypes.CreateChatResponse>(
+    const response = await this.api.post<ChatResponseTypes.CreateChatResponse>(
       `/chat/create`,
       {
         participants,
@@ -27,7 +27,7 @@ class ChatService extends HTTPService {
 
   async getChats(username: string = 'me') {
     const response =
-      await this.api.get<APIResponseTypes.GetChatPreviewsResponse>(
+      await this.api.get<ChatResponseTypes.GetChatPreviewsResponse>(
         `/user/${username}/chats`
       );
     return response.data.data?.chatPreviews;
@@ -35,14 +35,14 @@ class ChatService extends HTTPService {
 
   async getUnreadChats(username: string = 'me') {
     const response =
-      await this.api.get<APIResponseTypes.GetUnreadChatsResponse>(
+      await this.api.get<ChatResponseTypes.GetUnreadChatsResponse>(
         `/user/${username}/unreadChats`
       );
     return response.data.data?.unreadChats;
   }
 
   async getChatById(chatId: string) {
-    const response = await this.api.get<APIResponseTypes.GetChatByIdResponse>(
+    const response = await this.api.get<ChatResponseTypes.GetChatByIdResponse>(
       `/chat/${chatId}`
     );
     return response.data.data?.chat;
@@ -50,7 +50,7 @@ class ChatService extends HTTPService {
 
   async getChatPreviewById(chatId: string) {
     const response =
-      await this.api.get<APIResponseTypes.GetChatPreviewByIdResponse>(
+      await this.api.get<ChatResponseTypes.GetChatPreviewByIdResponse>(
         `/chat/preview/${chatId}`
       );
     return response.data.data?.chatPreview;

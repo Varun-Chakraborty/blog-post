@@ -2,7 +2,6 @@ import { cn } from '@/lib/utils';
 import { TitleAndProfile } from './titleAndProfile';
 import { Menu } from './menu';
 import { Settings } from './settings';
-import React from 'react';
 
 interface LeftPanelProps {
   className?: string;

@@ -55,7 +55,7 @@ export function Search({ className }: Readonly<{ className?: string }>) {
       />
     );
   return (
-    <div className={cn('h-full w-full box-border lg:p-2', className)}>
+    <div className={cn('h-full w-full flex flex-col box-border lg:p-2', className)}>
       <div className="sm:hidden flex justify-center w-full">
         <SearchBar full className="mb-4" />
       </div>
@@ -82,7 +82,7 @@ export function Search({ className }: Readonly<{ className?: string }>) {
               Post
             </button>
           </div>
-          <div className="p-4">
+          <div className="p-4 h-full space-y-4 overflow-y-scroll">
             {!searchQuery ? (
               <div className="text-center">
                 Enter a query in the search bar to get started

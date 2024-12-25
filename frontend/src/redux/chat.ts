@@ -1,4 +1,4 @@
-import { ChatPreview } from '@/types';
+import { ChatPreview, Message } from '@/types/baseTypes';
 import { createSlice } from '@reduxjs/toolkit';
 
 interface ChatState {
@@ -15,28 +15,29 @@ const chat = createSlice({
   name: 'chat',
   initialState,
   reducers: {
-    setUnreadChats(state, action) {
-      state.unreadChats = action.payload;
+    setUnreadChats(state, action: { payload: { unreadChats: ChatPreview[]; } }) {
+      state.unreadChats = action.payload.unreadChats;
     },
-    setChats(state, action) {
-      state.chats = action.payload;
+    setChats(state, action: { payload: { chats: ChatPreview[]; } }) {
+      state.chats = action.payload.chats;
     },
-    appendUnreadChat(state, action: { payload: ChatPreview }) {
-      const newChat = action.payload;
-      state.unreadChats = [newChat, ...state.unreadChats];
+    appendUnreadChat(state, action: { payload: { newChat: ChatPreview; } }) {
+      const { newChat } = action.payload;
+      if (!state.unreadChats.some(chat => chat.id === newChat.id))
+        state.unreadChats = [newChat, ...state.unreadChats];
     },
-    appendChat(state, action) {
-      if (!state.chats.some(chat => chat.id === action.payload.id)) {
-        state.chats = [action.payload, ...state.chats];
-      }
+    appendChat(state, action: { payload: { newChat: ChatPreview; } }) {
+      const { newChat } = action.payload;
+      if (!state.chats.some(chat => chat.id === newChat.id))
+        state.chats = [newChat, ...state.chats];
     },
-    updateLatestMessage(state, action) {
+    updateLatestMessage(state, action: { payload: { toUnreadChats: boolean; data: { chatId: string; message: Message } } }) {
       const { data, toUnreadChats } = action.payload;
-      const { chatId, latestMessage } = data;
+      const { chatId } = data;
 
       state.chats = state.chats.map(chat => {
         if (chat.id === chatId) {
-          return { ...chat, latestMessage };
+          return { ...chat, latestMessage: data.message, updatedAt: data.message.updatedAt };
         }
         return chat;
       });
@@ -44,19 +45,19 @@ const chat = createSlice({
       if (toUnreadChats) {
         state.unreadChats = state.unreadChats.map(chat => {
           if (chat.id === chatId) {
-            return { ...chat, latestMessage };
+            return { ...chat, latestMessage: data.message, updatedAt: data.message.updatedAt };
           }
           return chat;
         });
       }
     },
-    popUnreadChat(state, action) {
+    popUnreadChat(state, action: { payload: { id: string; } }) {
       state.unreadChats = state.unreadChats.filter(
-        m => m.id !== action.payload
+        chat => chat.id !== action.payload.id
       );
     },
-    popChat(state, action) {
-      state.chats = state.chats.filter(m => m.id !== action.payload);
+    popChat(state, action: { payload: { id: string; } }) {
+      state.chats = state.chats.filter(chat => chat.id !== action.payload.id);
     }
   }
 });

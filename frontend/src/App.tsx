@@ -63,11 +63,15 @@ export default function App() {
           Component: Search
         },
         {
+          path: 'posts',
+          Component: ShowPosts
+        },
+        {
           path: 'post',
           children: [
             {
               path: '',
-              Component: ShowPosts
+              element: <Navigate to="/posts" />
             },
             {
               path: 'create',

@@ -33,7 +33,14 @@ export function Card({ post }: Readonly<{ post: Post }>) {
         <div className="text-xl font-bold">{post.title}</div>
         <HoverCard>
           <HoverCardTrigger asChild>
-            <Button variant="link" className="p-0 h-5">
+            <Button
+              variant="link"
+              className="p-0 h-5"
+              onClick={e => {
+                e.stopPropagation();
+                navigate(`/user/${post.author.username}`);
+              }}
+            >
               @{post.author.username}
             </Button>
           </HoverCardTrigger>
@@ -82,8 +89,8 @@ export function CardSkeleton() {
     <div className="h-fit w-full p-2 flex flex-col gap-2">
       <Skeleton className="h-56 w-full rounded" />
       <div className="space-y-1">
-        <Skeleton className="h-7 w-full" />
-        <Skeleton className="h-5 w-3/4" />
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-3 w-3/4" />
       </div>
       <div className="flex gap-2">
         {[...Array(3)].map((_, i) => (
