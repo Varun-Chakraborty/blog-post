@@ -5,7 +5,6 @@ describe('setCookie', () => {
   let res: Partial<ExpressTypes.Res>;
 
   it('should set a cookie with samesite property lax for dev environment and return the response', () => {
-    process.env.NODE_ENV = 'development';
     res = {
       cookie: jest.fn()
     };

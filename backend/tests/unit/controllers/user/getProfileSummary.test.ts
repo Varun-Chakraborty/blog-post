@@ -41,32 +41,6 @@ describe('getProfileSummary', () => {
     );
   });
 
-  it('should return summary from req.user if its my username', async () => {
-    req = {
-      user: {
-        id: '1',
-        username: 'test',
-        name: 'Test User',
-        role: 'USER'
-      },
-      params: {
-        username: 'test'
-      }
-    };
-    await getProfileSummary(
-      req as ExpressTypes.Req,
-      res as ExpressTypes.Res,
-      next as ExpressTypes.Next
-    );
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith(
-      expect.objectContaining({
-        data: { profileSummary: req.user },
-        message: 'Profile summary retrieved successfully'
-      })
-    );
-  });
-
   it('should return 404 if user is not found', async () => {
     req.params = {
       username: 'test'

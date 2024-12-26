@@ -18,13 +18,18 @@ describe('getChatById', () => {
   let req: Partial<ExpressTypes.Req>;
   let res: Partial<ExpressTypes.Res>;
   let next: Partial<ExpressTypes.Next>;
-  process.env.NODE_ENV = 'development';
   
   beforeEach(() => {
     jest.clearAllMocks();
     req = {
       params: {
-        chatId: 'testChatId'
+        chatId: 'testChatId',
+      },
+      user: {
+        id: 'testUserId',
+        username: 'testUsername',
+        name: 'Test User',
+        role: 'USER'
       }
     };
     res = {
@@ -73,7 +78,7 @@ describe('getChatById', () => {
       res as ExpressTypes.Res,
       next as ExpressTypes.Next
     );
-    // expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
         message: 'Chat retrieved successfully',

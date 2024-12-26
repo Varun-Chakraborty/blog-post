@@ -12,7 +12,8 @@ export function setCookie(
     sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     maxAge: 1000 * 60 * 60 * 24 * 7,
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production'
+    secure: process.env.NODE_ENV === 'production',
+    partitioned: process.env.NODE_ENV === 'production'
   };
 
   res.cookie(name, value, { ...defaultCookieOptions, ...options });
