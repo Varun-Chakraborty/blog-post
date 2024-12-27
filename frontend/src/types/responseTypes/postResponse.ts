@@ -25,6 +25,12 @@ export interface GetRepliesResponse extends APIResponse {
   };
 }
 
+export interface CreatePostResponse extends APIResponse {
+  data?: {
+    postId: string;
+  };
+}
+
 export interface CreateCommentResponse extends APIResponse {
   data?: {
     comment: Comment;

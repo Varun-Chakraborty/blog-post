@@ -1,7 +1,7 @@
 import { InfiniteLoader } from '@/components/loaders';
 import { cn } from '@/lib/utils';
 import { Post } from '@/types/baseTypes';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { postService } from '@/services';
 import { CommentBlock } from './commentBlock';
@@ -42,7 +42,8 @@ import {
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Copy } from 'lucide-react';
-import { ToastProps } from '@/components/ui/toast';
+import { ParseMarkdown } from '@/components/paseMarkdown.tsx';
+import { handleLikePost } from '@/helperFunctions/likePost.ts';
 
 export function ShowPost({ className }: Readonly<{ className?: string }>) {
   const { id } = useParams();
@@ -106,7 +107,7 @@ export function ShowPost({ className }: Readonly<{ className?: string }>) {
                 </div>
                 {profile?.username === post?.author.username && (
                   <div className="flex gap-3">
-                    <EditButton />
+                    <EditButton onClick={() => navigate(`/post/${post!.id}/edit`, { state: { post } })} />
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <DeleteButton />
@@ -117,7 +118,7 @@ export function ShowPost({ className }: Readonly<{ className?: string }>) {
                 )}
               </div>
               <div className="text-lg font-montserrat w-full h-full mt-2">
-                {post?.content}
+                <ParseMarkdown markdown={post!.content} />
               </div>
             </div>
           </div>
@@ -125,7 +126,7 @@ export function ShowPost({ className }: Readonly<{ className?: string }>) {
             <LikeButton
               liked={liked}
               onClick={async () => {
-                handleLike(liked, setLiked, setLikesCount, post!, toast);
+                await handleLikePost(liked, setLiked, setLikesCount, post!, toast);
               }}
               likesCount={likesCount}
             />
@@ -227,33 +228,4 @@ function ShareDialog({ postId }: Readonly<{ postId: Post['id'] }>) {
       </DialogFooter>
     </DialogContent>
   );
-}
-
-async function handleLike(
-  liked: boolean,
-  setLiked: Dispatch<SetStateAction<boolean>>,
-  setLikesCount: Dispatch<SetStateAction<number>>,
-  post: Post,
-  toast: ToastProps
-) {
-  try {
-    if (liked) {
-      await postService.unLikePost(post!.id);
-      setLiked(false);
-      setLikesCount(prev => --prev);
-    } else {
-      await postService.likePost(post!.id);
-      setLiked(true);
-      setLikesCount(prev => ++prev);
-    }
-  } catch (error) {
-    if (isAxiosError(error)) {
-      toast({
-        title: 'Error',
-        description: error.response?.data.message,
-        variant: 'destructive'
-      });
-    }
-    console.error(error);
-  }
 }

@@ -1,3 +1,5 @@
+export { createPost } from './createPost';
+export { updatePostById } from './updatePostById';
 export { getPosts } from './getPosts';
 export { getPostById } from './getPostById';
 export { deletePostById } from './deletePostById';

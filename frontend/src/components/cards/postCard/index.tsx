@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { isAxiosError } from 'axios';
 import { postService } from '@/services';
 import { useToast } from '@/components/ui/use-toast';
+import { handleLikePost } from '@/helperFunctions/likePost.ts';
 
 export function Card({ post }: Readonly<{ post: Post }>) {
   const navigate = useNavigate();
@@ -53,26 +54,7 @@ export function Card({ post }: Readonly<{ post: Post }>) {
           likesCount={likesCount}
           onClick={async e => {
             e.stopPropagation();
-            try {
-              if (liked) {
-                await postService.unLikePost(post!.id);
-                setLiked(false);
-                setLikesCount(prev => --prev);
-              } else {
-                await postService.likePost(post!.id);
-                setLiked(true);
-                setLikesCount(prev => ++prev);
-              }
-            } catch (error) {
-              if (isAxiosError(error)) {
-                toast({
-                  title: 'Error',
-                  description: error.response?.data.message,
-                  variant: 'destructive'
-                });
-              }
-              console.error(error);
-            }
+            await handleLikePost(liked, setLiked, setLikesCount, post, toast);
           }}
         />
         <CommentButton

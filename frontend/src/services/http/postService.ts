@@ -40,6 +40,14 @@ class PostService extends HTTPService {
     return response.data.data?.replies;
   }
 
+  async createPost(data: { title: string; content: string; imageUrl: string }) {
+    return (await this.api.post<PostResponseTypes.CreatePostResponse>('/post', data)).data.data?.postId;
+  }
+
+  async updatePost(postId: string, data: { title: string; content: string; imageUrl: string }) {
+    return (await this.api.put<PostResponseTypes.CreatePostResponse>(`/post/${postId}`, data)).data.data?.postId;
+  }
+
   async createComment(message: string, postId: string) {
     const response =
       await this.api.post<PostResponseTypes.CreateCommentResponse>(

@@ -6,11 +6,17 @@ import { postController } from '@/controllers';
 import { ApiResponse } from '@/utils';
 import { isAuthenticated } from '@/middlewares/auth';
 
-router.get('/', postController.getPosts);
+router
+  .route('/')
+  .get(postController.getPosts)
+  .post(postController.createPost);
+
 router
   .route('/:postId')
   .get(postController.getPostById)
+  .put(postController.updatePostById)
   .delete(postController.deletePostById);
+
 router.get('/:postId/comments', postController.getCommentsByPostId);
 
 router.use(isAuthenticated);

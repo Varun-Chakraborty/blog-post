@@ -59,6 +59,7 @@ export function useFetchChats() {
     }
   }, [profile]);
   useEffect(() => {
+    console.log('\n');
     const newMessageHandler = async (data: {chatId: string; message: Message}) => {
       let chatPreview = chats.find(c => c.id === data.chatId);
       
@@ -75,7 +76,8 @@ export function useFetchChats() {
           return undefined;
         });
       }
-
+      
+      console.log('1', location.pathname, '2', `/chat/${data.chatId}`, '3', location.pathname === `/chat/${data.chatId}`);
       // if not in the chat
       if (location.pathname !== `/chat/${data.chatId}`) {
         console.log('not in the chat');

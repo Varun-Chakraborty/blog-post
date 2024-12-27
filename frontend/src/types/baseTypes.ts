@@ -21,7 +21,7 @@ export interface User extends Omit<Profile, 'guest'> {
 export interface Post {
   id: string;
   title: string;
-  content: string;
+  content?: string;
   author: Profile;
   imgUrl?: string;
   liked: boolean;

@@ -11,6 +11,7 @@ import {
   Notifications,
   Dashboard,
   CreatePost,
+  EditPost,
   Search,
   NotFound,
   ShowPost,
@@ -84,6 +85,10 @@ export default function App() {
             {
               path: ':id',
               Component: ShowPost
+            },
+            {
+              path: ':id/edit',
+              Component: EditPost
             }
           ]
         },

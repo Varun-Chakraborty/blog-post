@@ -11,6 +11,9 @@ export interface Req extends express.Request {
     groupName?: string;
     type?: 'CHAT' | 'GROUP';
     message?: string;
+    title?: string;
+    content?: string;
+    imageUrl?: string;
   };
   query: {
     query?: string;

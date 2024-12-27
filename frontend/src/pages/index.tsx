@@ -3,6 +3,7 @@ export { Messages } from './messages';
 export { Notifications } from './notifications';
 export { Dashboard } from './dashboard';
 export { CreatePost } from './createPost';
+export { EditPost } from './editPost';
 export { Search } from './search';
 export { NotFound } from './notFound';
 export { ShowPost } from './showPost';
