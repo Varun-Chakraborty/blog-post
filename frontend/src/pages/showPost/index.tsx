@@ -42,7 +42,7 @@ import {
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Copy } from 'lucide-react';
-import { ParseMarkdown } from '@/components/paseMarkdown.tsx';
+import { ParseMarkdown } from '@/components/parseMarkdown';
 import { handleLikePost } from '@/helperFunctions/likePost.ts';
 
 export function ShowPost({ className }: Readonly<{ className?: string }>) {
@@ -107,7 +107,11 @@ export function ShowPost({ className }: Readonly<{ className?: string }>) {
                 </div>
                 {profile?.username === post?.author.username && (
                   <div className="flex gap-3">
-                    <EditButton onClick={() => navigate(`/post/${post!.id}/edit`, { state: { post } })} />
+                    <EditButton
+                      onClick={() =>
+                        navigate(`/post/${post!.id}/edit`, { state: { post } })
+                      }
+                    />
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <DeleteButton />
@@ -126,7 +130,13 @@ export function ShowPost({ className }: Readonly<{ className?: string }>) {
             <LikeButton
               liked={liked}
               onClick={async () => {
-                await handleLikePost(liked, setLiked, setLikesCount, post!, toast);
+                await handleLikePost(
+                  liked,
+                  setLiked,
+                  setLikesCount,
+                  post!,
+                  toast
+                );
               }}
               likesCount={likesCount}
             />
@@ -143,7 +153,8 @@ export function ShowPost({ className }: Readonly<{ className?: string }>) {
           </div>
           <CommentBlock
             commentCount={post!._count.comments}
-            postId={post!.id}
+            parentId={post!.id}
+            type="COMMENT"
           />
         </div>
       )}
@@ -171,8 +182,7 @@ function DeleteDialog({ postId }: Readonly<{ postId: Post['id'] }>) {
               await postService.deletePost(postId);
               toast({
                 title: 'Deleted',
-                description: 'Your post has been deleted.',
-                variant: 'destructive'
+                description: 'Your post has been deleted.'
               });
               navigate('/post');
             } catch (error) {

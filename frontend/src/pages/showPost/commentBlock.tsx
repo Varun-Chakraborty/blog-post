@@ -11,32 +11,42 @@ import { useToast } from '@/components/ui/use-toast';
 
 export function CommentBlock({
   commentCount,
-  postId,
-  className
+  parentId,
+  className,
+  type
 }: {
   commentCount: number;
-  postId: string;
+  parentId: string;
   className?: string;
+  type: 'COMMENT' | 'REPLY';
 }) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const { toast } = useToast();
 
   useEffect(() => {
-    postService.getCommentsByPostId(postId).then(res => {
-      setIsLoading(false);
-      setComments(res!);
-    });
-  }, [postId]);
+    if (type === 'COMMENT') {
+      postService.getCommentsByPostId(parentId).then(res => {
+        setIsLoading(false);
+        setComments(res!);
+      });
+    } else {
+      postService.getRepliesByCommentId(parentId).then(res => {
+        setIsLoading(false);
+        setComments(res!);
+      });
+    }
+  }, [parentId, type]);
 
   const renderLoader = isLoading ? <CommentComponentBlockSkeleton /> : null;
 
   return (
     <div className={cn('bg-black border rounded shadow-lg p-2', className)}>
       <div className="font-bold p-2">
-        Comments<span className="ml-2 text-primary">{commentCount ?? 2}</span>
+        {type === 'COMMENT' ? 'Comments' : 'Replies'}
+        <span className="ml-2 text-primary">{commentCount ?? 2}</span>
       </div>
-      <div className="flex flex-col gap-2 mx-6 mt-2 mb-4 p-3 border bg-card rounded-md">
+      <div className="flex flex-col gap-2 mt-2 p-3 border bg-card rounded-md">
         <form
           className="flex gap-2"
           onSubmit={async e => {
@@ -44,8 +54,12 @@ export function CommentBlock({
             const comment = (e.currentTarget[0] as HTMLInputElement).value;
             if (comment) {
               try {
-                const res = await postService.createComment(comment, postId);
+                const res =
+                  type === 'COMMENT'
+                    ? await postService.createComment(comment, parentId)
+                    : await postService.createReply(comment, parentId);
                 setComments(prev => [res!, ...prev]);
+                e.currentTarget.reset();
               } catch (error) {
                 if (isAxiosError(error)) {
                   toast({
@@ -60,7 +74,7 @@ export function CommentBlock({
           }}
         >
           <Input
-            placeholder="Write a comment"
+            placeholder={`Write a ${type.toLowerCase()}...`}
             className="bg-transparent dark:bg-transparent border"
           />
           <Button
@@ -73,7 +87,11 @@ export function CommentBlock({
         <div className="pl-5 pt-3 overflow-y-auto">
           {renderLoader ??
             comments.map(comment => (
-              <CommentComponentBlock key={comment.id} comment={comment} />
+              <CommentComponentBlock
+                key={comment.id}
+                comment={comment}
+                setComments={setComments}
+              />
             ))}
         </div>
       </div>

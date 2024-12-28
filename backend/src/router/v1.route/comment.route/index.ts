@@ -6,6 +6,7 @@ import { commentController } from '@/controllers';
 import { isAuthenticated } from '@/middlewares/auth';
 import { ApiResponse } from '@/utils';
 
+router.delete('/:commentId', isAuthenticated, commentController.deleteComment);
 router.get('/:commentId/replies', commentController.getRepliesByCommentId);
 router.post(
   '/:commentId/reply',

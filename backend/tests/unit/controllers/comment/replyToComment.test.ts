@@ -154,7 +154,10 @@ describe('replyToComment', () => {
             comment: 'Reply message',
             likes: [],
             createdAt: expect.any(Date),
-            updatedAt: expect.any(Date)
+            updatedAt: expect.any(Date),
+            _count: {
+              likes: 0
+            }
           }
         }
       })

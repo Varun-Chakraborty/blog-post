@@ -23,10 +23,12 @@ import { CiMenuKebab } from 'react-icons/ci';
 
 export function CommentComponent({
   comment,
+  setComments,
   setShowReplies,
   className
 }: Readonly<{
   comment: Comment;
+  setComments: React.Dispatch<React.SetStateAction<Comment[]>>;
   setShowReplies?: React.Dispatch<React.SetStateAction<boolean>>;
   type: 'COMMENT' | 'REPLY';
   className?: string;
@@ -110,11 +112,24 @@ export function CommentComponent({
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56">
-                <DropdownMenuLabel>Actions on Post</DropdownMenuLabel>
+                <DropdownMenuLabel>Actions on Comment</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <DropdownMenuItem>Edit Post</DropdownMenuItem>
-                  <DropdownMenuItem>Delete Post</DropdownMenuItem>
+                  <DropdownMenuItem>Edit Comment</DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={async () => {
+                      await postService.deleteComment(comment.id);
+                      setComments(prev =>
+                        prev.filter(c => c.id !== comment.id)
+                      );
+                      toast({
+                        title: 'Comment Deleted',
+                        description: 'Comment has been deleted'
+                      });
+                    }}
+                  >
+                    Delete Comment
+                  </DropdownMenuItem>
                 </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>

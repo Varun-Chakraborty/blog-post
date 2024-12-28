@@ -55,7 +55,9 @@ export function Search({ className }: Readonly<{ className?: string }>) {
       />
     );
   return (
-    <div className={cn('h-full w-full flex flex-col box-border lg:p-2', className)}>
+    <div
+      className={cn('h-full w-full flex flex-col box-border lg:p-2', className)}
+    >
       <div className="sm:hidden flex justify-center w-full">
         <SearchBar full className="mb-4" />
       </div>

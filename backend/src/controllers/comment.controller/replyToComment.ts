@@ -33,13 +33,23 @@ export const replyToComment = wrapperFx(async function (
       content: message,
       authorId: req.user!.id,
       parentId: commentId
+    },
+    include: {
+      author: {
+        select: {
+          id: true,
+          username: true,
+          name: true,
+          profilePicture: true
+        }
+      }
     }
   });
 
   return new ApiResponse(
     'Reply created successfully',
     {
-      reply
+      reply: { ...reply, _count: { likes: 0 } }
     },
     201
   ).success(res);

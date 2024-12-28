@@ -28,8 +28,7 @@ export const getChatById = wrapperFx(async function (
               profilePicture: true
             }
           }
-        },
-        
+        }
       },
       participants: true
     }
@@ -40,12 +39,15 @@ export const getChatById = wrapperFx(async function (
 
   //group messages by its creation date
   //@ts-ignore
-  chat.groupedMessages = chat.messages.reduce((acc, message) => {
-    const date = message.createdAt.toISOString().split('T')[0];
-    if (!acc[date]) acc[date] = [];
-    acc[date].push(message);
-    return acc;
-  }, {} as Record<string, typeof chat['messages']>);
+  chat.groupedMessages = chat.messages.reduce(
+    (acc, message) => {
+      const date = message.createdAt.toISOString().split('T')[0];
+      if (!acc[date]) acc[date] = [];
+      acc[date].push(message);
+      return acc;
+    },
+    {} as Record<string, (typeof chat)['messages']>
+  );
 
   // mark messages until now as read
   // append current user's id to the readBy array
@@ -54,14 +56,14 @@ export const getChatById = wrapperFx(async function (
       chatId: chat.id,
       createdAt: {
         lte: new Date()
-      },
-    },
+      }
+    }
   });
-  
+
   for (const message of messages) {
     await prisma.message.update({
       where: {
-        id: message.id,
+        id: message.id
       },
       data: {
         readBy: {

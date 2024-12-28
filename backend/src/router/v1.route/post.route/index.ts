@@ -6,10 +6,7 @@ import { postController } from '@/controllers';
 import { ApiResponse } from '@/utils';
 import { isAuthenticated } from '@/middlewares/auth';
 
-router
-  .route('/')
-  .get(postController.getPosts)
-  .post(postController.createPost);
+router.route('/').get(postController.getPosts).post(postController.createPost);
 
 router
   .route('/:postId')

@@ -9,7 +9,9 @@ export function getSocket(userId: string) {
 
 export function setUpSocketListeners(io: Server) {
   io.on('connection', socket => {
-    const accessToken = parseCookies(socket.handshake.headers.cookie).accessToken;
+    const accessToken = parseCookies(
+      socket.handshake.headers.cookie
+    ).accessToken;
     const userId = verifyAccessTokens(accessToken!)?.id;
     console.log('User connected');
     sockets.set(userId!, socket);
@@ -26,7 +28,6 @@ export function setUpSocketListeners(io: Server) {
     });
   });
 }
-
 
 function parseCookies(cookieHeader?: string) {
   if (!cookieHeader) return {};

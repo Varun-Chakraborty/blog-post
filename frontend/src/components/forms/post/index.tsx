@@ -22,7 +22,10 @@ import { InfiniteLoader } from '@/components/loaders';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { type Post } from '@/types/baseTypes';
 
-export function Post({ className, operation }: Readonly<{ className?: string, operation: 'create' | 'edit' }>) {
+export function Post({
+  className,
+  operation
+}: Readonly<{ className?: string; operation: 'create' | 'edit' }>) {
   const { toast } = useToast();
   const { id: postId } = useParams();
   const location = useLocation();
@@ -55,11 +58,13 @@ export function Post({ className, operation }: Readonly<{ className?: string, op
   async function onSubmit(data: z.infer<typeof FormSchema>) {
     setIsLoading(true);
     try {
-      const newPostId = postId ? await postService.updatePost(postId, data) : await postService.createPost(data);
+      const newPostId = postId
+        ? await postService.updatePost(postId, data)
+        : await postService.createPost(data);
       navigate(`/post/${newPostId}`);
     } catch (error) {
-      if(isAxiosError(error)) {
-        if(error.response?.status === 404) {
+      if (isAxiosError(error)) {
+        if (error.response?.status === 404) {
           navigate('/posts');
           toast({
             title: 'Error',
@@ -87,19 +92,22 @@ export function Post({ className, operation }: Readonly<{ className?: string, op
     } else {
       setIsLoading(true);
       setTimeout(() => {
-        postService.getPostById(postId!).then((post) => {
-          const postData = post;
-          if (postData) {
-            form.setValue('title', postData.title);
-            form.setValue('content', postData.content ?? '');
-            form.setValue('imageUrl', postData.imgUrl ?? '');
-          } else {
-            toast({
-              title: 'Error',
-              description: 'Post not found'
-            });
-          }
-        }).finally(() => setIsLoading(false));
+        postService
+          .getPostById(postId!)
+          .then(post => {
+            const postData = post;
+            if (postData) {
+              form.setValue('title', postData.title);
+              form.setValue('content', postData.content ?? '');
+              form.setValue('imageUrl', postData.imgUrl ?? '');
+            } else {
+              toast({
+                title: 'Error',
+                description: 'Post not found'
+              });
+            }
+          })
+          .finally(() => setIsLoading(false));
       }, 3000);
     }
   }, [operation, post, postId]);
@@ -115,7 +123,9 @@ export function Post({ className, operation }: Readonly<{ className?: string, op
       >
         <div className="flex justify-between">
           <h1 className="text-3xl font-bold text-center">Create Post</h1>
-          <Button type="submit" disabled={isLoading}>{isLoading ? <InfiniteLoader /> : 'Submit'}</Button>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? <InfiniteLoader /> : 'Submit'}
+          </Button>
         </div>
         <FormField
           control={form.control}
@@ -150,11 +160,14 @@ export function Post({ className, operation }: Readonly<{ className?: string, op
           )}
         />
         <FormField
-          name='imageUrl'
+          name="imageUrl"
           render={({ field }) => (
             <FormItem>
               <Label>Image URL</Label>
-              <Input placeholder='https://picsum.photos/seed/picsum/1600/1200' {...field} />
+              <Input
+                placeholder="https://picsum.photos/seed/picsum/1600/1200"
+                {...field}
+              />
               <img src={imageUrl} alt="Image preview" />
             </FormItem>
           )}

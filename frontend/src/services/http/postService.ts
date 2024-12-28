@@ -41,11 +41,21 @@ class PostService extends HTTPService {
   }
 
   async createPost(data: { title: string; content: string; imageUrl: string }) {
-    return (await this.api.post<PostResponseTypes.CreatePostResponse>('/post', data)).data.data?.postId;
+    return (
+      await this.api.post<PostResponseTypes.CreatePostResponse>('/post', data)
+    ).data.data?.postId;
   }
 
-  async updatePost(postId: string, data: { title: string; content: string; imageUrl: string }) {
-    return (await this.api.put<PostResponseTypes.CreatePostResponse>(`/post/${postId}`, data)).data.data?.postId;
+  async updatePost(
+    postId: string,
+    data: { title: string; content: string; imageUrl: string }
+  ) {
+    return (
+      await this.api.put<PostResponseTypes.CreatePostResponse>(
+        `/post/${postId}`,
+        data
+      )
+    ).data.data?.postId;
   }
 
   async createComment(message: string, postId: string) {
@@ -67,6 +77,13 @@ class PostService extends HTTPService {
       }
     );
     return response.data.data?.reply;
+  }
+
+  async deleteComment(commentId: string) {
+    const response = await this.api.delete<BaseResponseTypes.APIResponse>(
+      `/comment/${commentId}`
+    );
+    return response.data;
   }
 
   async likePost(postId: string) {

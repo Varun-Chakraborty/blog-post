@@ -1,9 +1,7 @@
 const prismaMock = {
-  chat: {
-    findUnique: jest.fn()
-  },
-  message: {
-    findMany: jest.fn()
+  comment: {
+    findUnique: jest.fn(),
+    delete: jest.fn()
   }
 };
 
@@ -11,24 +9,23 @@ jest.mock('@/db', () => ({
   getPrismaClient: jest.fn(() => prismaMock)
 }));
 
-import { getChatById } from '@/controllers/chat.controller';
+import { deleteComment } from '@/controllers/comment.controller';
 import { ExpressTypes } from '@/types';
 
-describe('getChatById', () => {
+describe('deleteComment', () => {
   let req: Partial<ExpressTypes.Req>;
   let res: Partial<ExpressTypes.Res>;
   let next: Partial<ExpressTypes.Next>;
 
   beforeEach(() => {
-    jest.clearAllMocks();
     req = {
       params: {
-        chatId: 'testChatId'
+        commentId: '1'
       },
       user: {
-        id: 'testUserId',
-        username: 'testUsername',
-        name: 'Test User',
+        id: '1',
+        username: 'user1',
+        name: 'User 1',
         role: 'USER'
       }
     };
@@ -39,24 +36,9 @@ describe('getChatById', () => {
     next = jest.fn();
   });
 
-  it('should call 400 if chatId is not present', async () => {
-    req.params = {};
-    await getChatById(
-      req as ExpressTypes.Req,
-      res as ExpressTypes.Res,
-      next as ExpressTypes.Next
-    );
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith(
-      expect.objectContaining({
-        message: 'ChatId is required'
-      })
-    );
-  });
-
-  it('should return 404 if chat is not found', async () => {
-    (prismaMock.chat.findUnique as jest.Mock).mockResolvedValue(null);
-    await getChatById(
+  it('should return 404 if comment does not exist', async () => {
+    prismaMock.comment.findUnique.mockResolvedValue(null);
+    await deleteComment(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
       next as ExpressTypes.Next
@@ -64,16 +46,30 @@ describe('getChatById', () => {
     expect(res.status).toHaveBeenCalledWith(404);
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
-        message: 'Chat not found'
+        message: 'Comment not found'
       })
     );
   });
 
-  it('should return 200 with chat if found', async () => {
-    const chat = { id: 'testChatId', name: 'testChatName', messages: [] };
-    (prismaMock.chat.findUnique as jest.Mock).mockResolvedValue(chat);
-    (prismaMock.message.findMany as jest.Mock).mockResolvedValue([]);
-    await getChatById(
+  it('should return 403 if user is not the author of the comment', async () => {
+    prismaMock.comment.findUnique.mockResolvedValue({ id: '1', authorId: '2' });
+    await deleteComment(
+      req as ExpressTypes.Req,
+      res as ExpressTypes.Res,
+      next as ExpressTypes.Next
+    );
+    expect(res.status).toHaveBeenCalledWith(403);
+    expect(res.json).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'You are not authorized to delete this comment'
+      })
+    );
+  });
+
+  it('should delete the comment', async () => {
+    prismaMock.comment.findUnique.mockResolvedValue({ id: '1', authorId: '1' });
+    prismaMock.comment.delete.mockResolvedValue({ id: '1' });
+    await deleteComment(
       req as ExpressTypes.Req,
       res as ExpressTypes.Res,
       next as ExpressTypes.Next
@@ -81,8 +77,7 @@ describe('getChatById', () => {
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
-        message: 'Chat retrieved successfully',
-        data: { chat }
+        message: 'Comment deleted successfully'
       })
     );
   });

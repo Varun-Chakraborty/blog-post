@@ -48,7 +48,7 @@ export function ChatScreen({
             toast({
               title: 'Chat not found',
               variant: 'destructive'
-            })
+            });
             navigate('/chat');
           }
         }
@@ -62,7 +62,9 @@ export function ChatScreen({
         if (prev) {
           const today = data.message.updatedAt.split('T')[0];
           if (prev.groupedMessages[today]) {
-            prev.groupedMessages[today] = prev.groupedMessages[today].filter(messages => messages.id !== data.message.id);
+            prev.groupedMessages[today] = prev.groupedMessages[today].filter(
+              messages => messages.id !== data.message.id
+            );
           } else {
             prev.groupedMessages[today] = [];
           }
@@ -133,7 +135,18 @@ export function ChatScreen({
         <div className="h-full overflow-y-scroll flex flex-col justify-end gap-3 p-4">
           {Object.keys(chat?.groupedMessages ?? []).map(date => (
             <>
-              <div key={date} className='mx-auto px-2 p-1 rounded-lg bg-secondary text-primary-foreground'>{new Date().getDate() - new Date(date).getDate() > 1 ? new Date(date).toLocaleDateString(undefined, {dateStyle: 'medium'}) : new Date().getDate() - new Date(date).getDate() === 1 ? 'Yesterday' : 'Today' }</div>
+              <div
+                key={date}
+                className="mx-auto px-2 p-1 rounded-lg bg-secondary text-primary-foreground"
+              >
+                {new Date().getDate() - new Date(date).getDate() > 1
+                  ? new Date(date).toLocaleDateString(undefined, {
+                      dateStyle: 'medium'
+                    })
+                  : new Date().getDate() - new Date(date).getDate() === 1
+                    ? 'Yesterday'
+                    : 'Today'}
+              </div>
               {chat!.groupedMessages[date].map(message => (
                 <MessageBubble
                   message={message}

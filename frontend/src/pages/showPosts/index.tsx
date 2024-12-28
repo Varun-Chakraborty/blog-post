@@ -39,8 +39,12 @@ export function ShowPosts({ className }: Readonly<{ className?: string }>) {
 
   return (
     netWorkError ?? (
-      <div className='p-6 h-full'>
-        <PostsDisplay posts={posts} isLoading={isLoading} className={className} />
+      <div className="p-6 h-full">
+        <PostsDisplay
+          posts={posts}
+          isLoading={isLoading}
+          className={className}
+        />
       </div>
     )
   );

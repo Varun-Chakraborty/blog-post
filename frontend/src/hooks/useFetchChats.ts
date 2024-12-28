@@ -60,24 +60,35 @@ export function useFetchChats() {
   }, [profile]);
   useEffect(() => {
     console.log('\n');
-    const newMessageHandler = async (data: {chatId: string; message: Message}) => {
+    const newMessageHandler = async (data: {
+      chatId: string;
+      message: Message;
+    }) => {
       let chatPreview = chats.find(c => c.id === data.chatId);
-      
+
       // if chat preview is not present, fetch it
       if (!chatPreview) {
-        chatPreview = await chatService.getChatPreviewById(data.chatId)
-        .then(chatPreview => chatPreview)
-        .catch(e => {
-          toast({
-            title: 'Failed to fetch chat',
-            variant: 'destructive'
+        chatPreview = await chatService
+          .getChatPreviewById(data.chatId)
+          .then(chatPreview => chatPreview)
+          .catch(e => {
+            toast({
+              title: 'Failed to fetch chat',
+              variant: 'destructive'
+            });
+            console.error(e);
+            return undefined;
           });
-          console.error(e);
-          return undefined;
-        });
       }
-      
-      console.log('1', location.pathname, '2', `/chat/${data.chatId}`, '3', location.pathname === `/chat/${data.chatId}`);
+
+      console.log(
+        '1',
+        location.pathname,
+        '2',
+        `/chat/${data.chatId}`,
+        '3',
+        location.pathname === `/chat/${data.chatId}`
+      );
       // if not in the chat
       if (location.pathname !== `/chat/${data.chatId}`) {
         console.log('not in the chat');

@@ -24,7 +24,9 @@ export function ProfileCard({
     >
       <div className="flex items-center gap-2">
         <Avatar>
-          <AvatarImage src={profile.profilePicture ?? '/placeholder-user.jpg'} />
+          <AvatarImage
+            src={profile.profilePicture ?? '/placeholder-user.jpg'}
+          />
           <AvatarFallback>
             {profile.name.charAt(0).toUpperCase()}
           </AvatarFallback>

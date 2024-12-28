@@ -6,14 +6,21 @@ class SocketService {
     withCredentials: true
   });
 
-  onNewMessage(callback: (data: {chatId: string; message: Message}) => Promise<void>) {
-      this.socket.on('new-message', (data: string) => {
-      const parsedData = data as unknown as {chatId: string; message: Message};
+  onNewMessage(
+    callback: (data: { chatId: string; message: Message }) => Promise<void>
+  ) {
+    this.socket.on('new-message', (data: string) => {
+      const parsedData = data as unknown as {
+        chatId: string;
+        message: Message;
+      };
       callback(parsedData);
     });
   }
 
-  offNewMessage(callback: (data: {chatId: string; message: Message}) => Promise<void>) {
+  offNewMessage(
+    callback: (data: { chatId: string; message: Message }) => Promise<void>
+  ) {
     this.socket.off('new-message', callback);
   }
 
