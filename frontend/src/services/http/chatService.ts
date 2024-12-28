@@ -51,7 +51,7 @@ class ChatService extends HTTPService {
   async getChatPreviewById(chatId: string) {
     const response =
       await this.api.get<ChatResponseTypes.GetChatPreviewByIdResponse>(
-        `/chat/preview/${chatId}`
+        `/chat/${chatId}/preview`
       );
     return response.data.data?.chatPreview;
   }

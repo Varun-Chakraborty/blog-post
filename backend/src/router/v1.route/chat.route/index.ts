@@ -7,7 +7,7 @@ import { ApiResponse } from '@/utils';
 
 router.get('/:chatId', chatController.getChatById);
 router.post('/create', chatController.createChat);
-router.get('/preview/:chatId', chatController.getChatPreviewById);
+router.get('/:chatId/preview', chatController.getChatPreviewById);
 
 router.get('*path', (_, res) =>
   new ApiResponse(
