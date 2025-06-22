@@ -1,18 +1,18 @@
 import { useEffect } from 'react';
 import { chatService, socketService } from '@/services';
 import { useAppDispatch, useAppSelector } from './redux';
-import { chatActions } from '@/redux/chat';
+import { chatActions } from '@/lib/redux/chat';
 import { isAxiosError } from 'axios';
-import { profileActions } from '@/redux/profile';
-import { useToast } from '@/components/ui/use-toast';
+import { profileActions } from '@/lib/redux/profile';
+import { toast } from 'sonner';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { isGuestProfile } from './isGuestProfile';
-import { Message } from '@/types/baseTypes';
+import type { Message } from '@/types/baseTypes';
 
 export function useFetchChats() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { toast } = useToast();
+  
   const { chats, unreadChats } = useAppSelector(state => state.chat);
   const { profile } = useAppSelector(state => state.profile);
   const isItGuest = isGuestProfile();
@@ -29,11 +29,7 @@ export function useFetchChats() {
             if (e.response?.status === 401) {
               dispatch(profileActions.removeProfile());
               navigate('/login');
-              toast({
-                title: 'Error',
-                description: 'You have been logged out',
-                variant: 'destructive'
-              });
+              toast('Error');
             }
           }
         });
@@ -48,23 +44,18 @@ export function useFetchChats() {
             if (e.response?.status === 401) {
               dispatch(profileActions.removeProfile());
               navigate('/login');
-              toast({
-                title: 'Error',
-                description: 'You have been logged out',
-                variant: 'destructive'
-              });
+              toast('Error');
             }
           }
         });
     }
   }, [profile]);
   useEffect(() => {
-    console.log('\n');
     const newMessageHandler = async (data: {
       chatId: string;
       message: Message;
     }) => {
-      let chatPreview = chats.find(c => c.id === data.chatId);
+      let chatPreview = chats.find(c => c.chatId === data.chatId);
 
       // if chat preview is not present, fetch it
       if (!chatPreview) {
@@ -72,28 +63,15 @@ export function useFetchChats() {
           .getChatPreviewById(data.chatId)
           .then(chatPreview => chatPreview)
           .catch(e => {
-            toast({
-              title: 'Failed to fetch chat',
-              variant: 'destructive'
-            });
+            toast('Failed to fetch chat');
             console.error(e);
             return undefined;
           });
       }
-
-      console.log(
-        '1',
-        location.pathname,
-        '2',
-        `/chat/${data.chatId}`,
-        '3',
-        location.pathname === `/chat/${data.chatId}`
-      );
       // if not in the chat
       if (location.pathname !== `/chat/${data.chatId}`) {
-        console.log('not in the chat');
         dispatch(chatActions.appendChat({ newChat: chatPreview! }));
-        const isTheChatUnread = unreadChats.find(c => c.id === data.chatId);
+        const isTheChatUnread = unreadChats.find(c => c.chatId === data.chatId);
         if (!isTheChatUnread) {
           dispatch(chatActions.appendUnreadChat({ newChat: chatPreview! }));
         }

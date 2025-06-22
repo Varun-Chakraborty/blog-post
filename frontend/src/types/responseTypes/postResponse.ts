@@ -1,50 +1,50 @@
-import { Comment, Post } from '../baseTypes';
-import { APIResponse } from './baseResponse';
+import type { Comment, Post } from '../baseTypes';
+import type { APIResponse } from './baseResponse';
 
 export interface GetPostsResponse extends APIResponse {
-  data?: {
-    posts: Post[];
-  };
+	data?: {
+		posts: Post[];
+	};
 }
 
 export interface GetPostResponse extends APIResponse {
-  data?: {
-    post: Post;
-  };
+	data?: {
+		post: Post;
+	};
 }
 
 export interface GetCommentsResponse extends APIResponse {
-  data?: {
-    comments: Comment[];
-  };
+	data?: {
+		comments: Comment[];
+	};
 }
 
 export interface GetRepliesResponse extends APIResponse {
-  data?: {
-    replies: Comment[];
-  };
+	data?: {
+		replies: Comment[];
+	};
 }
 
 export interface CreatePostResponse extends APIResponse {
-  data?: {
-    postId: string;
-  };
+	data?: {
+		postId: string;
+	};
 }
 
 export interface CreateCommentResponse extends APIResponse {
-  data?: {
-    comment: Comment;
-  };
+	data?: {
+		comment: Comment;
+	};
 }
 
 export interface CreateReplyResponse extends APIResponse {
-  data?: {
-    reply: Comment;
-  };
+	data?: {
+		reply: Comment;
+	};
 }
 
 export interface LikeResponse extends APIResponse {
-  data?: {
-    liked: boolean;
-  };
+	data?: {
+		liked: boolean;
+	};
 }

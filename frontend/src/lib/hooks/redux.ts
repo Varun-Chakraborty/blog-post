@@ -1,4 +1,4 @@
-import { store } from '@/redux';
+import { store } from '@/lib/redux';
 import { useSelector, useDispatch } from 'react-redux';
 
 export function useAppDispatch() {

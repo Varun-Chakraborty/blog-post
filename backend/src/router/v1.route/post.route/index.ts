@@ -9,10 +9,10 @@ import { isAuthenticated } from '@/middlewares/auth';
 router.route('/').get(postController.getPosts).post(postController.createPost);
 
 router
-  .route('/:postId')
-  .get(postController.getPostById)
-  .put(postController.updatePostById)
-  .delete(postController.deletePostById);
+	.route('/:postId')
+	.get(postController.getPostById)
+	.put(postController.updatePostById)
+	.delete(postController.deletePostById);
 
 router.get('/:postId/comments', postController.getCommentsByPostId);
 
@@ -22,12 +22,12 @@ router.post('/:postId/comment', postController.commentOnPost);
 router.post('/:postId/like', postController.likePost);
 router.delete('/:postId/like', postController.unlikePost);
 
-router.get('*path', (_, res) =>
-  new ApiResponse(
-    'API v1.0\nAvailable Sub-Routes:\n- ./\n- ./:id\n- ./:id/comments\n- ./:id/like\n- ./:id/unlike\n',
-    undefined,
-    404
-  ).error(res)
-);
+router.get('*path', (_, res) => {
+	new ApiResponse(
+		'API v1.0\nAvailable Sub-Routes:\n- ./\n- ./:id\n- ./:id/comments\n- ./:id/like\n- ./:id/unlike\n',
+		undefined,
+		404
+	).error(res);
+});
 
 export default router;

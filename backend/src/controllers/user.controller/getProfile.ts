@@ -3,42 +3,42 @@ import { ExpressTypes, User, Post } from '@/types';
 import { ApiResponse, wrapperFx } from '@/utils';
 
 export const getProfile = wrapperFx(async function (
-  req: ExpressTypes.Req,
-  res: ExpressTypes.Res
+	req: ExpressTypes.Req,
+	res: ExpressTypes.Res
 ) {
-  let { username } = req.params;
+	let { username } = req.params;
 
-  if (!username)
-    return new ApiResponse('Username is required', undefined, 400).error(res);
+	if (!username)
+		return new ApiResponse('Username is required', undefined, 400).error(res);
 
-  const prisma = getPrismaClient();
+	const prisma = getPrismaClient();
 
-  const user: User | null = await prisma.user.findUnique({
-    where: { username },
-    omit: { password: true, refreshToken: true },
-    include: {
-      posts: { include: { author: true } },
-      followers: { select: { id: true } },
-      following: { select: { id: true } }
-    }
-  });
+	const user: User | null = await prisma.user.findUnique({
+		where: { username },
+		omit: { password: true, refreshToken: true },
+		include: {
+			posts: { include: { author: true } },
+			followers: { select: { id: true } },
+			following: { select: { id: true } }
+		}
+	});
 
-  if (!user)
-    return new ApiResponse('User not found', undefined, 404).error(res);
-  user.followersCount = countFollowers(user.followers!);
-  user.followingCount = countFollowing(user.following!);
-  user.postsCount = countPosts(user.posts!);
-  return new ApiResponse('User found', { user }).success(res);
+	if (!user)
+		return new ApiResponse('User not found', undefined, 404).error(res);
+	user.followersCount = countFollowers(user.followers!);
+	user.followingCount = countFollowing(user.following!);
+	user.postsCount = countPosts(user.posts!);
+	return new ApiResponse('User found', { user }).success(res);
 });
 
 function countFollowers(followers: { id: string }[]) {
-  return followers.length;
+	return followers.length;
 }
 
 function countFollowing(following: { id: string }[]) {
-  return following.length;
+	return following.length;
 }
 
 function countPosts(posts: Post[]) {
-  return posts.length;
+	return posts.length;
 }

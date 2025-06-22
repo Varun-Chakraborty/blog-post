@@ -1,4 +1,4 @@
-import { ChatPreview, Message } from '@/types/baseTypes';
+import type { ChatPreview, Message } from '@/types/baseTypes';
 import { createSlice } from '@reduxjs/toolkit';
 
 interface ChatState {

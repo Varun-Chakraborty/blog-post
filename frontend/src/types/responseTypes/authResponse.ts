@@ -1,16 +1,16 @@
-import { Profile } from '../baseTypes';
-import { APIResponse } from './baseResponse';
+import type { Profile } from '../baseTypes';
+import type { APIResponse } from './baseResponse';
 
 export interface LoginResponse extends APIResponse {
-  data?: {
-    user: Profile;
-    accessToken: string;
-  };
+	data?: {
+		user: Profile;
+		accessToken: string;
+	};
 }
 
 export interface SignupResponse extends APIResponse {
-  data?: {
-    user: Profile;
-    accessToken: string;
-  };
+	data?: {
+		user: Profile;
+		accessToken: string;
+	};
 }

@@ -1,4 +1,4 @@
-import { profileActions } from '@/redux/profile';
+import { profileActions } from '@/lib/redux/profile';
 import { useAppDispatch, useAppSelector } from './redux';
 import { useEffect, useState } from 'react';
 import { userService } from '@/services';

@@ -13,31 +13,31 @@ export { Profile } from './profile';
 export { HandleErrors } from './handleErrors';
 
 import {
-  ForgotPasswordForm,
-  LoginForm,
-  RegisterForm
+	ForgotPasswordForm,
+	LoginForm,
+	RegisterForm
 } from '@/components/forms';
 
 export function Login() {
-  return (
-    <div className="h-full w-full flex justify-center items-center p-4">
-      <LoginForm />
-    </div>
-  );
+	return (
+		<div className="h-full w-full flex justify-center items-center p-4">
+			<LoginForm />
+		</div>
+	);
 }
 
 export function Register() {
-  return (
-    <div className="h-full w-full flex justify-center items-center p-4">
-      <RegisterForm />
-    </div>
-  );
+	return (
+		<div className="h-full w-full flex justify-center items-center p-4">
+			<RegisterForm />
+		</div>
+	);
 }
 
 export function ForgotPassword() {
-  return (
-    <div className="h-full w-full flex justify-center items-center p-4">
-      <ForgotPasswordForm />
-    </div>
-  );
+	return (
+		<div className="h-full w-full flex justify-center items-center p-4">
+			<ForgotPasswordForm />
+		</div>
+	);
 }

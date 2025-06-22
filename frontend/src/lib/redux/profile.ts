@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { Profile } from '@/types';
+import type { Profile } from '@/types/baseTypes';
 
 const initialState: {
   profile: Profile;
@@ -8,7 +8,7 @@ const initialState: {
     id: '0',
     name: 'Guest',
     username: 'guest',
-    pfp: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+    profilePicture: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
     guest: true,
     role: 'USER'
   }

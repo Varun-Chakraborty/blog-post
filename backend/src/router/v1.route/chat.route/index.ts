@@ -9,12 +9,12 @@ router.get('/:chatId', chatController.getChatById);
 router.post('/create', chatController.createChat);
 router.get('/:chatId/preview', chatController.getChatPreviewById);
 
-router.get('*path', (_, res) =>
-  new ApiResponse(
-    'API v1.0\nAvailable Sub-Routes:\n- ./:chatId\n- ./create\n- ./preview/:chatId\n',
-    undefined,
-    404
-  ).error(res)
-);
+router.get('*path', (_, res) => {
+	new ApiResponse(
+		'API v1.0\nAvailable Sub-Routes:\n- ./:chatId\n- ./create\n- ./preview/:chatId\n',
+		undefined,
+		404
+	).error(res);
+});
 
 export default router;
