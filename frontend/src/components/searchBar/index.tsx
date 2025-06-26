@@ -46,29 +46,29 @@ export function SearchBar({ className }: Readonly<Props>) {
 				if (timeout) clearTimeout(timeout);
 				search(input.current!.value, navigate);
 			}}
-			className={cn('p-2 flex', className)}
+			className={cn(
+				'p-2 flex items-center border rounded-2xl px-3 py-1 gap-3 w-4/5 cursor-text',
+				className
+			)}
+			onClick={() => input.current!.focus()}
 		>
+			<CiSearch />
 			<input
 				ref={input as React.RefObject<HTMLInputElement>}
 				onChange={e => {
 					e.preventDefault();
 					setTimeout(triggerSearch(e.target.value, navigate, timeout));
 				}}
+				onFocus={e => {
+					e.currentTarget.parentElement!.classList.add('border-accent');
+				}}
+				onBlur={e => {
+					e.currentTarget.parentElement!.classList.remove('border-accent');
+				}}
 				type="text"
 				placeholder="Search..."
-				className={cn(
-					'py-1 px-6 border border-border outline-none rounded-l-lg dark:bg-inherit'
-				)}
+				className={cn('py-1 pr-6 outline-none dark:bg-inherit')}
 			/>
-			<button
-				name="Search"
-				type="submit"
-				className={cn(
-					'bg-accent hover:bg-accent/80 text-accent-foreground font-semibold py-2 px-4 rounded-lg rounded-l-none shadow-lg transition duration-300'
-				)}
-			>
-				<CiSearch className="aspect-square sm:w-6 w-5" />
-			</button>
 		</form>
 	);
 }

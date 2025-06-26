@@ -6,12 +6,8 @@ export const getSuggestions = wrapperFx(async function (
 	req: ExpressTypes.Req,
 	res: ExpressTypes.Res
 ) {
-	const { username } = req.params;
 	const { skip, take } = req.query;
-
-	if (!username)
-		return new ApiResponse('Username is required', undefined, 400).error(res);
-
+	const username = req.user?.username;
 	const prisma = getPrismaClient();
 	const users = await prisma.user.findMany({
 		where: {

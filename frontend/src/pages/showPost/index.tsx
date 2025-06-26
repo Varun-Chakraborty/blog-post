@@ -2,13 +2,14 @@ import { InfiniteLoader } from '@/components/loaders';
 import { cn } from '@/lib/utils';
 import type { Post } from '@/types/baseTypes';
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { postService } from '@/services';
 import { CommentBlock } from './commentBlock';
 import {
 	CommentButton,
 	DeleteButton,
 	EditButton,
+	FollowButton,
 	LikeButton,
 	ShareButton
 } from '@/components/buttons';
@@ -47,7 +48,10 @@ import { handleLikePost } from '@/helperFunctions/likePost.ts';
 
 export function ShowPost({ className }: Readonly<{ className?: string }>) {
 	const { id } = useParams();
-	const { profile } = useAppSelector(state => state.profile);
+	const { loggedIn } = useAppSelector(state => state.profile);
+	// receive data loaded as navigate('/post/:id', { state: post })
+	const location = useLocation();
+	const postFromState = location.state as Post;
 
 	const [post, setPost] = useState<Post | undefined>();
 	const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -58,69 +62,70 @@ export function ShowPost({ className }: Readonly<{ className?: string }>) {
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		postService
-			.getPostById(id!)
-			.then(res => {
-				setIsLoading(false);
-				setPost(res);
-				setLiked(res?.liked ?? false);
-				setLikesCount(res?._count.likes ?? 0);
-			})
-			.catch(e => {
-				console.error(e);
-			});
-	}, [id]);
+		if (postFromState) {
+			setPost(postFromState);
+			setIsLoading(false);
+		} else {
+			postService
+				.getPostById(id!)
+				.then(res => {
+					setIsLoading(false);
+					setPost(res);
+					setLiked(res?.liked ?? false);
+					setLikesCount(res?._count.likes ?? 0);
+				})
+				.catch(e => {
+					console.error(e);
+				});
+		}
+	}, [id, postFromState]);
 
 	const renderLoader = isLoading ? <InfiniteLoader /> : null;
 
 	return (
-		<div className={cn('h-full w-full box-border', className)}>
+		<div className={cn('h-full w-full', className)}>
 			{renderLoader ?? (
-				<div className="h-full w-full p-4 space-y-3 overflow-scroll overscroll-none relative">
-					<div className="relative min-h-[60%]">
-						<div className="absolute top-0 left-0 rounded-lg overflow-clip h-full w-full">
-							<img
-								src={post?.imgUrl}
-								alt=""
-								className="w-full h-full object-cover brightness-50"
-							/>
-						</div>
-						<div className="relative z-50 text-white p-4 selection:bg-slate-600">
-							<div className="flex justify-between">
-								<div className="font-montserrat">
-									<div className="text-2xl font-bold">{post?.title}</div>
-									<HoverCard>
-										<HoverCardTrigger asChild>
-											<Button
-												variant="link"
-												className="p-0 h-5 text-white"
-												onClick={() =>
-													navigate(`/user/${post?.author.username}`)
-												}
-											>
-												Posted by: @{post?.author.username}
-											</Button>
-										</HoverCardTrigger>
-										<UserHoverCard user={post!.author} />
-									</HoverCard>
-								</div>
-								{profile?.username === post?.author.username && (
-									<div className="flex gap-3">
-										<EditButton
-											onClick={() =>
-												navigate(`/post/${post!.id}/edit`, { state: { post } })
-											}
-										/>
-										<AlertDialog>
-											<AlertDialogTrigger asChild>
-												<DeleteButton />
-											</AlertDialogTrigger>
-											<DeleteDialog postId={post!.id} />
-										</AlertDialog>
-									</div>
-								)}
+				<div className="h-full w-full space-y-3 p-4 overflow-scroll relative">
+					<div className="relative">
+						<div className="p-2 flex justify-between items-center">
+							<div>
+								<div className="text-2xl font-bold">{post?.title}</div>
+								<HoverCard>
+									<HoverCardTrigger asChild>
+										<Button
+											variant="link"
+											className="p-0 h-5 text-white"
+											onClick={() => navigate(`/user/${post?.author.username}`)}
+										>
+											Posted by: @{post?.author.username}
+										</Button>
+									</HoverCardTrigger>
+									<UserHoverCard user={post!.author} />
+								</HoverCard>
 							</div>
-							<div className="text-lg font-montserrat w-full h-full mt-2">
+							{loggedIn.username === post?.author.username ? (
+								<div className="flex gap-3">
+									<EditButton
+										onClick={() =>
+											navigate(`/post/${post!.id}/edit`, { state: { post } })
+										}
+									/>
+									<AlertDialog>
+										<AlertDialogTrigger asChild>
+											<DeleteButton />
+										</AlertDialogTrigger>
+										<DeleteDialog postId={post!.id} />
+									</AlertDialog>
+								</div>
+							) : (
+								<FollowButton user={post!.author} />
+							)}
+						</div>
+						<div className="rounded-lg overflow-clip h-full w-full">
+							<img src={post?.imgUrl} alt="post image" className="w-full" />
+						</div>
+						<div className="relative z-50 selection:bg-slate-600">
+							<div className="py-3">
 								<ParseMarkdown markdown={post!.content} />
 							</div>
 						</div>
@@ -145,9 +150,11 @@ export function ShowPost({ className }: Readonly<{ className?: string }>) {
 						/>
 						<Dialog>
 							<DialogTrigger asChild>
-								<ShareButton />
+								<ShareButton shareCount={0} />
 							</DialogTrigger>
-							<ShareDialog postId={post!.id} />
+							<DialogContent asChild>
+								<ShareDialog postId={post!.id} />
+							</DialogContent>
 						</Dialog>
 					</div>
 					<CommentBlock
@@ -174,19 +181,22 @@ function DeleteDialog({ postId }: Readonly<{ postId: Post['id'] }>) {
 			</AlertDialogHeader>
 			<AlertDialogFooter>
 				<AlertDialogCancel>Cancel</AlertDialogCancel>
-				<AlertDialogAction
-					onClick={async () => {
-						try {
-							await postService.deletePost(postId);
-							toast('Deleted');
-							navigate('/post');
-						} catch (error) {
-							if (isAxiosError(error)) toast('Error');
-							console.error(error);
-						}
-					}}
-				>
-					Delete
+				<AlertDialogAction asChild>
+					<Button
+						variant="destructive"
+						onClick={async () => {
+							try {
+								await postService.deletePost(postId);
+								toast('Deleted');
+								navigate('/post');
+							} catch (error) {
+								if (isAxiosError(error)) toast('Error');
+								console.error(error);
+							}
+						}}
+					>
+						Delete
+					</Button>
 				</AlertDialogAction>
 			</AlertDialogFooter>
 		</AlertDialogContent>
@@ -195,7 +205,7 @@ function DeleteDialog({ postId }: Readonly<{ postId: Post['id'] }>) {
 
 function ShareDialog({ postId }: Readonly<{ postId: Post['id'] }>) {
 	return (
-		<DialogContent className="sm:max-w-md">
+		<div className="sm:max-w-md">
 			<DialogHeader>
 				<DialogTitle>Share link</DialogTitle>
 				<DialogDescription>
@@ -225,6 +235,6 @@ function ShareDialog({ postId }: Readonly<{ postId: Post['id'] }>) {
 					</Button>
 				</DialogClose>
 			</DialogFooter>
-		</DialogContent>
+		</div>
 	);
 }

@@ -128,7 +128,7 @@ export function ChatScreen({
 					</button>
 					<div />
 				</div>
-				<div className="h-full overflow-y-scroll flex flex-col justify-end gap-3 p-4">
+				<div className="h-full overflow-y-auto flex flex-col justify-end gap-3 p-4">
 					{Object.keys(chat?.groupedMessages ?? []).map(date => (
 						<>
 							<div

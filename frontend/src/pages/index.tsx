@@ -20,16 +20,16 @@ import {
 
 export function Login() {
 	return (
-		<div className="h-full w-full flex justify-center items-center p-4">
-			<LoginForm />
-		</div>
+		<main className="h-svh w-screen flex justify-center items-center p-4">
+			<LoginForm className="md:w-1/4" />
+		</main>
 	);
 }
 
 export function Register() {
 	return (
-		<div className="h-full w-full flex justify-center items-center p-4">
-			<RegisterForm />
+		<div className="h-svh w-screen flex justify-center items-center p-4">
+			<RegisterForm className="md:w-1/4" />
 		</div>
 	);
 }

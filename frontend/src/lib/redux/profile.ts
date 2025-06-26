@@ -2,14 +2,14 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { Profile } from '@/types/baseTypes';
 
 const initialState: {
-  profile: Profile;
+  loggedIn: Profile
 } = {
-  profile: {
+  loggedIn: {
     id: '0',
     name: 'Guest',
     username: 'guest',
     profilePicture: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-    guest: true,
+    isGuest: true,
     role: 'USER'
   }
 };
@@ -18,11 +18,11 @@ const profile = createSlice({
   name: 'profile',
   initialState,
   reducers: {
-    setProfile(state, action) {
-      state.profile = action.payload;
+    setLoggedIn(state, action) {
+      state.loggedIn = action.payload;
     },
-    removeProfile(state) {
-      state.profile = initialState.profile;
+    logout(state) {
+      state.loggedIn = initialState.loggedIn;
     }
   }
 });

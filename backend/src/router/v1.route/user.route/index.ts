@@ -49,8 +49,7 @@ router.get(
 	userController.isFollowing
 );
 router.get(
-	'/:username/suggestions',
-	resolveUsernameMeKeyword,
+	'/suggestions',
 	userController.getSuggestions
 );
 router.post(

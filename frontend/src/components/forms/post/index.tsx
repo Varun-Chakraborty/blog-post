@@ -105,7 +105,7 @@ export function Post({
 			<form
 				onSubmit={form.handleSubmit(onSubmit)}
 				className={cn(
-					'space-y-6 font-montserrat px-4 py-6 rounded-xl w-full h-full overflow-y-scroll',
+					'space-y-6 px-4 py-6 rounded-xl w-full h-full overflow-y-auto',
 					className
 				)}
 			>

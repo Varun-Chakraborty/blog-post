@@ -80,10 +80,10 @@ class UserService extends HTTPService {
 		}
 	}
 
-	async getSuggestions(username: string) {
+	async getSuggestions() {
 		const response =
 			await this.api.get<UserResponseTypes.GetSuggestionsResponse>(
-				`/user/${username}/suggestions`
+				`/user/suggestions`
 			);
 		return response.data.data?.suggestions;
 	}

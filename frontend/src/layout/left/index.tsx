@@ -1,36 +1,84 @@
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { TitleAndProfile } from './titleAndProfile';
-import { Menu } from './menu';
-import { Settings } from './settings';
+import { Home } from 'lucide-react';
+import { IoMdTrendingUp } from 'react-icons/io';
+import { MdAutoGraph } from 'react-icons/md';
+import { Link } from 'react-router-dom';
 
-interface LeftPanelProps {
-	className?: string;
-	isMenuOpen: boolean;
-	setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+export function Sections() {
+	return (
+		<div className="h-fit shrink-0 space-y-2">
+			{[
+				{ name: 'Home', icon: Home, url: '/' },
+				{ name: 'Trending', icon: IoMdTrendingUp, url: '/trending' }
+			].map(section => (
+				<Link key={section.name} to={section.url}>
+					<Button
+						variant="link"
+						className="w-full rounded-lg p-2 justify-start items-center"
+					>
+						<section.icon className="h-5 w-5" />
+						<span>{section.name}</span>
+					</Button>
+				</Link>
+			))}
+		</div>
+	);
 }
 
-export function LeftPanel({
-	className,
-	isMenuOpen,
-	setMenuOpen
-}: Readonly<LeftPanelProps>) {
+export function Topics() {
+	return (
+		<div className="h-full">
+			<span>Suggested Topics</span>
+			<div className="space-y-2 p-2">
+				{['India', 'Web Development', 'War Updates'].map(topic => (
+					<Link
+						key={topic}
+						to={`/topics/${topic.toLowerCase().replace(' ', '-')}`}
+					>
+						<Button
+							key={topic}
+							variant="link"
+							className="w-full rounded-lg p-2 justify-start"
+						>
+							{topic}
+						</Button>
+					</Link>
+				))}
+			</div>
+		</div>
+	);
+}
+
+export function Abouts() {
+	return (
+		<div className="h-fit shrink-0 p-2 pr-0">
+			{['About The Developer', 'Contact Us', 'Privacy Policy'].map(topic => (
+				<Button
+					key={topic}
+					variant="link"
+					className="w-full rounded-lg p-2 justify-start"
+				>
+					{topic}
+				</Button>
+			))}
+		</div>
+	);
+}
+
+export function LeftPanel({ className }: Readonly<{ className?: string }>) {
 	return (
 		<div
 			className={cn(
-				'h-full xl:w-1/6 lg:w-1/5 sm:w-1/3 w-full sm:static fixed flex flex-col transition-all px-0 sm:p-0 z-50 bg-background select-none',
-				isMenuOpen ? 'left-0' : '-left-full',
+				'sm:static fixed md:flex hidden flex-col transition-all px-3 space-y-2 select-none h-full w-1/4 shrink-0 overflow-y-auto',
 				className
 			)}
 		>
-			<TitleAndProfile
-				isMenuOpen={isMenuOpen}
-				setMenuOpen={setMenuOpen}
-				className="p-2"
-			/>
-			<hr className="border border-borderColor" />
-			<Menu setMenuOpen={setMenuOpen} className="h-full overscroll-none" />
-			<hr className="border border-borderColor" />
-			<Settings setMenuOpen={setMenuOpen} className="overscroll-none " />
+			<Sections />
+			<hr />
+			<Topics />
+			<hr />
+			<Abouts />
 		</div>
 	);
 }

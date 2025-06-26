@@ -1,26 +1,25 @@
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
+import { Button } from '../ui/button';
+import type { MouseEventHandler } from 'react';
 
-export function Login({
-	setMenuOpen,
-	className
-}: Readonly<{
-	setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+interface Props {
+	onClick?: MouseEventHandler<HTMLButtonElement>;
 	className?: string;
-}>) {
+}
+
+export function Login({ onClick, className }: Readonly<Props>) {
 	const navigate = useNavigate();
 	return (
-		<button
-			onClick={() => {
+		<Button
+			onClick={e => {
 				navigate('/login');
-				setMenuOpen(false);
+				onClick?.(e);
 			}}
-			className={cn(
-				'bg-accent hover:bg-accent/80 text-accent-foreground font-semibold py-2 px-4 rounded-lg shadow-lg transition duration-300 w-full',
-				className
-			)}
+			variant="accent"
+			className={cn('uppercase rounded-full', className)}
 		>
 			Login
-		</button>
+		</Button>
 	);
 }

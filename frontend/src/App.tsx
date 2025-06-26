@@ -24,6 +24,7 @@ import {
 	HandleErrors
 } from './pages';
 import { ProtectedRoute } from './components/protectedRoute';
+import { ThemeProvider } from './lib/context/themeContext';
 
 export default function App() {
 	const router = createBrowserRouter([
@@ -97,14 +98,6 @@ export default function App() {
 					Component: NotFound
 				},
 				{
-					path: 'signin',
-					Component: Login
-				},
-				{
-					path: 'signup',
-					Component: Register
-				},
-				{
 					path: 'login',
 					element: <Navigate to="/signin" />
 				},
@@ -137,11 +130,19 @@ export default function App() {
 				}
 			],
 			ErrorBoundary: HandleErrors
+		},
+		{
+			path: 'signin',
+			Component: Login
+		},
+		{
+			path: 'signup',
+			Component: Register
 		}
 	]);
 	return (
-		<main className="h-screen w-screen flex justify-between">
+		<ThemeProvider>
 			<RouterProvider router={router} />
-		</main>
+		</ThemeProvider>
 	);
 }

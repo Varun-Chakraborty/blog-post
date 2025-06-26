@@ -4,7 +4,8 @@ export interface Profile {
 	username: string;
 	role?: 'USER' | 'ADMIN';
 	profilePicture?: string | null;
-	guest?: boolean;
+	isGuest?: boolean;
+	createdAt: string;
 }
 
 export interface User extends Omit<Profile, 'guest'> {
@@ -13,14 +14,13 @@ export interface User extends Omit<Profile, 'guest'> {
 	followersCount: number;
 	followingCount: number;
 	posts: Post[];
-	updatedAt: Number;
 }
 
 export interface Post {
 	id: string;
 	title: string;
 	content?: string;
-	author: Profile;
+	author: Profile & { followed: boolean };
 	imgUrl?: string;
 	liked: boolean;
 	_count: {

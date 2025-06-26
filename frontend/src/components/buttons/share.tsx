@@ -1,9 +1,26 @@
+import type { MouseEventHandler } from 'react';
 import { Button } from '../ui/button';
 import { IoIosSend } from 'react-icons/io';
+import { cn } from '@/lib/utils';
 
-export function Share({}: {}) {
+export function Share({
+	shareCount,
+	onClick,
+	className
+}: Readonly<{
+	shareCount: number;
+	onClick?: MouseEventHandler<HTMLButtonElement>;
+	className?: string;
+}>) {
 	return (
-		<Button className="bg-green-600 hover:bg-green-600/80 dark:bg-green-500 dark:hover:bg-green-500/80 dark:text-white font-semibold py-2 px-4 rounded-lg shadow-lg transition duration-300 font-montserrat">
+		<Button
+			onClick={e => {
+				e.preventDefault();
+				onClick?.(e);
+			}}
+			variant="outline"
+			className={cn('p-0 hover:text-green-500 rounded-full', className)}
+		>
 			<IoIosSend />
 		</Button>
 	);

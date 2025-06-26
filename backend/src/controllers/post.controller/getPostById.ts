@@ -33,8 +33,17 @@ export const getPostById = wrapperFx(async function (
 
 	if (!post)
 		return new ApiResponse('Post does not exist', undefined, 404).error(res);
+	
+	const followed = (
+		await prisma.follow.count({
+			where: {
+				followerId: req.user?.id,
+				followingId: post?.authorId
+			}
+		})
+	) > 0;
 
 	return new ApiResponse('Post retrieved successfully', {
-		post: { ...post, liked: !!post.likes.length, likes: undefined }
+		post: { ...post, author: { ...post.author, followed }, liked: !!post.likes.length, likes: undefined }
 	}).success(res);
 });

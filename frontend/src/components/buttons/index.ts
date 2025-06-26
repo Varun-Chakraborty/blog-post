@@ -7,5 +7,5 @@ export { Delete as DeleteButton } from './delete';
 export { Share as ShareButton } from './share';
 export { Like as LikeButton } from './like';
 export { Comment as CommentButton } from './comment';
-export { Reply as ReplyButton } from './reply';
 export { Follow as FollowButton } from './follow';
+export { Notification as NotificationButton } from './notification';

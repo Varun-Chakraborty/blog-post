@@ -33,11 +33,11 @@ export function CommentComponent({
 	type: 'COMMENT' | 'REPLY';
 	className?: string;
 }>) {
-	const { profile } = useAppSelector(state => state.profile);
+	const { loggedIn } = useAppSelector(state => state.profile);
 	const [likesCount, setLikesCount] = useState(comment._count.likes ?? 0);
 	const [liked, setLiked] = useState(comment.liked);
 	return (
-		<button
+		<div
 			onClick={() => setShowReplies?.(prev => !prev)}
 			className={cn(
 				'flex justify-between items-center hover:bg-muted dark:hover:bg-muted/10 cursor-pointer p-2 rounded-lg text-left w-full',
@@ -99,7 +99,7 @@ export function CommentComponent({
 					}}
 					likesCount={likesCount}
 				/>
-				{profile?.id === comment.author.id && (
+				{loggedIn?.id === comment.author.id && (
 					<>
 						<DropdownMenu>
 							<DropdownMenuTrigger asChild>
@@ -129,6 +129,6 @@ export function CommentComponent({
 					</>
 				)}
 			</div>
-		</button>
+		</div>
 	);
 }

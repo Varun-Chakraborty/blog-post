@@ -27,6 +27,7 @@ export class ApiResponse {
 				process.env.NODE_ENV !== 'development'
 					? 'Internal server error'
 					: this.message,
+			data: this.data,
 			stack: process.env.NODE_ENV === 'development' ? this.stack : undefined
 		});
 	}

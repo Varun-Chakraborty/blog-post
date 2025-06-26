@@ -41,9 +41,9 @@ export function CommentBlock({
 
 	return (
 		<div className={cn('bg-black border rounded shadow-lg p-2', className)}>
-			<div className="font-bold p-2">
+			<div className="font-bold p-2 flex gap-2">
 				{type === 'COMMENT' ? 'Comments' : 'Replies'}
-				<span className="ml-2 text-primary">{commentCount ?? 2}</span>
+				<span className="text-primary">{commentCount ?? 0}</span>
 			</div>
 			<div className="flex flex-col gap-2 mt-2 p-3 border bg-card rounded-md">
 				<form

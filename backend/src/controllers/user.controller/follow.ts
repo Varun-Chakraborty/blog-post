@@ -5,9 +5,17 @@ import { ApiResponse, wrapperFx } from '@/utils';
 export const followUser = wrapperFx(
 	async (req: ExpressTypes.Req, res: ExpressTypes.Res) => {
 		const { username } = req.params;
+		const { user } = req;
 
 		if (!username)
 			return new ApiResponse('Username is required', undefined, 400).error(res);
+
+		if (user?.username === username)
+			return new ApiResponse(
+				'You cannot follow yourself',
+				undefined,
+				400
+			).error(res);
 
 		const prisma = getPrismaClient();
 

@@ -6,7 +6,6 @@ import { isAxiosError } from 'axios';
 import { profileActions } from '@/lib/redux/profile';
 import { toast } from 'sonner';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { isGuestProfile } from './isGuestProfile';
 import type { Message } from '@/types/baseTypes';
 
 export function useFetchChats() {
@@ -14,11 +13,10 @@ export function useFetchChats() {
   const navigate = useNavigate();
   
   const { chats, unreadChats } = useAppSelector(state => state.chat);
-  const { profile } = useAppSelector(state => state.profile);
-  const isItGuest = isGuestProfile();
+  const { loggedIn } = useAppSelector(state => state.profile);
   const location = useLocation();
   useEffect(() => {
-    if (!isItGuest) {
+    if (!loggedIn.isGuest) {
       chatService
         .getUnreadChats()
         .then(unreadChats => {
@@ -27,7 +25,7 @@ export function useFetchChats() {
         .catch(e => {
           if (isAxiosError(e)) {
             if (e.response?.status === 401) {
-              dispatch(profileActions.removeProfile());
+              dispatch(profileActions.logout());
               navigate('/login');
               toast('Error');
             }
@@ -42,14 +40,14 @@ export function useFetchChats() {
         .catch(e => {
           if (isAxiosError(e)) {
             if (e.response?.status === 401) {
-              dispatch(profileActions.removeProfile());
+              dispatch(profileActions.logout());
               navigate('/login');
               toast('Error');
             }
           }
         });
     }
-  }, [profile]);
+  }, [loggedIn]);
   useEffect(() => {
     const newMessageHandler = async (data: {
       chatId: string;

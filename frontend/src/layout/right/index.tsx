@@ -1,108 +1,66 @@
-import { CiBellOn, CiChat1 } from 'react-icons/ci';
-import { useNavigate, Outlet } from 'react-router-dom';
-import { SearchBar } from '@/components/searchBar';
-import { SearchButton } from '@/components/buttons';
 import { cn } from '@/lib/utils';
-import { Logo } from '@/components/logo';
-import { useAppSelector } from '@/lib/hooks';
+import { WelcomeCard } from '@/components/cards';
+import { FollowButton } from '@/components/buttons';
+import type { Profile } from '@/types/baseTypes';
+import { useEffect, useState } from 'react';
+import { userService } from '@/services';
+import { isAxiosError } from 'axios';
+import { toast } from 'sonner';
 
-const pages: Record<string, string> = {
-	'/dashboard': 'Dashboard',
-	'/post/create': 'Create Post',
-	'/messages': 'Messages',
-	'/notifications': 'Notifications',
-	'/search': 'Search',
-	'/posts': 'Show Posts',
-	'/user': 'Profile',
-	'/chat': 'Chat',
-	'/post/:id': 'Show Post',
-	'/settings': 'Settings'
-};
+function SuggestedAccounts({}: Readonly<{}>) {
+	const [suggestedUsers, setSuggestedUsers] = useState<Profile[]>([]);
 
-interface Props {
-	isMenuOpen: boolean;
-	setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-export function RightPanel({ isMenuOpen, setMenuOpen }: Readonly<Props>) {
-	const navigate = useNavigate();
-	const currentPage = pages[window.location.pathname];
+	useEffect(() => {
+		userService
+			.getSuggestions()
+			.then(profiles => {
+				setSuggestedUsers(profiles!);
+			})
+			.catch(e => {
+				if (isAxiosError(e)) {
+					toast('Error');
+				}
+				console.error(e);
+			});
+	}, []);
 	return (
-		<div className="sm:h-full h-svh xl:w-5/6 lg:4/5 sm:2/3 w-full flex flex-col">
-			<div className="flex justify-between items-center select-none p-2">
-				<div className={cn('text-2xl font-montserrat sm:block hidden')}>
-					{currentPage}
-				</div>
-				<Logo
-					isMenuOpen={isMenuOpen}
-					setMenuOpen={setMenuOpen}
-					className="sm:hidden"
-				/>
-				<div className="flex sm:gap-4 gap-2 items-center">
-					<SearchBar className="sm:flex hidden" />
-					<SearchButton
-						className="sm:hidden"
-						onClick={() => navigate('/search')}
-					/>
-					<ChatButton />
-					<NotificationsButton />
-				</div>
+		<div className="p-4 space-y-2 border rounded-lg bg-card">
+			<div className="font-roboto-condensed uppercase text-lg p-2">
+				Suggested Accounts
 			</div>
-			<div className="p-2 overflow-y-auto h-full w-full">
-				<div className="bg-card h-full w-full md:rounded-[20px] sm:rounded-[10px] rounded-[5px] shadow-lg">
-					<Outlet />
-				</div>
-			</div>
+			<ul className="space-y-2 p-2 overflow-y-auto h-80 w-full">
+				{suggestedUsers.map((user: Profile) => (
+					<li
+						key={user.id}
+						className="flex gap-2 justify-between items-center p-2 rounded-lg hover:bg-primary/10 cursor-pointer"
+					>
+						<div className="flex items-center gap-2">
+							<img
+								className="h-8 w-8 object-cover rounded-full"
+								src={user.profilePicture || '/placeholder-user.jpg'}
+								alt=""
+							/>
+							<p>{user.name}</p>
+						</div>
+						<FollowButton user={user} />
+					</li>
+				))}
+			</ul>
 		</div>
 	);
 }
 
-function ChatButton({ className }: Readonly<{ className?: string }>) {
-	const navigate = useNavigate();
-	const unreadChats = useAppSelector(state => state.chat.unreadChats);
+export function RightPanel({ className }: Readonly<{ className?: string }>) {
 	return (
-		<button
-			name="Messages"
+		<div
 			className={cn(
-				'p-2 border border-borderColor rounded cursor-pointer hover:bg-primary/10 relative',
+				'sm:static fixed lg:flex hidden flex-col transition-all p-3 space-y-2 z-50 select-none h-full w-1/4 shrink-0 overflow-y-auto',
 				className
 			)}
-			onClick={() => navigate('/chat')}
-			type="button"
 		>
-			<CiChat1 className="aspect-square sm:h-6 w-5" />
-			<div
-				className={cn(
-					'w-2 h-2 bg-accent rounded-full absolute -top-1 -right-1',
-					{ hidden: unreadChats.length === 0 }
-				)}
-			/>
-		</button>
-	);
-}
-
-function NotificationsButton({ className }: Readonly<{ className?: string }>) {
-	const navigate = useNavigate();
-	const unreadNotifications = useAppSelector(
-		state => state.notification.unreadNotifications
-	);
-	return (
-		<button
-			name="Notifications"
-			className={cn(
-				'p-2 border border-borderColor rounded cursor-pointer hover:bg-primary/10 relative',
-				className
-			)}
-			onClick={() => navigate('/notifications')}
-			type="button"
-		>
-			<CiBellOn className="aspect-square sm:h-6 w-5" />
-			<div
-				className={cn(
-					'w-2 h-2 bg-accent rounded-full absolute -top-1 -right-1',
-					{ hidden: unreadNotifications.length === 0 }
-				)}
-			></div>
-		</button>
+			<WelcomeCard />
+			<hr />
+			<SuggestedAccounts />
+		</div>
 	);
 }

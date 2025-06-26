@@ -1,10 +1,12 @@
-import { isGuestProfile } from '@/lib/hooks';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 import { useEffect } from 'react';
+import { useAppSelector } from '@/lib/hooks';
 
-export function ProtectedRoute({ children }: Readonly<{ children: Element }>) {
-	const isItGuest = isGuestProfile();
+export function ProtectedRoute({
+	children
+}: Readonly<{ children: React.ReactNode }>) {
+	const isItGuest = useAppSelector(state => state.profile.loggedIn.isGuest);
 	const navigate = useNavigate();
 	useEffect(() => {
 		if (isItGuest) {

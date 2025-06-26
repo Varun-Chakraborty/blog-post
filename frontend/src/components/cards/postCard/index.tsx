@@ -3,66 +3,88 @@ import { useNavigate } from 'react-router-dom';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { HoverCard, HoverCardTrigger } from '@/components/ui/hover-card';
-import { CommentButton, LikeButton } from '@/components/buttons';
+import {
+	CommentButton,
+	FollowButton,
+	LikeButton,
+	ShareButton
+} from '@/components/buttons';
 import { UserHoverCard } from '@/components/hoverCard';
 import { useState } from 'react';
-import { isAxiosError } from 'axios';
-import { postService } from '@/services';
 import { toast } from 'sonner';
 import { handleLikePost } from '@/helperFunctions/likePost.ts';
+import { Card } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useAppSelector } from '@/lib/hooks';
 
-export function Card({ post }: Readonly<{ post: Post }>) {
+export function Post({ post }: Readonly<{ post: Post }>) {
 	const navigate = useNavigate();
 	const [liked, setLiked] = useState(post.liked);
 	const [likesCount, setLikesCount] = useState(post._count.likes);
+	const { loggedIn } = useAppSelector(state => state.profile);
+	const isFollowed =
+		loggedIn.username === post.author.username || post.author.followed;
 
 	return (
-		<div
-			onClick={() => navigate(`/post/${post.id}`)}
-			className="h-fit w-full p-2 flex flex-col gap-2 border rounded-lg"
+		<Card
+			onClick={() => navigate(`/post/${post.id}`, { state: post })}
+			className="h-full w-full px-4 py-2 flex flex-col gap-2 border rounded-lg bg-transparent hover:bg-card space-y-2"
 		>
-			{post.imgUrl && (
-				<div className="h-56 rounded overflow-clip">
-					<img
-						src={post.imgUrl}
-						alt=""
-						className="w-full h-full object-cover"
+			<div className="flex justify-between p-2">
+				<div className="flex gap-2">
+					<Avatar>
+						<AvatarImage
+							src={post.author.profilePicture ?? '/placeholder-user.jpg'}
+						/>
+						<AvatarFallback>
+							{post.author.name.charAt(0).toUpperCase()}
+						</AvatarFallback>
+					</Avatar>
+					<HoverCard>
+						<HoverCardTrigger asChild>
+							<Button
+								variant="link"
+								className="text-sm text-gray-400 w-fit p-0 flex-col items-start gap-0"
+								onClick={e => {
+									e.stopPropagation();
+									navigate(`/user/${post.author.username}`);
+								}}
+							>
+								<span className="font-semibold text-base">
+									{post.author.name}
+								</span>
+								<span className="text-xs">@{post.author.username}</span>
+							</Button>
+						</HoverCardTrigger>
+						<UserHoverCard user={post.author} />
+					</HoverCard>
+				</div>
+				{!isFollowed && <FollowButton user={post.author} />}
+			</div>
+			<div className="text-xl font-bold">{post.title}</div>
+			<div className="h-64 p-2 flex justify-center items-center">
+				{post.imgUrl && (
+					<img src={post.imgUrl} alt="" className="h-full rounded" />
+				)}
+			</div>
+			<div className="flex justify-between">
+				<div className="flex gap-2">
+					<LikeButton
+						liked={liked}
+						likesCount={likesCount}
+						onClick={async e => {
+							e.stopPropagation();
+							await handleLikePost(liked, setLiked, setLikesCount, post, toast);
+						}}
+					/>
+					<CommentButton
+						commentsCount={post._count.comments}
+						onClick={() => {}}
 					/>
 				</div>
-			)}
-			<div className="text-left space-y-1">
-				<div className="text-xl font-bold">{post.title}</div>
-				<HoverCard>
-					<HoverCardTrigger asChild>
-						<Button
-							variant="link"
-							className="p-0 h-5"
-							onClick={e => {
-								e.stopPropagation();
-								navigate(`/user/${post.author.username}`);
-							}}
-						>
-							@{post.author.username}
-						</Button>
-					</HoverCardTrigger>
-					<UserHoverCard user={post.author} />
-				</HoverCard>
+				<ShareButton shareCount={post._count.comments} onClick={() => {}} />
 			</div>
-			<div className="flex gap-2">
-				<LikeButton
-					liked={liked}
-					likesCount={likesCount}
-					onClick={async e => {
-						e.stopPropagation();
-						await handleLikePost(liked, setLiked, setLikesCount, post, toast);
-					}}
-				/>
-				<CommentButton
-					commentsCount={post._count.comments}
-					onClick={() => {}}
-				/>
-			</div>
-		</div>
+		</Card>
 	);
 }
 

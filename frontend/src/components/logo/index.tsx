@@ -3,12 +3,10 @@ import { RxHamburgerMenu } from 'react-icons/rx';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {
-	isMenuOpen: boolean;
-	setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 	className?: string;
 }
 
-export function Logo({ isMenuOpen, setMenuOpen, className }: Readonly<Props>) {
+export function Logo({ className }: Readonly<Props>) {
 	const navigate = useNavigate();
 	return (
 		<div
@@ -17,18 +15,18 @@ export function Logo({ isMenuOpen, setMenuOpen, className }: Readonly<Props>) {
 				className
 			)}
 		>
-			<RxHamburgerMenu
+			{/* <RxHamburgerMenu
 				className={cn(
 					'w-5 h-5 transition sm:hidden',
 					isMenuOpen ? 'rotate-90' : ''
 				)}
 				onClick={() => setMenuOpen(!isMenuOpen)}
-			/>
+			/> */}
 			<button
 				className="uppercase"
 				onClick={() => {
 					navigate('/');
-					setMenuOpen(false);
+					// setMenuOpen(false);
 				}}
 			>
 				Blog Post

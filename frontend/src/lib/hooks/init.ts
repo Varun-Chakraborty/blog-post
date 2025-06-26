@@ -1,7 +1,7 @@
-import { useUserProfile } from './useUserProfile';
+import { useProfile } from './useProfile';
 import { useFetchChats } from './useFetchChats';
 
 export async function init() {
-  useUserProfile();
+  useProfile();
   useFetchChats();
 }

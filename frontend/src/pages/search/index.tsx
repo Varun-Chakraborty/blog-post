@@ -58,7 +58,7 @@ export function Search({ className }: Readonly<{ className?: string }>) {
 		<div
 			className={cn('h-full w-full flex flex-col box-border lg:p-5', className)}
 		>
-			<div className="sm:hidden flex justify-center w-full">
+			<div className="sm:hidden flex justify-center w-full p-2">
 				<SearchBar full className="mb-4" />
 			</div>
 			{renderNetworkError ?? (
@@ -84,7 +84,7 @@ export function Search({ className }: Readonly<{ className?: string }>) {
 							Post
 						</button>
 					</div>
-					<div className="p-4 h-full space-y-4 overflow-y-scroll">
+					<div className="p-4 h-full space-y-4 overflow-y-auto">
 						{!searchQuery ? (
 							<div className="text-center">
 								Enter a query in the search bar to get started

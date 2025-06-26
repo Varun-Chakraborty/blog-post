@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type MouseEventHandler } from 'react';
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
 import { IoHeartOutline, IoHeartSharp } from 'react-icons/io5';
@@ -11,18 +11,19 @@ export function Like({
 }: Readonly<{
 	liked: boolean;
 	likesCount: number;
-	onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
+	onClick?: MouseEventHandler<HTMLButtonElement>;
 	className?: string;
 }>) {
 	const [likedState, setLikedState] = useState(liked);
 	useEffect(() => setLikedState(liked), [liked]);
 	return (
 		<Button
-			className={cn(
-				'bg-pink-600 hover:bg-pink-600/80 dark:bg-pink-500 dark:hover:bg-pink-500/80 dark:text-white font-semibold py-2 px-4 rounded-lg shadow-lg transition duration-300 font-montserrat',
-				className
-			)}
-			onClick={onClick}
+			onClick={e => {
+				e.stopPropagation();
+				onClick?.(e);
+			}}
+			className={cn('p-0 hover:text-red-500 rounded-full', className)}
+			variant="outline"
 		>
 			{likedState ? <IoHeartSharp /> : <IoHeartOutline />}
 			<span className="ml-2">{likesCount}</span>

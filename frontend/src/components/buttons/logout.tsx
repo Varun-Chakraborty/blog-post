@@ -5,24 +5,25 @@ import { useAppDispatch } from '@/lib/hooks';
 import { isAxiosError } from 'axios';
 import { cn } from '@/lib/utils';
 import { Button } from '../ui/button';
+import type { MouseEventHandler } from 'react';
 
 interface Props {
-	setMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+	onClick?: MouseEventHandler<HTMLButtonElement>;
 	className?: string;
 }
 
-export function Logout({ setMenuOpen, className }: Readonly<Props>) {
+export function Logout({ onClick, className }: Readonly<Props>) {
 	const dispatch = useAppDispatch();
 	return (
 		<Button
-			onClick={async function () {
+			onClick={async function (e) {
 				try {
 					await authService.logout();
-					dispatch(profileActions.removeProfile());
+					dispatch(profileActions.logout());
 					toast('Success');
 				} catch (error) {
 					if (isAxiosError(error) && error.response?.status === 401) {
-						dispatch(profileActions.removeProfile());
+						dispatch(profileActions.logout());
 						toast('Success');
 						return;
 					} else {
@@ -30,14 +31,11 @@ export function Logout({ setMenuOpen, className }: Readonly<Props>) {
 						console.error(error);
 					}
 				} finally {
-					setMenuOpen(false);
+					onClick?.(e);
 				}
 			}}
 			variant="destructive"
-			className={cn(
-				'font-semibold py-2 px-4 rounded-lg shadow-lg transition duration-300 w-full',
-				className
-			)}
+			className={cn('uppercase rounded-full', className)}
 		>
 			Logout
 		</Button>

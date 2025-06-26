@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { IoCreateOutline } from 'react-icons/io5';
 import { toast } from 'sonner';
 import { isAxiosError } from 'axios';
-import { isGuestProfile, useAppDispatch, useAppSelector } from '@/lib/hooks';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import type { Profile } from '@/types/baseTypes';
 import { cn } from '@/lib/utils';
 import {
@@ -52,14 +52,14 @@ function NewChatButton({
 	className?: string;
 }>) {
 	const navigate = useNavigate();
-	const { profile } = useAppSelector(state => state.profile);
-	const isItGuest = isGuestProfile();
+	const { loggedIn } = useAppSelector(state => state.profile);
+	const isItGuest = loggedIn.isGuest;
 	const [profiles, setProfiles] = useState<Profile[]>([]);
 	const [isOpen, setIsOpen] = useState(false);
 	const dispatch = useAppDispatch();
 
 	useEffect(() => {
-		userService.getSuggestions(profile.username).then(res => setProfiles(res!));
+		userService.getSuggestions().then(res => setProfiles(res!));
 	}, [isOpen]);
 
 	async function createChat(username: string) {
@@ -69,7 +69,7 @@ function NewChatButton({
 				return;
 			}
 			const chatId = (await chatService.createChat(
-				[profile.username, username],
+				[loggedIn.username, username],
 				'CHAT'
 			))!;
 			const chat = await chatService.getChatPreviewById(chatId);

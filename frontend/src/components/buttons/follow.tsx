@@ -3,19 +3,19 @@ import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import type { User } from '@/types/baseTypes';
+import type { Profile } from '@/types/baseTypes';
+import { useAppSelector } from '@/lib/hooks';
 
 export function Follow({
-	isLoggedIn,
 	user,
 	className
 }: Readonly<{
-	isLoggedIn: boolean;
-	user: User;
+	user: Profile;
 	className?: string;
 }>) {
 	const navigate = useNavigate();
 	const [following, setFollowing] = useState<boolean>(false);
+	const { isGuest } = useAppSelector(state => state.profile.loggedIn);
 
 	useEffect(() => {
 		userService
@@ -25,12 +25,11 @@ export function Follow({
 
 	return (
 		<Button
-			className={cn(
-				'bg-accent dark:bg-accent text-accent-foreground dark:text-accent-foreground hover:bg-accent/80 dark:hover:bg-accent/80 font-semibold p-2 rounded',
-				className
-			)}
-			onClick={async () => {
-				if (isLoggedIn) {
+			variant="outline"
+			className={cn('rounded-full text-accent outline-accent', className)}
+			onClick={async e => {
+				e.stopPropagation();
+				if (!isGuest) {
 					if (following) {
 						await userService.unfollowUser(user.username);
 						setFollowing(false);
@@ -41,7 +40,7 @@ export function Follow({
 				} else navigate('/login');
 			}}
 		>
-			{isLoggedIn ? (following ? 'Unfollow' : 'Follow') : 'Login to follow'}
+			{following ? 'Unfollow' : 'Follow'}
 		</Button>
 	);
 }

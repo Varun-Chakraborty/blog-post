@@ -3,7 +3,7 @@ set -e  # Exit on any error
 # Function to clean up on exit
 cleanup() {
   echo "Stopping Docker Compose containers..."
-  docker compose stop
+  docker compose -f ./docker-compose.dev.yml stop
 }
 # Trap SIGINT (Ctrl+C) to run cleanup function
 trap cleanup SIGINT

@@ -1,6 +1,6 @@
 import { userService } from '@/services';
 import { toast } from 'sonner';
-import { useAppDispatch, useAppSelector, isGuestProfile } from '@/lib/hooks';
+import { useAppDispatch, useAppSelector } from '@/lib/hooks';
 import { cn } from '@/lib/utils';
 import { profileActions } from '@/lib/redux/profile';
 import { isAxiosError } from 'axios';
@@ -22,13 +22,12 @@ export function Profile({ className }: Readonly<{ className?: string }>) {
 	const [user, setUser] = useState<User | undefined>(undefined);
 
 	const { username } = useParams();
-	const { profile } = useAppSelector(state => state.profile);
-	const isItMyProfile = username === 'me' || username === profile.username;
+	const { loggedIn } = useAppSelector(state => state.profile);
+	const isItMyProfile = username === 'me' || username === loggedIn.username;
 	const [loading, setLoading] = useState(true);
 	const [isNetworkError, setIsNetworkError] = useState(false);
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
-	const isLoggedIn = !isGuestProfile();
 
 	useEffect(() => {
 		setLoading(true);
@@ -42,7 +41,7 @@ export function Profile({ className }: Readonly<{ className?: string }>) {
 					console.error(err.response);
 					if (err.response?.status === 401) {
 						toast('Session expired');
-						dispatch(profileActions.removeProfile());
+						dispatch(profileActions.logout());
 						navigate('/login');
 					} else {
 						toast('Could not get profile');
@@ -69,7 +68,7 @@ export function Profile({ className }: Readonly<{ className?: string }>) {
 					<UserComponent
 						user={user}
 						isItMyProfile={isItMyProfile}
-						isLoggedIn={isLoggedIn}
+						isLoggedIn={!loggedIn.isGuest}
 					/>
 				) : (
 					<NotFound />
@@ -136,7 +135,7 @@ function UserComponent({
 						{isLoggedIn && isItMyProfile ? (
 							<EditProfile />
 						) : (
-							<FollowButton isLoggedIn={isLoggedIn} user={user} />
+							<FollowButton user={user} />
 						)}
 					</div>
 					<Separator />

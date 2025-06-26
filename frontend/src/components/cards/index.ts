@@ -1,5 +1,6 @@
-export { Card as PostCard, CardSkeleton as PostCardSkeleton } from './postCard';
+export { Post as PostCard, CardSkeleton as PostCardSkeleton } from './postCard';
 export {
-	Card as ProfileCard,
+	Profile as ProfileCard,
 	CardSkeleton as ProfileCardSkeleton
-} from './profileCard';
+} from './profile';
+export { Welcome as WelcomeCard } from './welcome';

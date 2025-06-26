@@ -5,35 +5,42 @@ import { HoverCard, HoverCardTrigger } from '@/components/ui/hover-card';
 import { UserHoverCard } from '@/components/hoverCard';
 import type { Profile } from '@/types/baseTypes';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
+import { Card, CardContent } from '../ui/card';
 
-export function Card({ profile }: Readonly<{ profile: Profile }>) {
+export function Profile({ profile }: Readonly<{ profile: Profile }>) {
 	const navigate = useNavigate();
 	return (
-		<div
+		<Card
 			onClick={() => navigate(`/user/${profile.username}`)}
 			className="p-3 w-full hover:bg-primary/10 border-b border-borderColor flex gap-3 rounded-lg"
 		>
-			<Avatar>
-				<AvatarImage src={profile.profilePicture ?? '/placeholder-user.jpg'} />
-				<AvatarFallback>{profile.name.charAt(0).toUpperCase()}</AvatarFallback>
-			</Avatar>
-			<div>
-				<span className="font-bold text-accent group-hover:underline">
-					{profile.name}
-				</span>
-				<HoverCard>
-					<HoverCardTrigger asChild>
-						<Button
-							className="text-sm text-gray-400 block p-0 h-fit"
-							variant="link"
-						>
-							@{profile.username}
-						</Button>
-					</HoverCardTrigger>
-					<UserHoverCard user={profile} />
-				</HoverCard>
-			</div>
-		</div>
+			<CardContent>
+				<Avatar>
+					<AvatarImage
+						src={profile.profilePicture ?? '/placeholder-user.jpg'}
+					/>
+					<AvatarFallback>
+						{profile.name.charAt(0).toUpperCase()}
+					</AvatarFallback>
+				</Avatar>
+				<div>
+					<span className="font-bold text-accent group-hover:underline">
+						{profile.name}
+					</span>
+					<HoverCard>
+						<HoverCardTrigger asChild>
+							<Button
+								className="text-sm text-gray-400 block p-0 h-fit"
+								variant="link"
+							>
+								@{profile.username}
+							</Button>
+						</HoverCardTrigger>
+						<UserHoverCard user={profile} />
+					</HoverCard>
+				</div>
+			</CardContent>
+		</Card>
 	);
 }
 

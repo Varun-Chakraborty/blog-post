@@ -1,6 +1,7 @@
 import type { Profile } from '@/types/baseTypes';
 import { ProfileCard, ProfileCardSkeleton } from './cards';
 import { cn } from '@/lib/utils';
+import { Button } from './ui/button';
 
 export function ProfilesDisplay({
 	profiles,
@@ -34,12 +35,9 @@ export function ProfilesDisplay({
 							[...Array(7)].map((_, i) => <ProfileCardSkeleton key={i} />)}
 					</div>
 					{loadMore && (
-						<button
-							className="w-full bg-gray-100 py-2 px-4 rounded-lg text-gray-600 hover:bg-gray-200"
-							onClick={loadMore}
-						>
+						<Button variant="outline" className="w-full" onClick={loadMore}>
 							Load more
-						</button>
+						</Button>
 					)}
 				</>
 			)}

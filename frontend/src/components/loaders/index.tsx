@@ -3,10 +3,18 @@ import { cn } from '@/lib/utils';
 export function InfiniteLoader({
 	className
 }: Readonly<{ className?: string }>) {
+	// spiked wheel
 	return (
-		<div className={cn('flex justify-center items-center', className)}>
+		<div
+			className={cn(
+				'animate-spin inline-block w-8 h-8 border-[3px] border-current border-t-transparent text-blue-600 rounded-full',
+				className
+			)}
+			role="status"
+			aria-label="loading"
+		>
 			<svg
-				className="animate-spin h-5 w-5"
+				className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
 				xmlns="http://www.w3.org/2000/svg"
 				fill="none"
 				viewBox="0 0 24 24"
