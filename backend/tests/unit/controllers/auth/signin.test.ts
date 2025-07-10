@@ -10,8 +10,11 @@ const redisMock = {
 };
 
 jest.mock('@/db', () => ({
-	getPrismaClient: jest.fn(() => prismaMock),
-	getRedisClient: jest.fn(() => redisMock)
+	getPrismaClient: jest.fn(() => prismaMock)
+}));
+
+jest.mock('@/services', () => ({
+	RedisService: jest.fn(() => redisMock)
 }));
 
 jest.mock('@/utils', () => ({
@@ -128,24 +131,20 @@ describe('signin', () => {
 			role: 'USER'
 		});
 
-		(verifyPassword as jest.Mock).mockResolvedValueOnce(true);
+		(verifyPassword as jest.Mock).mockResolvedValue(true);
 
-		(tokens.generateTokens as jest.Mock).mockResolvedValueOnce({
+		(tokens.generateTokens as jest.Mock).mockReturnValue({
 			access: 'access',
-			refresh: 'refresh'
+			refresh: 'refresh',
+			res: res
 		});
 
-		(prismaMock.user.update as jest.Mock).mockResolvedValueOnce({
+		(prismaMock.user.update as jest.Mock).mockResolvedValue({
 			id: '1',
 			username: 'testuser',
 			name: 'Test User',
 			email: 'email',
 			role: 'USER'
-		});
-
-		(setCookie as jest.Mock).mockImplementation((key, value, res) => {
-			res.cookie(key, value, { maxAge: 1000 * 60 * 60 * 24 });
-			return res;
 		});
 
 		await signin(
@@ -158,12 +157,12 @@ describe('signin', () => {
 		expect(res.json).toHaveBeenCalledWith(
 			expect.objectContaining({
 				message: 'Signin successful',
-				data: {
+				data: expect.objectContaining({
 					user: expect.not.objectContaining({
 						password: expect.any(String),
 						refreshToken: expect.any(String)
 					})
-				}
+				})
 			})
 		);
 	});
@@ -185,9 +184,10 @@ describe('signin', () => {
 
 		(verifyPassword as jest.Mock).mockResolvedValueOnce(true);
 
-		(tokens.generateTokens as jest.Mock).mockResolvedValueOnce({
+		(tokens.generateTokens as jest.Mock).mockReturnValueOnce({
 			access: 'access',
-			refresh: 'refresh'
+			refresh: 'refresh',
+			res: res
 		});
 
 		(prismaMock.user.update as jest.Mock).mockResolvedValueOnce({
@@ -196,11 +196,6 @@ describe('signin', () => {
 			name: 'Test User',
 			email: 'email',
 			role: 'USER'
-		});
-
-		(setCookie as jest.Mock).mockImplementation((key, value, res) => {
-			res.cookie(key, value, { maxAge: 1000 * 60 * 60 * 24 });
-			return res;
 		});
 
 		await signin(
@@ -213,12 +208,12 @@ describe('signin', () => {
 		expect(res.json).toHaveBeenCalledWith(
 			expect.objectContaining({
 				message: 'Signin successful',
-				data: {
+				data: expect.objectContaining({
 					user: expect.not.objectContaining({
 						password: expect.any(String),
 						refreshToken: expect.any(String)
 					})
-				}
+				})
 			})
 		);
 	});

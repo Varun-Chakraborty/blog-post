@@ -1,4 +1,4 @@
-import { hashDuringUpdate } from '@/db/prisma';
+import { hashDuringUpdate } from '@/db';
 
 describe('hashDuringUpdate', () => {
 	it('should return query with hashed password', async () => {

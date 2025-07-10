@@ -6,17 +6,21 @@ const prismaMock = {
 };
 
 const redisMock = {
-	exists: jest.fn()
+	isTheTokenDumped: jest.fn()
 };
 
 jest.mock('@/db', () => ({
-	getPrismaClient: jest.fn(() => prismaMock),
-	getRedisClient: jest.fn(() => redisMock)
+	getPrismaClient: jest.fn(() => prismaMock)
+}));
+
+jest.mock('@/services', () => ({
+	RedisService: jest.fn(() => redisMock)
 }));
 
 jest.mock('@/utils', () => ({
 	setCookie: jest.fn(),
-	verifyPassword: jest.fn(),
+	hashToken: jest.fn(),
+	verifyToken: jest.fn(),
 	wrapperFx: jest.requireActual('@/utils').wrapperFx,
 	ApiResponse: jest.requireActual('@/utils').ApiResponse,
 	tokens: {
@@ -106,7 +110,7 @@ describe('refreshToken', () => {
 	it('should return 401 if the refresh token is found but also found in redis', async () => {
 		req.cookies = { refreshToken: 'invalid' };
 		(tokens.verifyRefreshTokens as jest.Mock).mockReturnValueOnce({ id: '1' });
-		(redisMock.exists as jest.Mock).mockReturnValueOnce(true);
+		(redisMock.isTheTokenDumped as jest.Mock).mockReturnValueOnce(true);
 		await refreshToken(
 			req as ExpressTypes.Req,
 			res as ExpressTypes.Res,
@@ -176,6 +180,11 @@ describe('refreshToken', () => {
 			return res;
 		});
 
+		(tokens.generateTokens as jest.Mock).mockReturnValue({
+			access: 'access',
+			res: res
+		})
+
 		await refreshToken(
 			req as ExpressTypes.Req,
 			res as ExpressTypes.Res,
@@ -202,12 +211,8 @@ describe('refreshToken', () => {
 			refreshToken: 'valid'
 		});
 		(tokens.generateTokens as jest.Mock).mockReturnValue({
-			access: 'access'
-		});
-
-		(setCookie as jest.Mock).mockImplementation((key, value, res) => {
-			res.cookie(key, value);
-			return res;
+			access: 'access',
+			res: res
 		});
 
 		await refreshToken(

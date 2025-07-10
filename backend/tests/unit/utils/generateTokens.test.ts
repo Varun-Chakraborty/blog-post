@@ -6,12 +6,14 @@ jest.mock('@/utils/tokens/tokenUtils', () => ({
 
 import { generateTokens } from '@/utils/tokens';
 import { generateToken } from '@/utils/tokens/tokenUtils';
-import { UserWithCredentials } from '@/types';
+import { ExpressTypes, UserWithCredentials } from '@/types';
 
 describe('generateTokens', () => {
 	let payload: UserWithCredentials;
+	let res: Partial<ExpressTypes.Res>;
 	beforeEach(() => {
 		jest.clearAllMocks();
+		res = { cookie: jest.fn() },
 		payload = {
 			id: '1',
 			username: 'test',
@@ -29,7 +31,7 @@ describe('generateTokens', () => {
 		(generateToken as jest.Mock).mockReturnValueOnce('accessToken');
 		(generateToken as jest.Mock).mockReturnValueOnce('refreshToken');
 
-		const tokens = generateTokens(payload, 'both');
+		const tokens = generateTokens(payload, 'both', res as ExpressTypes.Res);
 
 		expect(generateToken).toHaveBeenCalledTimes(2);
 		expect(generateToken).toHaveBeenNthCalledWith(
@@ -51,29 +53,27 @@ describe('generateTokens', () => {
 
 	it('should generate only an access token', () => {
 		(generateToken as jest.Mock).mockReturnValueOnce('accessToken');
-		const tokens = generateTokens(payload, 'access');
+		const tokens = generateTokens(payload, 'access', res as ExpressTypes.Res);
 
 		expect(generateToken).toHaveBeenCalledWith(
 			expect.not.objectContaining({ password: expect.any(String) }),
 			undefined,
 			expect.any(String)
 		);
-
 		expect(tokens).toHaveProperty('access', 'accessToken');
-		expect(tokens).not.toHaveProperty('refresh');
+		expect(tokens.refresh).toBeUndefined();
 	});
 
 	it('should generate only a refresh token', () => {
 		(generateToken as jest.Mock).mockReturnValueOnce('refreshToken');
-		const tokens = generateTokens(payload, 'refresh');
+		const tokens = generateTokens(payload, 'refresh', res as ExpressTypes.Res);
 
 		expect(generateToken).toHaveBeenCalledWith(
 			{ id: payload.id },
 			undefined,
 			expect.any(String)
 		);
-
 		expect(tokens).toHaveProperty('refresh', 'refreshToken');
-		expect(tokens).not.toHaveProperty('access');
+		expect(tokens.access).toBeUndefined();
 	});
 });

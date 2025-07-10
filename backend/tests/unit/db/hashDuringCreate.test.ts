@@ -1,4 +1,4 @@
-import { hashDuringCreate } from '@/db/prisma';
+import { hashDuringCreate } from '@/db';
 
 describe('hashDuringCreate', () => {
 	it('should return query with hashed password', async () => {

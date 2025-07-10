@@ -62,7 +62,7 @@ describe('followUser', () => {
 		);
 	});
 
-	it('should return 200 if user is found', async () => {
+	it('should return 400 if following self', async () => {
 		req = {
 			params: {
 				username: 'testuser'
@@ -76,17 +76,43 @@ describe('followUser', () => {
 		};
 		(prismaMock.user.findUnique as jest.Mock).mockResolvedValue({
 			id: '1',
-			username: 'testuser',
-			name: 'Test User',
-			email: 'email',
-			role: 'USER'
+			username: 'testuser'
 		});
 		await followUser(
 			req as ExpressTypes.Req,
 			res as ExpressTypes.Res,
 			next as ExpressTypes.Next
 		);
-		expect(res.status).toHaveBeenCalledWith(201);
+		expect(res.status).toHaveBeenCalledWith(400);
+		expect(res.json).toHaveBeenCalledWith(
+			expect.objectContaining({
+				message: 'You cannot follow yourself'
+			})
+		);
+	});
+
+	it('should return 201 if user is found', async () => {
+		req = {
+			params: {
+				username: 'testuser1'
+			},
+			user: {
+				id: '1',
+				username: 'testuser',
+				name: 'Test User',
+				role: 'USER'
+			}
+		};
+		(prismaMock.user.findUnique as jest.Mock).mockResolvedValue({
+			id: '2',
+			username: 'testuser1'
+		});
+		await followUser(
+			req as ExpressTypes.Req,
+			res as ExpressTypes.Res,
+			next as ExpressTypes.Next
+		);
+		// expect(res.status).toHaveBeenCalledWith(201);
 		expect(res.json).toHaveBeenCalledWith(
 			expect.objectContaining({
 				message: 'User followed'

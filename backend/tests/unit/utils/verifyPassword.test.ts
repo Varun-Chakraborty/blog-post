@@ -1,5 +1,4 @@
-import { hashPassword } from '@/db/prisma';
-import { verifyPassword } from '@/utils/verifyPassword';
+import { hashPassword, verifyPassword } from '@/utils/hashes';
 
 describe('verifyPassword', () => {
 	it('should verify the password', async () => {

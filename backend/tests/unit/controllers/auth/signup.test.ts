@@ -167,12 +167,8 @@ describe('signup', () => {
 
 		(tokens.generateTokens as jest.Mock).mockReturnValue({
 			access: 'access_token',
-			refresh: 'refresh_token'
-		});
-
-		(setCookie as jest.Mock).mockImplementation((name, value, res) => {
-			res.cookie(name, value);
-			return res;
+			refresh: 'refresh_token',
+			res: res
 		});
 
 		await signup(

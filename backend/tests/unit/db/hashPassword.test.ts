@@ -1,4 +1,4 @@
-import { hashPassword } from '@/db/prisma';
+import { hashPassword } from '@/utils/hashes';
 
 describe('hashPassword', () => {
 	beforeEach(() => {

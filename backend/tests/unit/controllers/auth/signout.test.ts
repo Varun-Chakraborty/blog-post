@@ -6,13 +6,15 @@ const prismaMock = {
 };
 
 const redisMock = {
-	set: jest.fn(),
-	expireat: jest.fn()
+	setDumpedToken: jest.fn(),
 };
 
 jest.mock('@/db', () => ({
-	getPrismaClient: jest.fn(() => prismaMock),
-	getRedisClient: jest.fn(() => redisMock)
+	getPrismaClient: jest.fn(() => prismaMock)
+}));
+
+jest.mock('@/services', () => ({
+	RedisService: jest.fn(() => redisMock)
 }));
 
 jest.mock('@/utils', () => ({
@@ -63,8 +65,6 @@ describe('signout', () => {
 			username: 'testuser',
 			role: 'USER'
 		});
-		(redisMock.set as jest.Mock).mockResolvedValue(true);
-		(redisMock.expireat as jest.Mock).mockResolvedValue(true);
 		await signout(
 			req as ExpressTypes.Req,
 			res as ExpressTypes.Res,

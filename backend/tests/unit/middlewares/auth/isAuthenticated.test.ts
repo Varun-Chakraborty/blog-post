@@ -32,7 +32,7 @@ describe('isAuthenticated', () => {
 		expect(res.status).toHaveBeenCalledWith(403);
 		expect(res.json).toHaveBeenCalledWith(
 			expect.objectContaining({
-				message: 'Forbidden'
+				message: 'You are already logged in'
 			})
 		);
 	});

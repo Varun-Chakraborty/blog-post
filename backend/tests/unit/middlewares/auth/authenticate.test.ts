@@ -3,11 +3,11 @@ jest.mock('@/utils/tokens', () => ({
 }));
 
 const redisMock = {
-	exists: jest.fn()
+	isTheTokenDumped: jest.fn()
 };
 
-jest.mock('@/db', () => ({
-	getRedisClient: jest.fn(() => redisMock)
+jest.mock('@/services', () => ({
+	RedisService: jest.fn(() => redisMock)
 }));
 
 import { ExpressTypes } from '@/types';
@@ -76,7 +76,7 @@ describe('authenticate', () => {
 		req.cookies = {
 			accessToken: 'invalid'
 		};
-		(redisMock.exists as jest.Mock).mockReturnValueOnce(true);
+		(redisMock.isTheTokenDumped as jest.Mock).mockReturnValueOnce(true);
 		await authenticate(
 			req as ExpressTypes.Req,
 			res as ExpressTypes.Res,

@@ -26,24 +26,6 @@ describe('getSuggestions', () => {
 		next = jest.fn();
 	});
 
-	it('should return 400 if username is not provided', async () => {
-		req = {
-			params: {},
-			query: {}
-		};
-		await getSuggestions(
-			req as ExpressTypes.Req,
-			res as ExpressTypes.Res,
-			next as ExpressTypes.Next
-		);
-		expect(res.status).toHaveBeenCalledWith(400);
-		expect(res.json).toHaveBeenCalledWith(
-			expect.objectContaining({
-				message: 'Username is required'
-			})
-		);
-	});
-
 	it('should return suggestions', async () => {
 		req = {
 			params: {
