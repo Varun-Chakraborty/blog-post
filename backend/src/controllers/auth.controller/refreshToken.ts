@@ -1,10 +1,10 @@
-import { getPrismaClient, getRedisClient } from '@/db';
-import { ExpressTypes } from '@/types';
-import { ApiResponse, wrapperFx, setCookie, tokens } from '@/utils';
+import { getPrismaClient } from '@/db';
+import { RedisService } from '@/services';
+import { ApiResponse, wrapperFx, setCookie, tokens, hashToken } from '@/utils';
 
 export const refreshToken = wrapperFx(async function (
-	req: ExpressTypes.Req,
-	res: ExpressTypes.Res
+	req,
+	res
 ) {
 	const refreshToken =
 		req.cookies.refreshToken ?? req.headers.authorization?.split(' ')[1];
@@ -12,10 +12,12 @@ export const refreshToken = wrapperFx(async function (
 	if (!refreshToken)
 		return new ApiResponse('No refresh token found', undefined, 401).error(res);
 
-	const redis = getRedisClient();
+	const hashedToken = await hashToken(refreshToken);
+
+	const redis = new RedisService();
 	const prisma = getPrismaClient();
 
-	const doesExists = await redis.exists(refreshToken);
+	const doesExists = await redis.isTheTokenDumped(hashedToken);
 	if (doesExists)
 		return new ApiResponse('Invalid refresh token', undefined, 401).error(res);
 
@@ -33,15 +35,9 @@ export const refreshToken = wrapperFx(async function (
 	if (!user || user.refreshToken !== refreshToken)
 		return new ApiResponse('Invalid refresh token', undefined, 401).error(res);
 
-	const { access } = tokens.generateTokens(user, 'access');
+	const { access, res: newRes } = tokens.generateTokens(user, 'access', res);
 
-	res = setCookie('accessToken', access!, res, {
-		maxAge: Number(
-			process.env.ACCESS_COOKIE_MAX_AGE ?? String(1000 * 60 * 60 * 24)
-		)
-	});
-
-	return new ApiResponse('Refresh successful', { accessToken: access }).success(
-		res
-	);
+	return new ApiResponse('Refresh successful', {
+		accessToken: access
+	}).success(newRes);
 });

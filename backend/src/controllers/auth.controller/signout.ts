@@ -1,14 +1,11 @@
-import { getPrismaClient, getRedisClient } from '@/db';
-import { ExpressTypes } from '@/types';
+import { getPrismaClient } from '@/db';
+import { RedisService } from '@/services';
 import { ApiResponse, wrapperFx, tokens } from '@/utils';
 
-export const signout = wrapperFx(async function (
-	req: ExpressTypes.Req,
-	res: ExpressTypes.Res
-) {
+export const signout = wrapperFx(async function (req, res) {
 	const user = req.user!;
 
-	const redis = getRedisClient();
+	const redis = new RedisService();
 	const prisma = getPrismaClient();
 
 	// tokens
@@ -27,13 +24,11 @@ export const signout = wrapperFx(async function (
 	});
 
 	if (accessTokenExpiry) {
-		await redis.set(`token:${accessToken}`, '');
-		await redis.expireat(`token:${accessToken}`, accessTokenExpiry);
+		await redis.setDumpedToken(accessToken, accessTokenExpiry);
 	}
 
 	if (refreshTokenExpiry) {
-		await redis.set(`token:${refreshToken}`, '');
-		await redis.expireat(`token:${refreshToken}`, refreshTokenExpiry);
+		await redis.setDumpedToken(refreshToken, refreshTokenExpiry);
 	}
 
 	res.clearCookie('refreshToken');

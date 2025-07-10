@@ -1,4 +1,4 @@
-import { getRedisClient } from '@/db';
+import { RedisService } from '@/services';
 import { ExpressTypes } from '@/types';
 import { verifyAccessTokens } from '@/utils/tokens';
 
@@ -12,9 +12,9 @@ export async function authenticate(
 
 	if (!token) return next();
 
-	const redis = getRedisClient();
+	const redis = new RedisService();
 
-	const doesTokenExistOnRedis = await redis.exists(`token:${token}`);
+	const doesTokenExistOnRedis = await redis.isTheTokenDumped(token);
 	if (doesTokenExistOnRedis) return next();
 
 	const user = verifyAccessTokens(token);

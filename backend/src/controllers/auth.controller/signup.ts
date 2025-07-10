@@ -1,12 +1,8 @@
-import { ExpressTypes } from '@/types';
 import { getPrismaClient } from '@/db';
 import { ApiResponse, wrapperFx, tokens, setCookie } from '@/utils';
 import { z } from 'zod';
 
-export const signup = wrapperFx(async function (
-	req: ExpressTypes.Req,
-	res: ExpressTypes.Res
-) {
+export const signup = wrapperFx(async function (req, res) {
 	let { username, name, email, password } = req.body;
 
 	username = username?.trim().toLowerCase();
@@ -52,19 +48,11 @@ export const signup = wrapperFx(async function (
 		omit: { password: true, refreshToken: true }
 	});
 
-	const { access, refresh } = tokens.generateTokens(user, 'both');
-
-	res = setCookie('accessToken', access!, res, {
-		maxAge: Number(
-			process.env.ACCESS_COOKIE_MAX_AGE ?? String(1000 * 60 * 60 * 24)
-		)
-	});
-	res = setCookie('refreshToken', refresh!, res, {
-		maxAge: Number(
-			process.env.REFRESH_COOKIE_MAX_AGE ?? String(1000 * 60 * 60 * 24 * 7)
-		),
-		path: '/api/v1/auth/refresh'
-	});
+	const {
+		access,
+		refresh,
+		res: response
+	} = tokens.generateTokens(user, 'both', res);
 
 	const updatedUser = await prisma.user.update({
 		where: { id: user.id },
@@ -76,5 +64,5 @@ export const signup = wrapperFx(async function (
 		'Signup successful',
 		{ user: updatedUser, accessToken: access },
 		201
-	).success(res);
+	).success(response);
 });
