@@ -7,6 +7,8 @@ import { isAuthenticated, isNotAuthenticated } from '@/middlewares/auth';
 import { ApiResponse } from '@/utils';
 
 router.post('/signout', isAuthenticated, authController.signout);
+router.post('/forgotPassword', authController.forgotPassword);
+router.post('/resetPassword', authController.resetPassword);
 
 router.use(isNotAuthenticated);
 
