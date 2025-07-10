@@ -73,7 +73,7 @@ export function ChangePassword({
 					)}
 				/>
 				<div className="text-sm text-secondaryText flex justify-end">
-					<Link className="hover:underline underline-offset-2" to="/login">
+					<Link className="hover:underline underline-offset-2" to='/auth/signin?next='>
 						Back to Login
 					</Link>
 				</div>

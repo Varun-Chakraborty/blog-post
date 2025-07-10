@@ -1,15 +1,9 @@
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useAppDispatch } from '@/lib/hooks';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,11 +12,20 @@ import { authService, userService } from '@/services';
 import { profileActions } from '@/lib/redux/profile';
 import { isAxiosError } from 'axios';
 import { toast } from 'sonner';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../ui/form';
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage
+} from '../ui/form';
 
 export function Login({ className }: Readonly<{ className?: string }>) {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
+	const query = useLocation().search;
+	const next = new URLSearchParams(query).get('next');
 
 	const [submitting, setSubmitting] = useState<boolean>(false);
 
@@ -45,13 +48,10 @@ export function Login({ className }: Readonly<{ className?: string }>) {
 	async function onSubmit(data: z.infer<typeof FormSchema>) {
 		try {
 			setSubmitting(true);
-			const response = await authService.login(
-				data.username.toString(),
-				data.password.toString()
-			);
+			const response = await authService.login(data.username, data.password);
 			dispatch(profileActions.setLoggedIn(response.data!.user));
 			toast('Login successful');
-			navigate('/');
+			navigate(next || '/');
 		} catch (error) {
 			if (isAxiosError(error) && error.response?.status === 401) {
 				toast('Login failed');
@@ -61,7 +61,7 @@ export function Login({ className }: Readonly<{ className?: string }>) {
 					.getProfileSummary(error.response.data.data.username)
 					.then(response => {
 						dispatch(profileActions.setLoggedIn(response));
-						navigate('/');
+						navigate(next || '/');
 					});
 			} else {
 				toast('Login failed');
@@ -73,7 +73,7 @@ export function Login({ className }: Readonly<{ className?: string }>) {
 	}
 
 	return (
-		<Card className={cn(className)}>
+		<Card className={cn('md:w-1/4', className)}>
 			<CardHeader className="text-center">
 				<CardTitle className="text-xl">Welcome back</CardTitle>
 				{/* <CardDescription>
@@ -139,7 +139,7 @@ export function Login({ className }: Readonly<{ className?: string }>) {
 										<div className="flex items-center">
 											<FormLabel htmlFor="password">Password</FormLabel>
 											<Link
-												to="#"
+												to={`/auth/forgot-password?next=${next}`}
 												className="ml-auto text-sm underline-offset-4 hover:underline"
 											>
 												Forgot your password?
@@ -163,7 +163,7 @@ export function Login({ className }: Readonly<{ className?: string }>) {
 					</Form>
 					<div className="text-center text-sm">
 						Don&apos;t have an account?{' '}
-						<Link to="/signup" className="underline underline-offset-4">
+						<Link to="/auth/signup" className="underline underline-offset-4">
 							Sign up
 						</Link>
 					</div>

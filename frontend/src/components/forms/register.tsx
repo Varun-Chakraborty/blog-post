@@ -1,26 +1,21 @@
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useAppDispatch } from '@/lib/hooks';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { authService } from '@/services';
+import { authService, userService } from '@/services';
 import { profileActions } from '@/lib/redux/profile';
 import { isAxiosError } from 'axios';
 import { toast } from 'sonner';
 import {
 	Form,
 	FormControl,
+	FormDescription,
 	FormField,
 	FormItem,
 	FormLabel,
@@ -32,6 +27,8 @@ import { PasswordStrength } from '@/components/passwordStrength';
 export function Register({ className }: Readonly<{ className?: string }>) {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
+	const location = useLocation();
+	const next = new URLSearchParams(location.search).get('next');
 
 	const [submitting, setSubmitting] = useState(false);
 
@@ -76,12 +73,20 @@ export function Register({ className }: Readonly<{ className?: string }>) {
 				data.email,
 				data.password
 			);
-			dispatch(profileActions.setProfile(response.data!.user));
+			dispatch(profileActions.setLoggedIn(response.data!.user));
 			toast('Account created.');
-			navigate('/');
+			navigate(next || '/');
 		} catch (error) {
 			if (isAxiosError(error) && error.response?.status === 409) {
 				toast('Registration failed.');
+			} else if (isAxiosError(error) && error.response?.status === 403) {
+				toast('Already logged in');
+				userService
+					.getProfileSummary(error.response.data.data.username)
+					.then(response => {
+						dispatch(profileActions.setLoggedIn(response));
+						navigate(next || '/');
+					});
 			} else {
 				toast('Registration failed.');
 				console.error(error);
@@ -92,7 +97,7 @@ export function Register({ className }: Readonly<{ className?: string }>) {
 	}
 
 	return (
-		<Card className={cn(className)}>
+		<Card className={cn('md:w-1/4', className)}>
 			<CardHeader className="text-center">
 				<CardTitle className="text-xl">Welcome to Blog Post</CardTitle>
 				{/* <CardDescription>
@@ -158,6 +163,10 @@ export function Register({ className }: Readonly<{ className?: string }>) {
 										<FormControl>
 											<Input {...field} />
 										</FormControl>
+										<FormDescription>
+											Enter actual email, which may be required for other
+											features like password recovery
+										</FormDescription>
 									</FormItem>
 								)}
 							/>
@@ -186,12 +195,14 @@ export function Register({ className }: Readonly<{ className?: string }>) {
 								name="password"
 								render={({ field }) => (
 									<FormItem className="grid gap-3">
-										<div className="flex items-center">
-											<FormLabel htmlFor="password">Password</FormLabel>
-										</div>
+										<FormLabel htmlFor="password">Password</FormLabel>
 										<FormControl>
 											<Input {...field} type="password" />
 										</FormControl>
+										<FormDescription>
+											<PasswordStrength password={field.value} />
+										</FormDescription>
+										<FormMessage />
 									</FormItem>
 								)}
 							/>
@@ -206,7 +217,10 @@ export function Register({ className }: Readonly<{ className?: string }>) {
 					</Form>
 					<div className="text-center text-sm">
 						Already have an account?{' '}
-						<Link to="/signin" className="underline underline-offset-4">
+						<Link
+							to="/auth/signin?next="
+							className="underline underline-offset-4"
+						>
 							Login
 						</Link>
 					</div>

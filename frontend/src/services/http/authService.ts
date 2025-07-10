@@ -1,4 +1,4 @@
-import { AuthResponseTypes } from '@/types/responseTypes';
+import { AuthResponseTypes, BaseResponseTypes } from '@/types/responseTypes';
 import { HTTPService } from './httpService';
 
 class AuthService extends HTTPService {
@@ -37,6 +37,28 @@ class AuthService extends HTTPService {
 
 	async logout() {
 		await this.api.post('/auth/signout');
+	}
+
+	async forgotPassword(email: string) {
+		const response = await this.api.post<BaseResponseTypes.APIResponse>(
+			'/auth/forgotPassword',
+			{
+				email
+			}
+		);
+		return response.data;
+	}
+
+	async resetPassword(email: string, resetToken: string, password: string) {
+		const response = await this.api.post<BaseResponseTypes.APIResponse>(
+			'/auth/resetPassword',
+			{
+				email,
+				resetToken,
+				password
+			}
+		);
+		return response.data;
 	}
 }
 
