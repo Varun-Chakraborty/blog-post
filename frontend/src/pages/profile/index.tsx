@@ -42,7 +42,7 @@ export function Profile({ className }: Readonly<{ className?: string }>) {
 					if (err.response?.status === 401) {
 						toast('Session expired');
 						dispatch(profileActions.logout());
-						navigate('/login');
+						navigate(`/auth/signin?next=/profile/${username}`);
 					} else {
 						toast('Could not get profile');
 					}

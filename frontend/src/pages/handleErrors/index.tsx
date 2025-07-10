@@ -10,7 +10,7 @@ export function HandleErrors() {
 			</div>
 			<div className="text-primary/80 dark:text-white/40 px-5 h-full">
 				<p className="text-xl font-medium">You got following error:</p>
-				<div className="h-4/5 overflow-y-scroll">
+				<div className="h-4/5 overflow-y-auto">
 					<p>
 						<span className="underline">Message: </span>
 						{error.message}

@@ -1,4 +1,4 @@
-import { InfiniteLoader } from '@/components/loaders';
+import { Loader } from '@/components/loader';
 import { cn } from '@/lib/utils';
 import type { Post } from '@/types/baseTypes';
 import { useEffect, useState } from 'react';
@@ -80,7 +80,7 @@ export function ShowPost({ className }: Readonly<{ className?: string }>) {
 		}
 	}, [id, postFromState]);
 
-	const renderLoader = isLoading ? <InfiniteLoader /> : null;
+	const renderLoader = isLoading ? <Loader /> : null;
 
 	return (
 		<div className={cn('h-full w-full', className)}>
@@ -118,7 +118,7 @@ export function ShowPost({ className }: Readonly<{ className?: string }>) {
 									</AlertDialog>
 								</div>
 							) : (
-								<FollowButton user={post!.author} />
+								<FollowButton user={post!.author} nextUrl={`/post/${post!.id}`} />
 							)}
 						</div>
 						<div className="rounded-lg overflow-clip h-full w-full">

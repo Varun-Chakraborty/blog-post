@@ -26,7 +26,7 @@ export function useFetchChats() {
           if (isAxiosError(e)) {
             if (e.response?.status === 401) {
               dispatch(profileActions.logout());
-              navigate('/login');
+              navigate(`/auth/signin?next=/`);
               toast('Error');
             }
           }
@@ -41,7 +41,7 @@ export function useFetchChats() {
           if (isAxiosError(e)) {
             if (e.response?.status === 401) {
               dispatch(profileActions.logout());
-              navigate('/login');
+              navigate(`/auth/signin?next=/`);
               toast('Error');
             }
           }

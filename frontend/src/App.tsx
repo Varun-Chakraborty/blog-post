@@ -18,13 +18,16 @@ import {
 	ShowPosts,
 	Settings,
 	Profile,
-	Login,
-	Register,
-	ForgotPassword,
-	HandleErrors
+	HandleErrors,
+	Auth
 } from './pages';
 import { ProtectedRoute } from './components/protectedRoute';
 import { ThemeProvider } from './lib/context/themeContext';
+import {
+	LoginForm,
+	RegisterForm,
+	ForgotPasswordForm,
+} from '@/components/forms';
 
 export default function App() {
 	const router = createBrowserRouter([
@@ -99,11 +102,11 @@ export default function App() {
 				},
 				{
 					path: 'login',
-					element: <Navigate to="/signin" />
+					element: <Navigate to="//auth/signin" />
 				},
 				{
 					path: 'register',
-					element: <Navigate to="/signup" />
+					element: <Navigate to="/auth/signup" />
 				},
 				{
 					path: 'settings',
@@ -124,21 +127,27 @@ export default function App() {
 						}
 					]
 				},
-				{
-					path: 'forgot-password',
-					Component: ForgotPassword
-				}
 			],
 			ErrorBoundary: HandleErrors
 		},
 		{
-			path: 'signin',
-			Component: Login
+			path: 'auth',
+			Component: Auth,
+			children: [
+				{
+					path: 'forgot-password',
+					Component: ForgotPasswordForm
+				},
+				{
+					path: 'signin',
+					Component: LoginForm
+				},
+				{
+					path: 'signup',
+					Component: RegisterForm
+				}
+			]
 		},
-		{
-			path: 'signup',
-			Component: Register
-		}
 	]);
 	return (
 		<ThemeProvider>

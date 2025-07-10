@@ -45,7 +45,7 @@ export function Layout() {
 		<main className="h-svh w-screen flex flex-col">
 			<Header />
 			<hr />
-			<div className="flex justify-between h-full w-full overflow-y-scroll">
+			<div className="flex justify-between h-full w-full overflow-y-auto">
 				<LeftPanel />
 				<div className="h-full w-px bg-border shrink-0" />
 				<MainPanel />

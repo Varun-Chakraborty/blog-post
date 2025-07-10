@@ -11,33 +11,12 @@ export { ShowPosts } from './showPosts';
 export { Settings } from './settings';
 export { Profile } from './profile';
 export { HandleErrors } from './handleErrors';
+import { Outlet } from 'react-router-dom';
 
-import {
-	ForgotPasswordForm,
-	LoginForm,
-	RegisterForm
-} from '@/components/forms';
-
-export function Login() {
+export function Auth() {
 	return (
 		<main className="h-svh w-screen flex justify-center items-center p-4">
-			<LoginForm className="md:w-1/4" />
+			<Outlet />
 		</main>
-	);
-}
-
-export function Register() {
-	return (
-		<div className="h-svh w-screen flex justify-center items-center p-4">
-			<RegisterForm className="md:w-1/4" />
-		</div>
-	);
-}
-
-export function ForgotPassword() {
-	return (
-		<div className="h-full w-full flex justify-center items-center p-4">
-			<ForgotPasswordForm />
-		</div>
 	);
 }

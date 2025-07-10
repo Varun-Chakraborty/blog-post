@@ -47,8 +47,8 @@ class UserService extends HTTPService {
 	}
 
 	async unfollowUser(username: string) {
-		const response = await this.api.post<BaseResponseTypes.APIResponse>(
-			`/user/${username}/unfollow`
+		const response = await this.api.delete<BaseResponseTypes.APIResponse>(
+			`/user/${username}/follow`
 		);
 		return response.data;
 	}
