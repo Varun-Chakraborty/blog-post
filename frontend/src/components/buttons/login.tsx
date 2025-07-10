@@ -13,7 +13,7 @@ export function Login({ onClick, className }: Readonly<Props>) {
 	return (
 		<Button
 			onClick={e => {
-				navigate('/login');
+				navigate(`/auth/signin?next=`);
 				onClick?.(e);
 			}}
 			variant="accent"

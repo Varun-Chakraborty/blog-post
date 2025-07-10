@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { HoverCard, HoverCardTrigger } from '@/components/ui/hover-card';
@@ -10,37 +10,39 @@ import { Card, CardContent } from '../ui/card';
 export function Profile({ profile }: Readonly<{ profile: Profile }>) {
 	const navigate = useNavigate();
 	return (
-		<Card
-			onClick={() => navigate(`/user/${profile.username}`)}
-			className="p-3 w-full hover:bg-primary/10 border-b border-borderColor flex gap-3 rounded-lg"
-		>
-			<CardContent>
-				<Avatar>
-					<AvatarImage
-						src={profile.profilePicture ?? '/placeholder-user.jpg'}
-					/>
-					<AvatarFallback>
-						{profile.name.charAt(0).toUpperCase()}
-					</AvatarFallback>
-				</Avatar>
-				<div>
-					<span className="font-bold text-accent group-hover:underline">
-						{profile.name}
-					</span>
-					<HoverCard>
-						<HoverCardTrigger asChild>
-							<Button
-								className="text-sm text-gray-400 block p-0 h-fit"
-								variant="link"
-							>
-								@{profile.username}
-							</Button>
-						</HoverCardTrigger>
-						<UserHoverCard user={profile} />
-					</HoverCard>
-				</div>
-			</CardContent>
-		</Card>
+		<Link to={`/user/${profile.username}`} state={profile}>
+			<Card
+				onClick={() => navigate(`/user/${profile.username}`, { state: profile })}
+				className="p-3 w-full hover:bg-primary/10 border-b border-borderColor flex gap-3 rounded-lg"
+			>
+				<CardContent className="flex gap-3 items-center">
+					<Avatar>
+						<AvatarImage
+							src={profile.profilePicture ?? '/placeholder-user.jpg'}
+						/>
+						<AvatarFallback>
+							{profile.name.charAt(0).toUpperCase()}
+						</AvatarFallback>
+					</Avatar>
+					<div>
+						<span className="font-bold text-accent group-hover:underline">
+							{profile.name}
+						</span>
+						<HoverCard>
+							<HoverCardTrigger asChild>
+								<Button
+									className="text-sm text-gray-400 block p-0 h-fit"
+									variant="link"
+								>
+									@{profile.username}
+								</Button>
+							</HoverCardTrigger>
+							<UserHoverCard user={profile} />
+						</HoverCard>
+					</div>
+				</CardContent>
+			</Card>
+		</Link>
 	);
 }
 

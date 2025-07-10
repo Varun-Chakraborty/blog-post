@@ -1,5 +1,5 @@
 import { MdCheck } from 'react-icons/md';
-import { InfiniteLoader } from '../loaders';
+import { Loader } from '../loader';
 import { RxCross1 } from 'react-icons/rx';
 import { cn } from '@/lib/utils';
 import { userService } from '@/services';
@@ -40,7 +40,7 @@ export function IsUsernameAvailable({
 		boolean | undefined
 	>(true);
 
-	const renderLoader = isLoading ? <InfiniteLoader /> : null;
+	const renderLoader = isLoading ? <Loader /> : null;
 	const renderUsernameAvailable =
 		isUsernameAvailable !== undefined ? (
 			<>

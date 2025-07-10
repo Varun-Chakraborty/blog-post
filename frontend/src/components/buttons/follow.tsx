@@ -8,9 +8,11 @@ import { useAppSelector } from '@/lib/hooks';
 
 export function Follow({
 	user,
+	nextUrl,
 	className
 }: Readonly<{
 	user: Profile;
+	nextUrl: string;
 	className?: string;
 }>) {
 	const navigate = useNavigate();
@@ -37,7 +39,7 @@ export function Follow({
 						await userService.followUser(user.username);
 						setFollowing(true);
 					}
-				} else navigate('/login');
+				} else navigate(`/auth/signin?next=${nextUrl}`);
 			}}
 		>
 			{following ? 'Unfollow' : 'Follow'}

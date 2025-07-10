@@ -18,7 +18,7 @@ import { Input } from '@/components/ui/input';
 import { postService } from '@/services';
 import { isAxiosError } from 'axios';
 import { useEffect, useState } from 'react';
-import { InfiniteLoader } from '@/components/loaders';
+import { Loader } from '@/components/loader';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import type { Post } from '@/types/baseTypes';
 
@@ -112,7 +112,7 @@ export function Post({
 				<div className="flex justify-between">
 					<h1 className="text-3xl font-bold text-center">Create Post</h1>
 					<Button type="submit" disabled={isLoading}>
-						{isLoading ? <InfiniteLoader /> : 'Submit'}
+						{isLoading ? <Loader /> : 'Submit'}
 					</Button>
 				</div>
 				<FormField
