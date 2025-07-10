@@ -14,6 +14,8 @@ export interface Req extends express.Request {
 		title?: string;
 		content?: string;
 		imageUrl?: string;
+		resetToken?: string;
+		verificationToken?: string;
 	};
 	query: {
 		query?: string;
@@ -21,6 +23,7 @@ export interface Req extends express.Request {
 		username?: string;
 		skip?: string;
 		take?: string;
+		refreshToken?: string;
 	};
 	params: {
 		username?: string;

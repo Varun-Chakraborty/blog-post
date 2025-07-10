@@ -35,6 +35,7 @@ router.get(
 	resolveUsernameMeKeyword,
 	userController.getPosts
 );
+router.get('/suggestions', userController.getSuggestions);
 
 router.use(isAuthenticated);
 
@@ -48,20 +49,8 @@ router.get(
 	resolveUsernameMeKeyword,
 	userController.isFollowing
 );
-router.get(
-	'/suggestions',
-	userController.getSuggestions
-);
-router.post(
-	'/:username/follow',
-	resolveUsernameMeKeyword,
-	userController.followUser
-);
-router.post(
-	'/:username/unfollow',
-	resolveUsernameMeKeyword,
-	userController.unfollowUser
-);
+router.post('/:username/follow', userController.followUser);
+router.delete('/:username/follow', userController.unfollowUser);
 
 router.get(
 	'/:username/chats',
