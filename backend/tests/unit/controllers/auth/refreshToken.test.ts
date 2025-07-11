@@ -32,7 +32,7 @@ jest.mock('@/utils', () => ({
 import { refreshToken } from '@/controllers/auth.controller';
 import { ExpressTypes } from '@/types';
 
-import { tokens, setCookie } from '@/utils';
+import { tokens, setCookie, hashToken } from '@/utils';
 
 describe('refreshToken', () => {
 	let req: Partial<ExpressTypes.Req>;
@@ -45,7 +45,8 @@ describe('refreshToken', () => {
 		res = {
 			status: jest.fn().mockReturnThis(),
 			json: jest.fn(),
-			cookie: jest.fn()
+			cookie: jest.fn(),
+			clearCookie: jest.fn()
 		};
 		next = jest.fn();
 	});
@@ -143,12 +144,13 @@ describe('refreshToken', () => {
 		);
 	});
 
-	it('should return 401 if the id resolved from the refresh token does exist but the refresh token does not match', async () => {
+	it('should return 401 if the id resolved from the refresh token does exist but the hash of refresh token does not match', async () => {
 		req.cookies = { refreshToken: 'invalid' };
+		(hashToken as jest.Mock).mockReturnValue('hash');
 		(tokens.verifyRefreshTokens as jest.Mock).mockReturnValueOnce({ id: '1' });
 		(prismaMock.user.findUnique as jest.Mock).mockResolvedValueOnce({
 			id: '1',
-			refreshToken: 'valid'
+			refreshToken: 'validhash'
 		});
 		await refreshToken(
 			req as ExpressTypes.Req,
@@ -166,20 +168,15 @@ describe('refreshToken', () => {
 
 	it('should return 200 if refresh token is valid', async () => {
 		req.cookies = { refreshToken: 'valid' };
+		(hashToken as jest.Mock).mockReturnValue('hash');
 		(tokens.verifyRefreshTokens as jest.Mock).mockReturnValue({ id: '1' });
 		(prismaMock.user.findUnique as jest.Mock).mockResolvedValue({
 			id: '1',
-			refreshToken: 'valid'
+			refreshToken: 'hash'
 		});
 		(tokens.generateTokens as jest.Mock).mockReturnValue({
 			access: 'access'
 		});
-
-		(setCookie as jest.Mock).mockImplementation((key, value, res) => {
-			res.cookie(key, value);
-			return res;
-		});
-
 		(tokens.generateTokens as jest.Mock).mockReturnValue({
 			access: 'access',
 			res: res
@@ -205,10 +202,11 @@ describe('refreshToken', () => {
 	it('should return 200 and have predefined expiry time for access token if not available in environment variables', async () => {
 		req.cookies = { refreshToken: 'valid' };
 		process.env.ACCESS_COOKIE_MAX_AGE = undefined;
+		(hashToken as jest.Mock).mockReturnValue('hash');
 		(tokens.verifyRefreshTokens as jest.Mock).mockReturnValue({ id: '1' });
 		(prismaMock.user.findUnique as jest.Mock).mockResolvedValue({
 			id: '1',
-			refreshToken: 'valid'
+			refreshToken: 'hash'
 		});
 		(tokens.generateTokens as jest.Mock).mockReturnValue({
 			access: 'access',

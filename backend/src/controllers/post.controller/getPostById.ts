@@ -27,7 +27,10 @@ export const getPostById = wrapperFx(async function (
 				}
 			},
 			_count: { select: { comments: true, likes: true } },
-			likes: req.user && { where: { authorId: req.user?.id }, select: { id: true } }
+			likes: req.user && {
+				where: { authorId: req.user?.id },
+				select: { id: true }
+			}
 		}
 	});
 

@@ -72,10 +72,15 @@ export function Post({
 				{!isFollowed && <FollowButton user={post.author} />}
 			</div>
 			<div className="text-xl font-bold">{post.title}</div>
-			<div className={cn("h-64 p-2 flex justify-center items-center", post.imgUrl || "hidden")}>
+			<div
+				className={cn(
+					'h-64 p-2 flex justify-center items-center',
+					post.imgUrl || 'hidden'
+				)}
+			>
 				<img src={post.imgUrl} alt="" className="h-full rounded" />
 			</div>
-			<div className={cn(post.imgUrl && "hidden")}>
+			<div className={cn(post.imgUrl && 'hidden')}>
 				<ParseMarkdown markdown={post.content} />
 			</div>
 			<div className="flex justify-between">

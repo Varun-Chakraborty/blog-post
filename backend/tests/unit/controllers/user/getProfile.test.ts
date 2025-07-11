@@ -8,7 +8,12 @@ const prismaMock = {
 			email: 'email',
 			followers: [],
 			following: [],
-			posts: []
+			posts: [],
+			_count: {
+				followers: 0,
+				following: 0,
+				posts: 0
+			}
 		}))
 	}
 };
@@ -78,9 +83,11 @@ describe('getProfile', () => {
 						followers: [],
 						following: [],
 						posts: [],
-						postsCount: 0,
-						followersCount: 0,
-						followingCount: 0
+						_count: {
+							followers: 0,
+							following: 0,
+							posts: 0
+						}
 					}
 				})
 			})
@@ -114,9 +121,11 @@ describe('getProfile', () => {
 						followers: [],
 						following: [],
 						posts: [],
-						postsCount: 0,
-						followersCount: 0,
-						followingCount: 0
+						_count: {
+							followers: 0,
+							following: 0,
+							posts: 0
+						}
 					}
 				})
 			})

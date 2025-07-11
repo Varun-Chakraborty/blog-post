@@ -128,7 +128,12 @@ export function ShowPost({ className }: Readonly<{ className?: string }>) {
 								<FollowButton user={post!.author} />
 							)}
 						</div>
-						<div className={cn("rounded-lg overflow-clip h-full w-full", post?.imgUrl || "hidden")}>
+						<div
+							className={cn(
+								'rounded-lg overflow-clip h-full w-full',
+								post?.imgUrl || 'hidden'
+							)}
+						>
 							<img src={post?.imgUrl} alt="post image" className="w-full" />
 						</div>
 						<div className="relative z-50 selection:bg-slate-600">

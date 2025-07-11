@@ -26,7 +26,7 @@ export const getProfileSummary = wrapperFx(async function (
 
 	if (!user) {
 		if (username == req.user?.username) {
-			res.clearCookie("accessToken");
+			res.clearCookie('accessToken');
 		}
 		return new ApiResponse('User does not exist', undefined, 404).error(res);
 	}

@@ -44,7 +44,16 @@ export const signup = wrapperFx(async function (req, res) {
 	}
 
 	const user = await prisma.user.create({
-		data: { username, name: name.trim().split(' ').map((word) => `${word.charAt(0).toUpperCase()}${word.slice(1)}`).join(' '), email, password },
+		data: {
+			username,
+			name: name
+				.trim()
+				.split(' ')
+				.map(word => `${word.charAt(0).toUpperCase()}${word.slice(1)}`)
+				.join(' '),
+			email,
+			password
+		},
 		omit: { password: true, refreshToken: true }
 	});
 
