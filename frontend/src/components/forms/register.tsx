@@ -23,6 +23,7 @@ import {
 } from '../ui/form';
 import { IsUsernameAvailable } from '@/components/isUsernameAvailable';
 import { PasswordStrength } from '@/components/passwordStrength';
+import { PasswordField } from './passwordField';
 
 export function Register({ className }: Readonly<{ className?: string }>) {
 	const dispatch = useAppDispatch();
@@ -97,7 +98,7 @@ export function Register({ className }: Readonly<{ className?: string }>) {
 	}
 
 	return (
-		<Card className={cn('md:w-1/4', className)}>
+		<Card className={cn('md:w-1/4 sm:1/2', className)}>
 			<CardHeader className="text-center">
 				<CardTitle className="text-xl">Welcome to Blog Post</CardTitle>
 				{/* <CardDescription>
@@ -149,7 +150,7 @@ export function Register({ className }: Readonly<{ className?: string }>) {
 									<FormItem className="grid gap-3">
 										<FormLabel htmlFor="name">Name</FormLabel>
 										<FormControl>
-											<Input {...field} />
+											<Input {...field} placeholder="John Doe" />
 										</FormControl>
 									</FormItem>
 								)}
@@ -161,7 +162,7 @@ export function Register({ className }: Readonly<{ className?: string }>) {
 									<FormItem className="grid gap-3">
 										<FormLabel htmlFor="email">E-Mail</FormLabel>
 										<FormControl>
-											<Input {...field} />
+											<Input {...field} placeholder="E-mail" />
 										</FormControl>
 										<FormDescription>
 											Enter actual email, which may be required for other
@@ -184,7 +185,7 @@ export function Register({ className }: Readonly<{ className?: string }>) {
 											/>
 										</div>
 										<FormControl>
-											<Input {...field} />
+											<Input {...field} placeholder="Username" />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -196,9 +197,7 @@ export function Register({ className }: Readonly<{ className?: string }>) {
 								render={({ field }) => (
 									<FormItem className="grid gap-3">
 										<FormLabel htmlFor="password">Password</FormLabel>
-										<FormControl>
-											<Input {...field} type="password" />
-										</FormControl>
+										<PasswordField field={field} />
 										<FormDescription>
 											<PasswordStrength password={field.value} />
 										</FormDescription>

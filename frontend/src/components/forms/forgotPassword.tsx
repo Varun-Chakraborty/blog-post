@@ -33,6 +33,7 @@ import { authService } from '@/services';
 import { PasswordStrength } from '../passwordStrength';
 import { useState } from 'react';
 import { isAxiosError } from 'axios';
+import { PasswordField } from './passwordField';
 
 export function ForgotPassword({
 	className
@@ -41,6 +42,8 @@ export function ForgotPassword({
 	const navigate = useNavigate();
 	const location = useLocation();
 	const next = new URLSearchParams(location.search).get('next');
+
+	const [submitting, setSubmitting] = useState(false);
 
 	const FormSchema = z.object({
 		email: z.string().min(1, {
@@ -67,6 +70,7 @@ export function ForgotPassword({
 
 	async function getToken(data: z.infer<typeof FormSchema>) {
 		try {
+			setSubmitting(true);
 			await authService.forgotPassword(data.email);
 			toast('Successful');
 			setTokenRequested(true);
@@ -76,6 +80,8 @@ export function ForgotPassword({
 				form.setError('email', { message: error.response.data.message });
 			}
 			console.error(error);
+		} finally {
+			setSubmitting(false);
 		}
 	}
 
@@ -94,7 +100,7 @@ export function ForgotPassword({
 	}
 
 	return (
-		<Card className={cn('md:w-1/4', className)}>
+		<Card className={cn('md:w-1/4 sm:w-1/2', className)}>
 			<CardHeader className="text-center">
 				<CardTitle className="text-xl">Forgot Password?</CardTitle>
 			</CardHeader>
@@ -125,7 +131,7 @@ export function ForgotPassword({
 												className="focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
 											/>
 										</FormControl>
-										<Button type="button" onClick={form.handleSubmit(getToken)}>
+										<Button type="button" disabled={submitting} onClick={form.handleSubmit(getToken)}>
 											Request PIN
 										</Button>
 									</div>
@@ -176,13 +182,7 @@ export function ForgotPassword({
 								render={({ field }) => (
 									<FormItem>
 										<FormLabel>Enter New Password</FormLabel>
-										<FormControl>
-											<Input
-												{...field}
-												type="password"
-												placeholder="Password"
-											/>
-										</FormControl>
+										<PasswordField field={field} />
 										<FormDescription>
 											<PasswordStrength password={field.value} />
 										</FormDescription>
@@ -190,7 +190,7 @@ export function ForgotPassword({
 									</FormItem>
 								)}
 							/>
-							<Button type="submit" className="w-full">
+							<Button type="submit" disabled={submitting} className="w-full">
 								Reset Password
 							</Button>
 						</div>

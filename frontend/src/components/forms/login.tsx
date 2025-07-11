@@ -20,13 +20,14 @@ import {
 	FormLabel,
 	FormMessage
 } from '../ui/form';
+import { PasswordField } from './passwordField';
 
 export function Login({ className }: Readonly<{ className?: string }>) {
 	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
 	const query = useLocation().search;
 	const next = new URLSearchParams(query).get('next');
-
+	
 	const [submitting, setSubmitting] = useState<boolean>(false);
 
 	const FormSchema = z.object({
@@ -74,7 +75,7 @@ export function Login({ className }: Readonly<{ className?: string }>) {
 	}
 
 	return (
-		<Card className={cn('lg:w-1/4 w-1/2', className)}>
+		<Card className={cn('lg:w-1/4 sm:w-1/2', className)}>
 			<CardHeader className="text-center">
 				<CardTitle className="text-xl">Welcome back</CardTitle>
 				{/* <CardDescription>
@@ -134,7 +135,7 @@ export function Login({ className }: Readonly<{ className?: string }>) {
 									<FormItem className="grid gap-3">
 										<FormLabel htmlFor="username">Username</FormLabel>
 										<FormControl>
-											<Input {...field} autoFocus />
+											<Input {...field} placeholder='Username' autoFocus />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -154,9 +155,7 @@ export function Login({ className }: Readonly<{ className?: string }>) {
 												Forgot your password?
 											</Link>
 										</div>
-										<FormControl>
-											<Input {...field} type="password" />
-										</FormControl>
+										<PasswordField field={field} />
 										<FormMessage />
 									</FormItem>
 								)}

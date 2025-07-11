@@ -36,7 +36,7 @@ export const forgotPassword = wrapperFx(async function (req, res) {
 			await emailClient.send(
 				email,
 				'Password Reset',
-				`Hey <b>${existingUser.username}</b>,<br>here is your password reset token: <b>${resetToken}</b>.<br>Didn't request this? Please ignore. And don't share this token with anyone.`
+				`Hey <b>@${existingUser.username}</b>,<br>here is your password reset token: <b>${resetToken}</b>.<br>Didn't request this? Please ignore. And don't share this token with anyone.`
 			);
 		}
 		redis.setResetToken(email, resetToken);
