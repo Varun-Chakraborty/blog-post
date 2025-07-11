@@ -22,7 +22,7 @@ export async function handleLikePost(
 		}
 	} catch (error) {
 		if (isAxiosError(error)) {
-			toast('Error');
+			toast(error.response?.data.message);
 		}
 		console.error(error);
 	}

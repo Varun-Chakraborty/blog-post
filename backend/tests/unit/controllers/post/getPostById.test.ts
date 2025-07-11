@@ -1,6 +1,6 @@
 const prismaMock = {
 	post: {
-		findUnique: jest.fn(),
+		findUnique: jest.fn()
 	},
 	follow: {
 		count: jest.fn()

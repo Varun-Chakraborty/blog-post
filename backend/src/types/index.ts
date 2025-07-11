@@ -16,7 +16,7 @@ export interface User extends Profile {
 	email: string;
 	pfp?: string | null;
 	banner?: string | null;
-	posts?: Post[];
+	posts?: Omit<Post, 'author'>[];
 	postsCount?: number;
 	followers?: { id: string }[];
 	following?: { id: string }[];

@@ -54,7 +54,8 @@ export function Login({ className }: Readonly<{ className?: string }>) {
 			navigate(next || '/');
 		} catch (error) {
 			if (isAxiosError(error) && error.response?.status === 401) {
-				toast('Login failed');
+				toast(error.response.data.message);
+				form.setError('root', { message: error.response.data.message });
 			} else if (isAxiosError(error) && error.response?.status === 403) {
 				toast('Already logged in');
 				userService
@@ -73,7 +74,7 @@ export function Login({ className }: Readonly<{ className?: string }>) {
 	}
 
 	return (
-		<Card className={cn('md:w-1/4', className)}>
+		<Card className={cn('lg:w-1/4 w-1/2', className)}>
 			<CardHeader className="text-center">
 				<CardTitle className="text-xl">Welcome back</CardTitle>
 				{/* <CardDescription>
@@ -119,13 +120,21 @@ export function Login({ className }: Readonly<{ className?: string }>) {
 					<Form {...form}>
 						<form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6">
 							<FormField
+								name="root"
+								render={() => (
+									<FormItem className="flex justify-center items-center">
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
+							<FormField
 								control={form.control}
 								name="username"
 								render={({ field }) => (
 									<FormItem className="grid gap-3">
 										<FormLabel htmlFor="username">Username</FormLabel>
 										<FormControl>
-											<Input {...field} />
+											<Input {...field} autoFocus />
 										</FormControl>
 										<FormMessage />
 									</FormItem>

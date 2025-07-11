@@ -12,7 +12,9 @@ export function Profile({ profile }: Readonly<{ profile: Profile }>) {
 	return (
 		<Link to={`/user/${profile.username}`} state={profile}>
 			<Card
-				onClick={() => navigate(`/user/${profile.username}`, { state: profile })}
+				onClick={() =>
+					navigate(`/user/${profile.username}`, { state: profile })
+				}
 				className="p-3 w-full hover:bg-primary/10 border-b border-borderColor flex gap-3 rounded-lg"
 			>
 				<CardContent className="flex gap-3 items-center">
@@ -26,7 +28,12 @@ export function Profile({ profile }: Readonly<{ profile: Profile }>) {
 					</Avatar>
 					<div>
 						<span className="font-bold text-accent group-hover:underline">
-							{profile.name}
+							{profile.name.split(' ').map((name, i) => (
+								<span key={i}>
+									{name.charAt(0).toUpperCase()}
+									{name.slice(1)}
+								</span>
+							))}
 						</span>
 						<HoverCard>
 							<HoverCardTrigger asChild>

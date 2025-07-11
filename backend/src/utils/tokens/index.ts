@@ -5,7 +5,12 @@ const refreshExpiration = process.env.JWT_REFRESH_EXPIRATION ?? '7d';
 
 type TokenType = 'access' | 'refresh';
 
-import { AccessJWTResponse, ExpressTypes, Profile, RefreshJWTResponse } from '@/types';
+import {
+	AccessJWTResponse,
+	ExpressTypes,
+	Profile,
+	RefreshJWTResponse
+} from '@/types';
 import { generateToken, verifyToken } from './tokenUtils';
 import { setCookie } from '../setCookie';
 
@@ -19,7 +24,11 @@ export function sanitizePayload(data: Profile): Profile {
 	return sanitizedPayload;
 }
 
-export function generateTokens(data: Profile, type: TokenType | 'both', res: ExpressTypes.Res) {
+export function generateTokens(
+	data: Profile,
+	type: TokenType | 'both',
+	res: ExpressTypes.Res
+) {
 	const sanitizedData = sanitizePayload(data);
 	let access: string | undefined, refresh: string | undefined;
 	if (type === 'access' || type === 'both')
@@ -33,17 +42,18 @@ export function generateTokens(data: Profile, type: TokenType | 'both', res: Exp
 	}
 	if (access) {
 		res = setCookie('accessToken', access!, res, {
-				maxAge: Number(
-					process.env.ACCESS_COOKIE_MAX_AGE ?? String(1000 * 60 * 60 * 24)
-				)
-			});
+			maxAge: Number(
+				process.env.ACCESS_COOKIE_MAX_AGE ?? String(1000 * 60 * 60 * 24)
+			)
+		});
 	}
 	if (refresh) {
 		res = setCookie('refreshToken', refresh!, res, {
-				maxAge: Number(
-					process.env.REFRESH_COOKIE_MAX_AGE ?? String(1000 * 60 * 60 * 24 * 7)
-				)
-			});
+			maxAge: Number(
+				process.env.REFRESH_COOKIE_MAX_AGE ?? String(1000 * 60 * 60 * 24 * 7)
+			),
+			path: '/auth/refresh'
+		});
 	}
 
 	return { access, refresh, res };

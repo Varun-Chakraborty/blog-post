@@ -1,7 +1,7 @@
 import { ExpressTypes } from '@/types';
-import { isAuthenticated } from '@/middlewares/auth';
+import { isNotAuthenticated } from '@/middlewares/auth';
 
-describe('isNotAuthenticated', () => {
+describe('isAuthenticated', () => {
 	let req: Partial<ExpressTypes.Req>;
 	let res: Partial<ExpressTypes.Res>;
 	let next: Partial<ExpressTypes.Next>;
@@ -16,29 +16,29 @@ describe('isNotAuthenticated', () => {
 		next = jest.fn();
 	});
 
-	it('should return 401 if req.user is not present, it means user is not authenticated', () => {
-		isAuthenticated(
-			req as ExpressTypes.Req,
-			res as ExpressTypes.Res,
-			next as ExpressTypes.Next
-		);
-		expect(next).not.toHaveBeenCalled();
-		expect(res.status).toHaveBeenCalledWith(401);
-		expect(res.json).toHaveBeenCalledWith(
-			expect.objectContaining({
-				message: 'Unauthorized'
-			})
-		);
-	});
-
-	it('should call next if req.user is present, it means user is authenticated', () => {
+	it('should return 403 if req.user is present', () => {
 		req.user = {
 			id: '1',
 			username: 'testuser',
 			name: 'Test User',
 			role: 'USER'
 		};
-		isAuthenticated(
+		isNotAuthenticated(
+			req as ExpressTypes.Req,
+			res as ExpressTypes.Res,
+			next as ExpressTypes.Next
+		);
+		expect(next).not.toHaveBeenCalled();
+		expect(res.status).toHaveBeenCalledWith(403);
+		expect(res.json).toHaveBeenCalledWith(
+			expect.objectContaining({
+				message: 'You are already logged in'
+			})
+		);
+	});
+
+	it('should call next if req.user is not present', () => {
+		isNotAuthenticated(
 			req as ExpressTypes.Req,
 			res as ExpressTypes.Res,
 			next as ExpressTypes.Next

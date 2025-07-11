@@ -1,21 +1,20 @@
 import { userService } from '@/services';
 import { Button } from '../ui/button';
 import { cn } from '@/lib/utils';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import type { Profile } from '@/types/baseTypes';
 import { useAppSelector } from '@/lib/hooks';
 
 export function Follow({
 	user,
-	nextUrl,
 	className
 }: Readonly<{
 	user: Profile;
-	nextUrl: string;
 	className?: string;
 }>) {
 	const navigate = useNavigate();
+	const location = useLocation();
 	const [following, setFollowing] = useState<boolean>(false);
 	const { isGuest } = useAppSelector(state => state.profile.loggedIn);
 
@@ -30,6 +29,7 @@ export function Follow({
 			variant="outline"
 			className={cn('rounded-full text-accent outline-accent', className)}
 			onClick={async e => {
+				e.preventDefault();
 				e.stopPropagation();
 				if (!isGuest) {
 					if (following) {
@@ -39,7 +39,7 @@ export function Follow({
 						await userService.followUser(user.username);
 						setFollowing(true);
 					}
-				} else navigate(`/auth/signin?next=${nextUrl}`);
+				} else navigate(`/auth/signin?next=${location.pathname}`);
 			}}
 		>
 			{following ? 'Unfollow' : 'Follow'}

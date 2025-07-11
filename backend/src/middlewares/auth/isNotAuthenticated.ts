@@ -7,7 +7,11 @@ export function isNotAuthenticated(
 	next: ExpressTypes.Next
 ) {
 	if (req.user) {
-		new ApiResponse('You are already logged in', { username: req.user.username }, 403).error(res);
+		new ApiResponse(
+			'You are already logged in',
+			{ username: req.user.username },
+			403
+		).error(res);
 		return;
 	}
 	return next();

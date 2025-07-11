@@ -18,25 +18,32 @@ function BottomPanel({ className }: Readonly<{ className?: string }>) {
 		{ name: 'Trending', icon: IoMdTrendingUp, url: '/trending' },
 		{ name: 'Search', icon: CiSearch, url: '/search' },
 		{ name: 'Messages', icon: MessageCircle, url: '/chat' },
-		{ name: 'Notifications', icon: IoNotificationsOutline, url: '/notifications' },
+		{
+			name: 'Notifications',
+			icon: IoNotificationsOutline,
+			url: '/notifications'
+		},
 		{ name: 'Settings', icon: CiSettings, url: '/settings' }
-	]
+	];
 	return (
-		<div className={cn('w-full flex justify-center gap-3 items-center md:hidden p-2', className)}>
-			{
-				links.map(link => (
-					<Link key={link.name} to={link.url}>
-						<Button
-							variant="link"
-							className="w-full rounded-lg p-2 justify-start items-center"
-						>
-							<link.icon className="h-7 w-7" />
-						</Button>
-					</Link>
-				))
-			}
+		<div
+			className={cn(
+				'w-full flex justify-center gap-3 items-center md:hidden p-2',
+				className
+			)}
+		>
+			{links.map(link => (
+				<Link key={link.name} to={link.url}>
+					<Button
+						variant="link"
+						className="w-full rounded-lg p-2 justify-start items-center"
+					>
+						<link.icon className="h-7 w-7" />
+					</Button>
+				</Link>
+			))}
 		</div>
-	)
+	);
 }
 
 export function Layout() {
@@ -50,7 +57,7 @@ export function Layout() {
 				<div className="h-full w-px bg-border shrink-0" />
 				<MainPanel />
 				<div className="h-full w-px bg-border shrink-0" />
-				<RightPanel className='hidden lg:block' />
+				<RightPanel className="hidden lg:block" />
 			</div>
 			<BottomPanel />
 			<FloatingMessage />

@@ -35,7 +35,11 @@ function SuggestedAccounts({}: Readonly<{}>) {
 						key={user.id}
 						className="flex gap-2 justify-between items-center p-2 rounded-lg hover:bg-primary/10 cursor-pointer"
 					>
-						<Link to={`/user/${user.username}`} state={user} className='flex justify-between items-center w-full'>
+						<Link
+							to={`/user/${user.username}`}
+							state={user}
+							className="flex justify-between items-center w-full"
+						>
 							<div className="flex items-center gap-2">
 								<img
 									className="h-8 w-8 object-cover rounded-full"

@@ -50,7 +50,7 @@ export class RedisService extends Redis {
 		await this.redis.set(`verificationToken:${email}`, token);
 		await this.redis.expire(`verificationToken:${email}`, 60 * 15);
 		if (await this.redis.exists(`verification:${email}`)) {
-			await this.redis.incr(`verification:${email}`);		
+			await this.redis.incr(`verification:${email}`);
 		} else {
 			await this.redis.set(`verification:${email}`, 1);
 			await this.redis.expire(`verification:${email}`, 60 * 15);
@@ -97,8 +97,8 @@ export class RedisService extends Redis {
 	}
 
 	/**
-	 * 
-	 * @param token 
+	 *
+	 * @param token
 	 * @param duration In seconds
 	 */
 	public async setDumpedToken(token: string, duration: number) {

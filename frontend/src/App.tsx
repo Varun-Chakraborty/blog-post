@@ -26,7 +26,7 @@ import { ThemeProvider } from './lib/context/themeContext';
 import {
 	LoginForm,
 	RegisterForm,
-	ForgotPasswordForm,
+	ForgotPasswordForm
 } from '@/components/forms';
 
 export default function App() {
@@ -126,7 +126,7 @@ export default function App() {
 							]
 						}
 					]
-				},
+				}
 			],
 			ErrorBoundary: HandleErrors
 		},
@@ -147,7 +147,7 @@ export default function App() {
 					Component: RegisterForm
 				}
 			]
-		},
+		}
 	]);
 	return (
 		<ThemeProvider>

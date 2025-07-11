@@ -7,7 +7,7 @@ export function isAuthenticated(
 	next: ExpressTypes.Next
 ) {
 	if (!req.user) {
-		new ApiResponse('Unauthorized', undefined, 401).error(res);
+		new ApiResponse('Login required', undefined, 401).error(res);
 		return;
 	}
 	return next();

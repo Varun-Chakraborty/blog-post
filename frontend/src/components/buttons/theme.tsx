@@ -18,7 +18,7 @@ export function Theme({ className }: Readonly<{ className?: string }>) {
 			className={cn(className)}
 		>
 			{themes[theme].icon({ className: 'w-6 h-6' })}
-			<span className='md:block hidden'>{themes[theme].name}</span>
+			<span className="md:block hidden">{themes[theme].name}</span>
 		</Button>
 	);
 }

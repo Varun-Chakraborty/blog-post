@@ -18,16 +18,14 @@ const verifyEmail = wrapperFx(async function (req, res) {
 		).error(res);
 	}
 
-    const prisma = getPrismaClient();
-    const existingUser = await prisma.user.findUnique({
-        where: { email }
-    });
+	const prisma = getPrismaClient();
+	const existingUser = await prisma.user.findUnique({
+		where: { email }
+	});
 
-    if (!existingUser) {
-        return new ApiResponse('User not found', undefined, 404).error(res);
-    }
-
-    
+	if (!existingUser) {
+		return new ApiResponse('User not found', undefined, 404).error(res);
+	}
 
 	return new ApiResponse('Email verified', { email }, 200).success(res);
 });

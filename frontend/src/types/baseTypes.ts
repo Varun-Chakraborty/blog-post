@@ -11,9 +11,12 @@ export interface Profile {
 export interface User extends Omit<Profile, 'guest'> {
 	banner?: string;
 	bio: string;
-	followersCount: number;
-	followingCount: number;
 	posts: Post[];
+	_count: {
+		followers: number;
+		following: number;
+		posts: number;
+	};
 }
 
 export interface Post {

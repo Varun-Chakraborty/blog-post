@@ -16,8 +16,19 @@ import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from '../ui/input-otp';
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle
+} from '../ui/card';
+import {
+	InputOTP,
+	InputOTPGroup,
+	InputOTPSeparator,
+	InputOTPSlot
+} from '../ui/input-otp';
 import { authService } from '@/services';
 import { PasswordStrength } from '../passwordStrength';
 import { useState } from 'react';
@@ -35,12 +46,14 @@ export function ForgotPassword({
 		email: z.string().min(1, {
 			message: 'Email is required to reset password.'
 		}),
-		token: z.string()
-		.refine((value) => !tokenRequested || value.length === 6, {
-			message: 'Required field.'
-		}).refine((value) => !tokenRequested || /^\d+$/.test(value), {
-			message: 'Only numbers are allowed.'
-		}),
+		token: z
+			.string()
+			.refine(value => !tokenRequested || value.length === 6, {
+				message: 'Required field.'
+			})
+			.refine(value => !tokenRequested || /^\d+$/.test(value), {
+				message: 'Only numbers are allowed.'
+			}),
 		password: z.string()
 	});
 	const form = useForm<z.infer<typeof FormSchema>>({
@@ -66,7 +79,7 @@ export function ForgotPassword({
 		}
 	}
 
-	async function resetPassword(data: z.infer<typeof FormSchema> ) {
+	async function resetPassword(data: z.infer<typeof FormSchema>) {
 		try {
 			await authService.resetPassword(data.email, data.token, data.password);
 			navigate(`/auth/signin?next=${next}`);
@@ -81,25 +94,30 @@ export function ForgotPassword({
 	}
 
 	return (
-		<Card className={cn("md:w-1/4", className)}>
+		<Card className={cn('md:w-1/4', className)}>
 			<CardHeader className="text-center">
 				<CardTitle className="text-xl">Forgot Password?</CardTitle>
 			</CardHeader>
 			<CardContent>
-				<CardDescription className="text-center p-4 pt-0">Enter your e-mail address and check your inbox for the pin. After that, you can change your password or directly login your account if you need faster access. We recommend you to change your password as soon as possible.</CardDescription>
+				<CardDescription className="text-center p-4 pt-0">
+					Enter your e-mail address and check your inbox for the pin. After
+					that, you can change your password or directly login your account if
+					you need faster access. We recommend you to change your password as
+					soon as possible.
+				</CardDescription>
 				<Form {...form}>
 					<form
-						onSubmit={form.handleSubmit(tokenRequested ? resetPassword : getToken)}
-						className={cn(
-							'grid gap-4 p-2',
+						onSubmit={form.handleSubmit(
+							tokenRequested ? resetPassword : getToken
 						)}
+						className={cn('grid gap-4 p-2')}
 					>
 						<FormField
 							control={form.control}
 							name="email"
 							render={({ field }) => (
 								<FormItem>
-									<div className='flex justify-between items-center gap-4'>
+									<div className="flex justify-between items-center gap-4">
 										<FormControl>
 											<Input
 												placeholder="Email"
@@ -107,7 +125,9 @@ export function ForgotPassword({
 												className="focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
 											/>
 										</FormControl>
-										<Button type='button' onClick={form.handleSubmit(getToken)}>Request PIN</Button>	
+										<Button type="button" onClick={form.handleSubmit(getToken)}>
+											Request PIN
+										</Button>
 									</div>
 									<FormMessage />
 								</FormItem>
@@ -115,7 +135,10 @@ export function ForgotPassword({
 						/>
 						<div className="text-sm relative p-2">
 							<hr />
-							<Link className="hover:underline underline-offset-2 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-card p-2" to='/auth/signin?next='>
+							<Link
+								className="hover:underline underline-offset-2 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-card p-2"
+								to="/auth/signin?next="
+							>
 								Back to Login
 							</Link>
 						</div>
@@ -125,7 +148,7 @@ export function ForgotPassword({
 								name="token"
 								render={({ field }) => (
 									<FormItem>
-										<div className='flex justify-between items-center'>
+										<div className="flex justify-between items-center">
 											<FormLabel>Enter PIN</FormLabel>
 											<FormControl>
 												<InputOTP maxLength={6} {...field}>
@@ -141,7 +164,7 @@ export function ForgotPassword({
 														<InputOTPSlot index={5} />
 													</InputOTPGroup>
 												</InputOTP>
-											</FormControl>	
+											</FormControl>
 										</div>
 										<FormMessage />
 									</FormItem>
@@ -154,7 +177,11 @@ export function ForgotPassword({
 									<FormItem>
 										<FormLabel>Enter New Password</FormLabel>
 										<FormControl>
-											<Input {...field} type="password" placeholder="Password" />
+											<Input
+												{...field}
+												type="password"
+												placeholder="Password"
+											/>
 										</FormControl>
 										<FormDescription>
 											<PasswordStrength password={field.value} />
@@ -163,7 +190,7 @@ export function ForgotPassword({
 									</FormItem>
 								)}
 							/>
-							<Button type="submit" className='w-full'>
+							<Button type="submit" className="w-full">
 								Reset Password
 							</Button>
 						</div>

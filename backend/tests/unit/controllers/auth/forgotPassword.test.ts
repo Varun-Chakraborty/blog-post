@@ -10,7 +10,7 @@ const emailMock = {
 };
 
 jest.mock('@/db', () => ({
-	getPrismaClient: jest.fn(() => prismaMock),
+	getPrismaClient: jest.fn(() => prismaMock)
 }));
 
 jest.mock('@/services', () => ({
@@ -19,9 +19,9 @@ jest.mock('@/services', () => ({
 		setResetToken: jest.fn()
 	})),
 	getEmailInstance: jest.fn(() => ({
-		send: jest.fn()		
+		send: jest.fn()
 	}))
-}))
+}));
 
 import { forgotPassword } from '@/controllers/auth.controller';
 import { ExpressTypes } from '@/types';
@@ -42,7 +42,7 @@ describe('forgotPassword', () => {
 	});
 
 	it('should return 400 if email is not provided', async () => {
-        req.body = {};
+		req.body = {};
 		await forgotPassword(
 			req as ExpressTypes.Req,
 			res as ExpressTypes.Res,
@@ -56,27 +56,27 @@ describe('forgotPassword', () => {
 		);
 	});
 
-    it('should return 200 if email is provided and generate reset token if user exists', async () => {
-        req.body = {
-            email: 'email'
-        };
-        prismaMock.user.findUnique.mockResolvedValue({
-            id: '1',
-            username: 'testuser',
-            name: 'Test User',
-            email: 'email',
-            role: 'USER'
-        })
-        await forgotPassword(
-            req as ExpressTypes.Req,
-            res as ExpressTypes.Res,
-            next as ExpressTypes.Next
-        );
-        expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.json).toHaveBeenCalledWith(
-            expect.objectContaining({
-                message: 'Password reset link has been sent to your email'
-            })
-        );
-    });
+	it('should return 200 if email is provided and generate reset token if user exists', async () => {
+		req.body = {
+			email: 'email'
+		};
+		prismaMock.user.findUnique.mockResolvedValue({
+			id: '1',
+			username: 'testuser',
+			name: 'Test User',
+			email: 'email',
+			role: 'USER'
+		});
+		await forgotPassword(
+			req as ExpressTypes.Req,
+			res as ExpressTypes.Res,
+			next as ExpressTypes.Next
+		);
+		expect(res.status).toHaveBeenCalledWith(200);
+		expect(res.json).toHaveBeenCalledWith(
+			expect.objectContaining({
+				message: 'Password reset link has been sent to your email'
+			})
+		);
+	});
 });

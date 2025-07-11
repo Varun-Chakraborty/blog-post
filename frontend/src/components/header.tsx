@@ -13,7 +13,7 @@ export function Header() {
 				<SearchBar />
 			</div>
 			<div className="flex gap-3 items-center shrink-0 w-fit md:w-1/4 justify-end">
-				<NotificationButton className='hidden md:block' />
+				<NotificationButton className="hidden md:block" />
 				<ThemeButton />
 				{isGuest ? <LoginButton /> : <LogoutButton />}
 			</div>

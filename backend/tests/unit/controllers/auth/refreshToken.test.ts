@@ -183,7 +183,7 @@ describe('refreshToken', () => {
 		(tokens.generateTokens as jest.Mock).mockReturnValue({
 			access: 'access',
 			res: res
-		})
+		});
 
 		await refreshToken(
 			req as ExpressTypes.Req,

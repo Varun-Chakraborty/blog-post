@@ -46,7 +46,7 @@ export function Home({ className }: Readonly<{ className?: string }>) {
 	return (
 		<div className="h-full w-full flex flex-col">
 			<div className="p-2 flex items-center gap-2 md:hidden">
-				<span className='shrink-0'>Suggested Topics:</span>
+				<span className="shrink-0">Suggested Topics:</span>
 				<div className="flex p-2 gap-1 overflow-x-auto">
 					{['Technology', 'Politics', 'Entertainment', 'Science'].map(topic => (
 						<Capsule

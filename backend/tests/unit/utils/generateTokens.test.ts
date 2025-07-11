@@ -13,14 +13,14 @@ describe('generateTokens', () => {
 	let res: Partial<ExpressTypes.Res>;
 	beforeEach(() => {
 		jest.clearAllMocks();
-		res = { cookie: jest.fn() },
-		payload = {
-			id: '1',
-			username: 'test',
-			name: 'Test User',
-			role: 'USER',
-			password: 'testpassword'
-		};
+		(res = { cookie: jest.fn() }),
+			(payload = {
+				id: '1',
+				username: 'test',
+				name: 'Test User',
+				role: 'USER',
+				password: 'testpassword'
+			});
 	});
 
 	afterEach(() => {

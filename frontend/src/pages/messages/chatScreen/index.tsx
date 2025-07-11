@@ -23,7 +23,7 @@ export function ChatScreen({
 	const navigate = useNavigate();
 	const dispatch = useAppDispatch();
 	const { chatId } = useParams();
-	const { profile } = useAppSelector(state => state.profile);
+	const { loggedIn } = useAppSelector(state => state.profile);
 
 	const location = useLocation();
 	const isItRoot = location.pathname.endsWith('/chat');
@@ -97,7 +97,7 @@ export function ChatScreen({
 						onClick={() =>
 							isItGroup ||
 							navigate(
-								`/user/${chat!.participants.find(p => p.username !== profile.username)!.username}`
+								`/user/${chat!.participants.find(p => p.username !== loggedIn.username)!.username}`
 							)
 						}
 						className="flex gap-2 items-center hover:bg-primary/10 px-2 py-1 rounded-lg"
@@ -113,7 +113,7 @@ export function ChatScreen({
 							<AvatarFallback>
 								{isItGroup
 									? chat?.participants.find(
-											p => p.username !== profile.username
+											p => p.username !== loggedIn.username
 										)?.name
 									: chat?.groupName}
 							</AvatarFallback>
@@ -121,7 +121,7 @@ export function ChatScreen({
 						<span className={cn({ uppercase: isItGroup })}>
 							{!isItGroup
 								? chat?.participants
-										.find(p => p.username !== profile.username)!
+										.find(p => p.username !== loggedIn.username)!
 										.name.toUpperCase()
 								: chat?.groupName}
 						</span>

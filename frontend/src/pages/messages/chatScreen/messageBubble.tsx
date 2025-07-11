@@ -14,8 +14,8 @@ export function MessageBubble({
 	isItGroup,
 	className
 }: Readonly<MessageBubbleProp>) {
-	const { profile } = useAppSelector(state => state.profile);
-	const isItFromMe = profile.username === message.author.username;
+	const { loggedIn } = useAppSelector(state => state.profile);
+	const isItFromMe = loggedIn.username === message.author.username;
 	return (
 		<button
 			className={cn(
@@ -30,6 +30,7 @@ export function MessageBubble({
 			{isItGroup && !isItFromMe && (
 				<Link
 					to={`/user/${message.author.username}`}
+					state={message.author}
 					className="block hover:underline"
 				>{`@${message.author.username}`}</Link>
 			)}

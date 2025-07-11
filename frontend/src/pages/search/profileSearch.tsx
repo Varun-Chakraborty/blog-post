@@ -19,12 +19,10 @@ export function Profiles({
 	query
 }: Readonly<Props>) {
 	return (
-		<>
-			<ProfilesDisplay
-				profiles={profiles}
-				isLoading={isLoading}
-				loadMore={() => searchMore(query, 'users', profiles.length, setResults)}
-			/>
-		</>
+		<ProfilesDisplay
+			profiles={profiles}
+			isLoading={isLoading}
+			loadMore={() => searchMore(query, 'users', profiles.length, setResults)}
+		/>
 	);
 }

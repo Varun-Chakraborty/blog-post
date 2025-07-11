@@ -2,10 +2,7 @@ import { getPrismaClient } from '@/db';
 import { RedisService } from '@/services';
 import { ApiResponse, wrapperFx, setCookie, tokens, hashToken } from '@/utils';
 
-export const refreshToken = wrapperFx(async function (
-	req,
-	res
-) {
+export const refreshToken = wrapperFx(async function (req, res) {
 	const refreshToken =
 		req.cookies.refreshToken ?? req.headers.authorization?.split(' ')[1];
 
@@ -32,8 +29,12 @@ export const refreshToken = wrapperFx(async function (
 		omit: { password: true }
 	});
 
-	if (!user || user.refreshToken !== refreshToken)
+	if (!user || user.refreshToken !== hashedToken) {
+		if (user?.refreshToken) {
+			res.clearCookie('refreshToken');
+		}
 		return new ApiResponse('Invalid refresh token', undefined, 401).error(res);
+	}
 
 	const { access, res: newRes } = tokens.generateTokens(user, 'access', res);
 

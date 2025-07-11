@@ -16,7 +16,7 @@ export function UserHoverCard({
 			<div className="flex items-center space-x-4">
 				<Avatar>
 					<AvatarImage src={user.profilePicture ?? '/placeholder-user.jpg'} />
-					<AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
+					<AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
 				</Avatar>
 				<div className="space-y-1 w-full">
 					<div className="flex justify-between items-center w-full">

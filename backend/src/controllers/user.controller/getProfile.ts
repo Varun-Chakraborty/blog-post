@@ -17,17 +17,18 @@ export const getProfile = wrapperFx(async function (
 		where: { username },
 		omit: { password: true, refreshToken: true },
 		include: {
-			posts: { include: { author: true } },
-			followers: { select: { id: true } },
-			following: { select: { id: true } }
+			posts: {
+				include: {
+					_count: { select: { comments: true, likes: true } },
+					likes: { where: { authorId: req.user?.id } }
+				}
+			},
+			_count: { select: { followers: true, following: true, posts: true } }
 		}
 	});
 
 	if (!user)
 		return new ApiResponse('User not found', undefined, 404).error(res);
-	user.followersCount = countFollowers(user.followers!);
-	user.followingCount = countFollowing(user.following!);
-	user.postsCount = countPosts(user.posts!);
 	return new ApiResponse('User found', { user }).success(res);
 });
 

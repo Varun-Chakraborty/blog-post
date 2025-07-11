@@ -6,7 +6,7 @@ const prismaMock = {
 };
 
 const redisMock = {
-	setDumpedToken: jest.fn(),
+	setDumpedToken: jest.fn()
 };
 
 jest.mock('@/db', () => ({

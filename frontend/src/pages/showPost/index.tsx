@@ -49,15 +49,14 @@ import { handleLikePost } from '@/helperFunctions/likePost.ts';
 export function ShowPost({ className }: Readonly<{ className?: string }>) {
 	const { id } = useParams();
 	const { loggedIn } = useAppSelector(state => state.profile);
-	// receive data loaded as navigate('/post/:id', { state: post })
 	const location = useLocation();
 	const postFromState = location.state as Post;
 
 	const [post, setPost] = useState<Post | undefined>();
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 
-	const [liked, setLiked] = useState<boolean>(post?.liked ?? false);
-	const [likesCount, setLikesCount] = useState<number>(post?._count.likes ?? 0);
+	const [liked, setLiked] = useState<boolean>(false);
+	const [likesCount, setLikesCount] = useState<number>(0);
 
 	const navigate = useNavigate();
 
@@ -78,6 +77,10 @@ export function ShowPost({ className }: Readonly<{ className?: string }>) {
 					console.error(e);
 				});
 		}
+		if (post) {
+			setLiked(post?.liked);
+			setLikesCount(post?._count.likes);
+		}
 	}, [id, postFromState]);
 
 	const renderLoader = isLoading ? <Loader /> : null;
@@ -85,7 +88,7 @@ export function ShowPost({ className }: Readonly<{ className?: string }>) {
 	return (
 		<div className={cn('h-full w-full', className)}>
 			{renderLoader ?? (
-				<div className="h-full w-full space-y-3 p-4 overflow-scroll relative">
+				<div className="h-full w-full space-y-3 p-4 overflow-y-auto relative">
 					<div className="relative">
 						<div className="p-2 flex justify-between items-center">
 							<div>
@@ -95,7 +98,11 @@ export function ShowPost({ className }: Readonly<{ className?: string }>) {
 										<Button
 											variant="link"
 											className="p-0 h-5 text-white"
-											onClick={() => navigate(`/user/${post?.author.username}`)}
+											onClick={() =>
+												navigate(`/user/${post?.author.username}`, {
+													state: post?.author
+												})
+											}
 										>
 											Posted by: @{post?.author.username}
 										</Button>
@@ -118,10 +125,10 @@ export function ShowPost({ className }: Readonly<{ className?: string }>) {
 									</AlertDialog>
 								</div>
 							) : (
-								<FollowButton user={post!.author} nextUrl={`/post/${post!.id}`} />
+								<FollowButton user={post!.author} />
 							)}
 						</div>
-						<div className="rounded-lg overflow-clip h-full w-full">
+						<div className={cn("rounded-lg overflow-clip h-full w-full", post?.imgUrl || "hidden")}>
 							<img src={post?.imgUrl} alt="post image" className="w-full" />
 						</div>
 						<div className="relative z-50 selection:bg-slate-600">
