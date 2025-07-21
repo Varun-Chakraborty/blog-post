@@ -24,11 +24,10 @@ export function getRedisClient() {
 	return redisClient;
 }
 
-export class RedisService extends Redis {
+export class RedisService {
 	private redis: Redis;
 
 	constructor() {
-		super();
 		this.redis = getRedisClient();
 	}
 

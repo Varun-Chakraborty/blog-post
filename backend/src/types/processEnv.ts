@@ -12,6 +12,5 @@ declare namespace NodeJS {
 		REDIS_HOST: string;
 		GMAIL_ADDRESS: string;
 		GMAIL_PASSWORD: string;
-		MY_EMAIL_ADDRESS: string;
 	}
 }
