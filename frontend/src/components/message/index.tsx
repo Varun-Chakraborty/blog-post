@@ -7,7 +7,7 @@ import { useAppSelector } from '@/lib/hooks';
 
 function handleClickOutside(
 	event: MouseEvent,
-	currentComponent: React.RefObject<HTMLDivElement>,
+	currentComponent: React.RefObject<HTMLDivElement | null>,
 	setExpanded: React.Dispatch<React.SetStateAction<boolean>>
 ) {
 	if (
@@ -59,11 +59,6 @@ export function FloatingMessage() {
 				type="button"
 			>
 				<div className="flex items-center gap-2">
-					<div
-						className={cn('h-2 aspect-square bg-accent rounded-full', {
-							hidden: !unreadChats.length
-						})}
-					/>
 					<span className="text-lg">Messages</span>
 				</div>
 				<div className="p-2 hover:bg-primary/10 rounded-full">
@@ -72,16 +67,19 @@ export function FloatingMessage() {
 					/>
 				</div>
 			</button>
-			<div className={cn('transition-all', !expanded ? 'h-0' : 'h-fit')}>
-				<div className="py-2 px-3 space-y-2">
-					{unreadChats.map(chat => (
-						<MessageComponent
-							chat={chat}
-							key={chat.id}
-							setExpanded={setExpanded}
-						/>
-					))}
-				</div>
+			<div
+				className={cn(
+					'transition-all py-2 px-3 space-y-2',
+					!expanded ? 'h-0' : 'h-fit'
+				)}
+			>
+				{/* {unreadChats.map(chat => (
+					<MessageComponent
+						chat={chat}
+						key={chat.id}
+						setExpanded={setExpanded}
+					/>
+				))} */}
 			</div>
 		</div>
 	);
