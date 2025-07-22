@@ -6,7 +6,7 @@ export const getPosts = wrapperFx(async function (
 	req: ExpressTypes.Req,
 	res: ExpressTypes.Res
 ) {
-	const username: string | undefined = req.params.username;
+	const username: string | undefined = req.params?.username;
 	const prisma = getPrismaClient();
 	const posts = await prisma.post.findMany({
 		where: { author: { username } },
