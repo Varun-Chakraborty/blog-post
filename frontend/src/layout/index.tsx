@@ -7,7 +7,6 @@ import { init } from '@/lib/hooks';
 import { cn } from '@/lib/utils';
 import { Link } from 'react-router-dom';
 import { Home, MessageCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { CiSearch, CiSettings } from 'react-icons/ci';
 import { IoNotificationsOutline } from 'react-icons/io5';
 import { IoMdTrendingUp } from 'react-icons/io';
@@ -28,18 +27,13 @@ function BottomPanel({ className }: Readonly<{ className?: string }>) {
 	return (
 		<div
 			className={cn(
-				'w-full flex justify-center gap-3 items-center md:hidden p-2',
+				'w-3/4 flex justify-between items-center md:hidden p-4 rounded-full mx-auto border',
 				className
 			)}
 		>
 			{links.map(link => (
 				<Link key={link.name} to={link.url}>
-					<Button
-						variant="link"
-						className="w-full rounded-lg p-2 justify-start items-center"
-					>
-						<link.icon className="h-7 w-7" />
-					</Button>
+					<link.icon className="h-5 w-5" />
 				</Link>
 			))}
 		</div>
@@ -60,7 +54,7 @@ export function Layout() {
 				<RightPanel className="hidden lg:block" />
 			</div>
 			<BottomPanel />
-			<FloatingMessage />
+			{/* <FloatingMessage /> */}
 		</main>
 	);
 }

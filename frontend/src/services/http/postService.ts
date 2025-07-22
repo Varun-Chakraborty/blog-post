@@ -14,7 +14,7 @@ class PostService extends HTTPService {
 
 	async getPostsByUsername(username: string) {
 		const response = await this.api.get<PostResponseTypes.GetPostsResponse>(
-			`/user/${username}/posts`
+			`/post/user/${username}`
 		);
 		return response.data.data?.posts;
 	}

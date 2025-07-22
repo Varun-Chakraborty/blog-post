@@ -1,4 +1,4 @@
-import type { Post } from '@/types/baseTypes';
+import type { Post, Profile } from '@/types/baseTypes';
 import { useNavigate } from 'react-router-dom';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
@@ -21,12 +21,18 @@ import { ParseMarkdown } from '@/components/parseMarkdown';
 
 export function Post({
 	post,
+	author,
 	className
-}: Readonly<{ post: Post; className?: string }>) {
+}: Readonly<{
+	post: Post;
+	author?: Profile & { followed: boolean };
+	className?: string;
+}>) {
 	const navigate = useNavigate();
 	const [liked, setLiked] = useState(post.liked);
 	const [likesCount, setLikesCount] = useState(post._count.likes);
 	const { loggedIn } = useAppSelector(state => state.profile);
+	post.author = author ?? post.author;
 	const isFollowed =
 		loggedIn.username === post.author.username || post.author.followed;
 
@@ -86,7 +92,7 @@ export function Post({
 			<div className="flex justify-between">
 				<div className="flex gap-2">
 					<LikeButton
-						liked={liked}
+						liked={!loggedIn.isGuest && liked}
 						likesCount={likesCount}
 						onClick={async e => {
 							e.stopPropagation();

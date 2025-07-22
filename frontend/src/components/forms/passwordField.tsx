@@ -7,16 +7,20 @@ import { Button } from '../ui/button';
 
 export function PasswordField({
 	field,
-    className
+	className
 }: {
 	field: any;
 	className?: string;
 }) {
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 	return (
-		<div className={cn("relative", className)}>
+		<div className={cn('relative', className)}>
 			<FormControl>
-				<Input {...field} placeholder='Password' {...(showPassword ? {} : { type: 'password' })} />
+				<Input
+					{...field}
+					placeholder="Password"
+					{...(showPassword ? {} : { type: 'password' })}
+				/>
 			</FormControl>
 			<Button
 				variant="transparent"

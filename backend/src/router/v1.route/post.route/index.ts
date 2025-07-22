@@ -8,11 +8,14 @@ import { isAuthenticated } from '@/middlewares/auth';
 
 router.route('/').get(postController.getPosts).post(postController.createPost);
 
+router.get('/user/:username', postController.getPosts);
+
 router
 	.route('/:postId')
 	.get(postController.getPostById)
 	.put(postController.updatePostById)
 	.delete(postController.deletePostById);
+
 
 router.get('/:postId/comments', postController.getCommentsByPostId);
 

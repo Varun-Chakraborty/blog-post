@@ -1,9 +1,10 @@
 import { FollowButton } from '@/components/buttons';
 import { PostsDisplay } from '@/components/postsDisplay';
 import { Button } from '@/components/ui/button';
+import { useAppSelector } from '@/lib/hooks';
 import { cn } from '@/lib/utils';
-import { userService } from '@/services';
-import type { Profile, User } from '@/types/baseTypes';
+import { postService, userService } from '@/services';
+import type { Post, Profile, User } from '@/types/baseTypes';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
@@ -12,11 +13,14 @@ export function Profile({ className }: Readonly<{ className?: string }>) {
 	const params = useParams();
 	const username = params.username!;
 	const [user, setUser] = useState<User | undefined>(undefined);
-	const isItMe = user?.username === username;
+	const [posts, setPosts] = useState<Post[]>([]);
+	const loggedInUser = useAppSelector(state => state.profile.loggedIn);
+	const isItMe = loggedInUser?.username === user?.username;
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		userService.getProfile(username).then(res => setUser(res));
+		postService.getPostsByUsername(username).then(res => setPosts(res!));
 		setUser(user);
 	}, [location]);
 
@@ -72,7 +76,8 @@ export function Profile({ className }: Readonly<{ className?: string }>) {
 				<section className="h-3/4">
 					<div className="p-2 font-semibold text-xl">Posts</div>
 					<PostsDisplay
-						posts={user.posts}
+						author={{ ...user, followed: true }}
+						posts={posts}
 						isLoading={false}
 						className="overflow-y-auto h-full p-2"
 					/>

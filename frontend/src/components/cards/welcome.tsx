@@ -24,7 +24,7 @@ export function Welcome({ className }: Readonly<{ className?: string }>) {
 		<Card className={cn(className)}>
 			<CardHeader className="text-2xl capitalize flex justify-between items-center">
 				<span>Hello {loggedIn.name}</span>
-				<Popover>
+				{loggedIn.isGuest || (<Popover>
 					<PopoverTrigger className="cursor-pointer">
 						<CiSettings />
 					</PopoverTrigger>
@@ -40,7 +40,7 @@ export function Welcome({ className }: Readonly<{ className?: string }>) {
 							</Button>
 						</div>
 					</PopoverContent>
-				</Popover>
+				</Popover>)}
 			</CardHeader>
 			<CardContent>
 				<CardDescription>
@@ -56,7 +56,7 @@ export function Welcome({ className }: Readonly<{ className?: string }>) {
 			<CardFooter>
 				<Button
 					onClick={() =>
-						!isItGuest ? navigate('/post/create') : navigate('/signin')
+						!isItGuest ? navigate('/post/create') : navigate('/auth/signin')
 					}
 					variant="accent"
 				>

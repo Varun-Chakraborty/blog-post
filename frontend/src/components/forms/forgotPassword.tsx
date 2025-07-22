@@ -131,7 +131,11 @@ export function ForgotPassword({
 												className="focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
 											/>
 										</FormControl>
-										<Button type="button" disabled={submitting} onClick={form.handleSubmit(getToken)}>
+										<Button
+											type="button"
+											disabled={submitting}
+											onClick={form.handleSubmit(getToken)}
+										>
 											Request PIN
 										</Button>
 									</div>

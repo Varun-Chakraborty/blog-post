@@ -6,10 +6,12 @@ export const getPosts = wrapperFx(async function (
 	req: ExpressTypes.Req,
 	res: ExpressTypes.Res
 ) {
+	const username: string | undefined = req.params.username;
 	const prisma = getPrismaClient();
 	const posts = await prisma.post.findMany({
+		where: { author: { username } },
 		include: {
-			author: {
+			...(username ? {} : {author: {
 				select: {
 					id: true,
 					username: true,
@@ -17,16 +19,18 @@ export const getPosts = wrapperFx(async function (
 					profilePicture: true,
 					createdAt: true
 				}
-			},
+			}}),
 			_count: { select: { comments: true, likes: true } },
-			likes: { where: { authorId: req.user?.id }, select: { id: true } }
+			...(req.user && {
+				likes: { where: { authorId: req.user.id }, select: { id: true } }
+			})
 		}
 	});
 	return new ApiResponse('Posts retrieved successfully', {
 		posts: posts.map(post => ({
 			...post,
-			liked: !!post.likes.length,
-			likes: undefined
+			liked: !!post.likes?.length
+			// likes: undefined
 		}))
 	}).success(res);
 });

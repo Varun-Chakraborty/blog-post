@@ -7,9 +7,11 @@ import { userService } from '@/services';
 import { isAxiosError } from 'axios';
 import { toast } from 'sonner';
 import { Link } from 'react-router-dom';
+import { useAppSelector } from '@/lib/hooks';
 
-function SuggestedAccounts({}: Readonly<{}>) {
+function SuggestedAccounts({ className }: Readonly<{ className?: string }>) {
 	const [suggestedUsers, setSuggestedUsers] = useState<Profile[]>([]);
+	const { loggedIn } = useAppSelector(state => state.profile);
 
 	useEffect(() => {
 		userService
@@ -23,9 +25,9 @@ function SuggestedAccounts({}: Readonly<{}>) {
 				}
 				console.error(e);
 			});
-	}, []);
+	}, [loggedIn]);
 	return (
-		<div className="p-4 space-y-2 border rounded-lg bg-card">
+		<div className={cn("p-4 space-y-2 border rounded-lg bg-card", className)}>
 			<div className="font-roboto-condensed uppercase text-lg p-2">
 				Suggested Accounts
 			</div>

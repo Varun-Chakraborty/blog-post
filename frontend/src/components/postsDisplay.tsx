@@ -1,15 +1,17 @@
 import { PostCard, PostCardSkeleton } from '@/components/cards';
 import { cn } from '@/lib/utils';
-import type { Post } from '@/types/baseTypes';
+import type { Post, Profile } from '@/types/baseTypes';
 import { Button } from './ui/button';
 
 export function PostsDisplay({
 	posts,
+	author,
 	isLoading,
 	loadMore,
 	className
 }: Readonly<{
 	posts: Post[];
+	author?: Profile & { followed: boolean };
 	isLoading: boolean;
 	loadMore?: () => void;
 	className?: string;
@@ -29,7 +31,7 @@ export function PostsDisplay({
 						)}
 					>
 						{posts.map(post => (
-							<PostCard key={post.id} post={post} />
+							<PostCard key={post.id} post={post} author={author} />
 						))}
 						{isLoading &&
 							[...Array(7)].map((_, i) => <PostCardSkeleton key={i} />)}

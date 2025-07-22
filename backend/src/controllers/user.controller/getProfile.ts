@@ -17,12 +17,6 @@ export const getProfile = wrapperFx(async function (
 		where: { username },
 		omit: { password: true, refreshToken: true },
 		include: {
-			posts: {
-				include: {
-					_count: { select: { comments: true, likes: true } },
-					likes: { where: { authorId: req.user?.id } }
-				}
-			},
 			_count: { select: { followers: true, following: true, posts: true } }
 		}
 	});

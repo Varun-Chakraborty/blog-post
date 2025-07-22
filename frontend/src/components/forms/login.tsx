@@ -27,7 +27,7 @@ export function Login({ className }: Readonly<{ className?: string }>) {
 	const navigate = useNavigate();
 	const query = useLocation().search;
 	const next = new URLSearchParams(query).get('next');
-	
+
 	const [submitting, setSubmitting] = useState<boolean>(false);
 
 	const FormSchema = z.object({
@@ -135,7 +135,7 @@ export function Login({ className }: Readonly<{ className?: string }>) {
 									<FormItem className="grid gap-3">
 										<FormLabel htmlFor="username">Username</FormLabel>
 										<FormControl>
-											<Input {...field} placeholder='Username' autoFocus />
+											<Input {...field} placeholder="Username" autoFocus />
 										</FormControl>
 										<FormMessage />
 									</FormItem>

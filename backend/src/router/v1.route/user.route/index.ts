@@ -30,11 +30,6 @@ router.get(
 	resolveUsernameMeKeyword,
 	userController.getFollowing
 );
-router.get(
-	'/:username/posts',
-	resolveUsernameMeKeyword,
-	userController.getPosts
-);
 router.get('/suggestions', userController.getSuggestions);
 
 router.use(isAuthenticated);

@@ -46,7 +46,7 @@ export function FloatingMessage() {
 		<div
 			ref={currentComponent}
 			className={cn(
-				'fixed bottom-0 right-3 lg:w-[18%] sm:w-[30%] bg-background z-50 rounded-t-lg sm:block hidden select-none',
+				'fixed bottom-0 right-3 sm:w-[25%] bg-background z-50 rounded-t-lg sm:block hidden select-none',
 				{ 'sm:hidden': isChatCurrentPath }
 			)}
 		>
@@ -73,13 +73,13 @@ export function FloatingMessage() {
 					!expanded ? 'h-0' : 'h-fit'
 				)}
 			>
-				{/* {unreadChats.map(chat => (
+				{unreadChats.map(chat => (
 					<MessageComponent
 						chat={chat}
-						key={chat.id}
+						key={chat.chatId}
 						setExpanded={setExpanded}
 					/>
-				))} */}
+				))}
 			</div>
 		</div>
 	);

@@ -102,7 +102,7 @@ export default function App() {
 				},
 				{
 					path: 'login',
-					element: <Navigate to="//auth/signin" />
+					element: <Navigate to="/auth/signin" />
 				},
 				{
 					path: 'register',

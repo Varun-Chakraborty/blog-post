@@ -2,7 +2,6 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { Home } from 'lucide-react';
 import { IoMdTrendingUp } from 'react-icons/io';
-import { MdAutoGraph } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 
 export function Sections() {
@@ -53,13 +52,14 @@ export function Topics() {
 export function Abouts() {
 	return (
 		<div className="h-fit shrink-0 p-2 pr-0">
-			{['About The Developer', 'Contact Us', 'Privacy Policy'].map(topic => (
+			{[{name: 'About The Developer', to: 'https://portfolio-seven-beta-51.vercel.app/'}].map(topic => (
 				<Button
-					key={topic}
+					key={topic.name}
 					variant="link"
 					className="w-full rounded-lg p-2 justify-start"
+					asChild
 				>
-					{topic}
+					<Link to={topic.to}>{topic.name}</Link>
 				</Button>
 			))}
 		</div>
