@@ -23,7 +23,7 @@ export function HandleErrors() {
 				<div className="p-4">
 					<span>Not your site? </span>
 					<Link
-						to="mailto:V4v7t@example.com"
+						to="mailto:varunchakraborty9526@gmail.com"
 						className="underline-offset-4 hover:underline"
 					>
 						Contact developer

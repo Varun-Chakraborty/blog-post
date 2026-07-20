@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '../ui/button';
 import type { MouseEventHandler } from 'react';
 
@@ -10,10 +10,11 @@ interface Props {
 
 export function Login({ onClick, className }: Readonly<Props>) {
 	const navigate = useNavigate();
+	const location = useLocation();
 	return (
 		<Button
 			onClick={e => {
-				navigate(`/auth/signin?next=`);
+				navigate(`/auth/signin?next=${location.pathname}`);
 				onClick?.(e);
 			}}
 			variant="accent"

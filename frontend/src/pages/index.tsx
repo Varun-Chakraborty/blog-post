@@ -7,7 +7,6 @@ export { EditPost } from './editPost';
 export { Search } from './search';
 export { NotFound } from './notFound';
 export { ShowPost } from './showPost';
-export { ShowPosts } from './showPosts';
 export { Settings } from './settings';
 export { Profile } from './profile';
 export { HandleErrors } from './handleErrors';

@@ -52,7 +52,7 @@ export function generateTokens(
 			maxAge: Number(
 				process.env.REFRESH_COOKIE_MAX_AGE ?? String(1000 * 60 * 60 * 24 * 7)
 			),
-			path: '/auth/refresh'
+			path: '/api/v1/auth/refresh'
 		});
 	}
 

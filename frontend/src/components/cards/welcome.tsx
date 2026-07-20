@@ -9,7 +9,7 @@ import {
 import { useAppSelector } from '@/lib/hooks';
 import { cn } from '@/lib/utils';
 import { CiSettings } from 'react-icons/ci';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
 	Popover,
 	PopoverContent,
@@ -32,11 +32,15 @@ export function Welcome({ className }: Readonly<{ className?: string }>) {
 						<span className="font-semibold">Account Settings</span>
 						<hr />
 						<div className="flex flex-col gap-1">
-							<Button variant="link" className="w-full justify-start px-0">
-								Account Info
+							<Button variant="link" className="w-full justify-start px-0" asChild>
+								<Link to={`/user/${loggedIn.username}`}>
+									Account Info
+								</Link>
 							</Button>
-							<Button variant="link" className="w-full justify-start px-0">
-								Add New Account
+							<Button variant="link" className="w-full justify-start px-0" asChild>
+								<Link to={`/auth/register`}>
+									Add New Account
+								</Link>
 							</Button>
 						</div>
 					</PopoverContent>

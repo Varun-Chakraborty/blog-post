@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { postService } from '@/services';
 import type { Post } from '@/types/baseTypes';
 import { useEffect, useState, type MouseEventHandler } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
 function Capsule({
@@ -32,11 +32,27 @@ export function Home({ className }: Readonly<{ className?: string }>) {
 	const [posts, setPosts] = useState<Post[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
 	const isLoggedIn = useAppSelector(state => !state.profile.loggedIn.isGuest);
+	const location = useLocation();
 	const navigate = useNavigate();
+	const params = useParams();
 	useEffect(() => {
+		if (location.pathname === '/trending') {
+			postService
+				.getTrendingPosts()
+				.then(res => {
+					setPosts(res!);
+					setIsLoading(false);
+				})
+				.catch(e => {
+					console.error(e);
+					toast('Error');
+				});
+			return;
+		}
 		postService
-			.getPosts()
+			.getPosts(params.topic)
 			.then(res => {
+				console.log("fetched posts");
 				setPosts(res!);
 				setIsLoading(false);
 			})

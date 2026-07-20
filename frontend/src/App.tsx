@@ -15,11 +15,10 @@ import {
 	Search,
 	NotFound,
 	ShowPost,
-	ShowPosts,
 	Settings,
 	Profile,
 	HandleErrors,
-	Auth
+	Auth,
 } from './pages';
 import { ProtectedRoute } from './components/protectedRoute';
 import { ThemeProvider } from './lib/context/themeContext';
@@ -36,7 +35,7 @@ export default function App() {
 			Component: Layout,
 			children: [
 				{
-					path: '',
+					path: '(/|topics/:topic|trending)',
 					Component: Home
 				},
 				{
@@ -68,15 +67,11 @@ export default function App() {
 					Component: Search
 				},
 				{
-					path: 'posts',
-					Component: ShowPosts
-				},
-				{
 					path: 'post',
 					children: [
 						{
 							path: '',
-							element: <Navigate to="/posts" />
+							element: <Navigate to="/" />
 						},
 						{
 							path: 'create',
@@ -95,10 +90,6 @@ export default function App() {
 							Component: EditPost
 						}
 					]
-				},
-				{
-					path: '*',
-					Component: NotFound
 				},
 				{
 					path: 'login',
@@ -126,7 +117,11 @@ export default function App() {
 							]
 						}
 					]
-				}
+				},
+				{
+					path: '*',
+					Component: NotFound
+				},
 			],
 			ErrorBoundary: HandleErrors
 		},

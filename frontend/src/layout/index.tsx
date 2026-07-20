@@ -54,7 +54,7 @@ export function Layout() {
 				<RightPanel className="hidden lg:block" />
 			</div>
 			<BottomPanel />
-			{/* <FloatingMessage /> */}
+			{<FloatingMessage />}
 		</main>
 	);
 }

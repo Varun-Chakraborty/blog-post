@@ -6,9 +6,17 @@ class PostService extends HTTPService {
 		super();
 	}
 
-	async getPosts() {
+	async getPosts(topic?: string) {
 		const response =
-			await this.api.get<PostResponseTypes.GetPostsResponse>('/post');
+			await this.api.get<PostResponseTypes.GetPostsResponse>(`/post${topic ? `?topic=${topic}` : ''}`);
+		return response.data.data?.posts;
+	}
+
+	async getTrendingPosts() {
+		const response =
+			await this.api.get<PostResponseTypes.GetPostsResponse>(
+				'/post/trending'
+			);
 		return response.data.data?.posts;
 	}
 
